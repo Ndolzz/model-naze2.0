@@ -1,8 +1,8 @@
-"""Activation functions — implementasi sendiri di atas NumPy (REQ-002, Stage 1).
+"""Activation functions + derivatives (REQ-002/REQ-003, Stage 1-2).
 
-Kontrak setiap aktivasi:
-- forward(x) -> Array, beroperasi elementwise (kecuali softmax pada axis terakhir).
-- Stateless (murni fungsi) pada tahap ini; state untuk backward menyusul di Stage 2.
+Kontrak:
+- forward fn: f(x) -> Array (softmax hanya untuk output; grad digabung dengan CE).
+- grad fn: df(x, y) -> Array, dengan y = f(x) (menghemat recomputasi).
 """
 
 from __future__ import annotations
@@ -13,12 +13,14 @@ from naze.core.numeric import Array, as_array
 
 
 def relu(x) -> Array:
-    """max(0, x) elementwise."""
     return np.maximum(as_array(x), 0.0)
 
 
+def relu_grad(x, y) -> Array:
+    return (as_array(x) > 0).astype(as_array(x).dtype)
+
+
 def sigmoid(x) -> Array:
-    """1 / (1 + exp(-x)), stabil secara numerik."""
     x = as_array(x)
     out = np.empty_like(x)
     pos = x >= 0
@@ -28,13 +30,19 @@ def sigmoid(x) -> Array:
     return out
 
 
+def sigmoid_grad(x, y) -> Array:
+    return y * (1.0 - y)
+
+
 def tanh(x) -> Array:
-    """tanh elementwise (NumPy native, stabil)."""
     return np.tanh(as_array(x))
 
 
+def tanh_grad(x, y) -> Array:
+    return 1.0 - y * y
+
+
 def softmax(x, axis: int = -1) -> Array:
-    """Softmax stabil pada `axis` (default: axis batch terakhir)."""
     x = as_array(x)
     shifted = x - np.max(x, axis=axis, keepdims=True)
     e = np.exp(shifted)

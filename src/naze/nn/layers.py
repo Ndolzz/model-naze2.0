@@ -1,12 +1,10 @@
-"""Layers dan model container — forward pass saja (REQ-002, Stage 1).
+"""Layers: forward + backward pass (REQ-002/REQ-003, DECISION-008, DECISION-105).
 
-DESAIN (sesuai ARCHITECTURE.md Stage 1):
-- `Layer` adalah abstraction minimal: forward(x) -> Array, plus daftar parameter.
-- Parameter disimpan sebagai ndarray biasa (dict bernama) — tanpa framework.
-- `Sequential` menyusun layer berurutan; ini cukup untuk Stage 1.
-- Tidak ada backward/optimizer di stage ini (Stage 2, menunggu OPEN DECISION-105).
-
-Konvensi shape: (batch, features). Linear mengoperasikan fitur pada axis terakhir.
+Pendekatan: backprop terstruktur per-layer (bukan graph-based autodiff).
+- forward(x) meng-cache input; backward(grad_out) menghitung grad_input
+  dan menyimpan grad parameter di self.grads.
+- Sequential.backward = komposisi terbalik.
+Konvensi shape: (batch, features).
 """
 
 from __future__ import annotations
@@ -20,15 +18,18 @@ from naze.core.numeric import Array, as_array, seeded_rng
 
 
 class Layer(ABC):
-    """Abstraksi dasar layer. Subclass menyimpan parameter di `self.params`."""
-
     def __init__(self, name: str) -> None:
         self.name = name
         self.params: dict[str, Array] = {}
+        self.grads: dict[str, Array] = {}
 
     @abstractmethod
     def forward(self, x: Array) -> Array:
-        """Hitung output layer untuk input (batch, ...)."""
+        ...
+
+    @abstractmethod
+    def backward(self, grad_out: Array) -> Array:
+        ...
 
     def __call__(self, x: Array) -> Array:
         return self.forward(x)
@@ -38,13 +39,7 @@ class Layer(ABC):
 
 
 class Linear(Layer):
-    """Affine: y = x @ W + b.
-
-    Shape:
-        x: (batch, in_features) -> y: (batch, out_features)
-        W: (in_features, out_features), b: (out_features,)
-    Init: He/Kaiming-style (normal * sqrt(2/fan_in)) via seeded rng.
-    """
+    """y = x @ W + b. backward: dW = x.T @ g, db = sum(g), dx = g @ W.T."""
 
     def __init__(self, in_features: int, out_features: int, *, seed: int = 0) -> None:
         super().__init__(f"linear({in_features}->{out_features})")
@@ -55,28 +50,46 @@ class Linear(Layer):
         self.out_features = out_features
         self.params["W"] = rng.normal(0.0, np.sqrt(2.0 / in_features), (in_features, out_features))
         self.params["b"] = np.zeros(out_features, dtype=self.params["W"].dtype)
+        self._x: Array | None = None
 
     def forward(self, x: Array) -> Array:
         x = as_array(x)
         if x.ndim != 2 or x.shape[1] != self.in_features:
             raise ValueError(f"Linear mengharapkan input (batch, {self.in_features}), dapat {x.shape}")
+        self._x = x
         return x @ self.params["W"] + self.params["b"]
+
+    def backward(self, grad_out: Array) -> Array:
+        if self._x is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out)
+        self.grads["W"] = self._x.T @ g
+        self.grads["b"] = g.sum(axis=0)
+        return g @ self.params["W"].T
 
 
 class Activation(Layer):
-    """Wrapper layer untuk fungsi aktivasi stateless."""
+    """Wrapper aktivasi stateless; grad_fn(x, y) -> dy/dx."""
 
-    def __init__(self, fn: Callable[[Array], Array], name: str) -> None:
+    def __init__(self, fn: Callable[[Array], Array], grad_fn: Callable[[Array, Array], Array], name: str) -> None:
         super().__init__(name)
         self._fn = fn
+        self._grad_fn = grad_fn
+        self._x: Array | None = None
+        self._y: Array | None = None
 
     def forward(self, x: Array) -> Array:
-        return self._fn(x)
+        self._x = as_array(x)
+        self._y = self._fn(self._x)
+        return self._y
+
+    def backward(self, grad_out: Array) -> Array:
+        if self._x is None or self._y is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        return as_array(grad_out) * self._grad_fn(self._x, self._y)
 
 
 class Sequential(Layer):
-    """Menyusun layer berurutan; forward = komposisi kiri-ke-kanan."""
-
     def __init__(self, layers: Iterable[Layer]) -> None:
         super().__init__("sequential")
         self.layers = list(layers)
@@ -85,6 +98,12 @@ class Sequential(Layer):
         for layer in self.layers:
             x = layer.forward(x)
         return x
+
+    def backward(self, grad_out: Array) -> Array:
+        g = as_array(grad_out)
+        for layer in reversed(self.layers):
+            g = layer.backward(g)
+        return g
 
     def parameter_count(self) -> int:
         return sum(l.parameter_count() for l in self.layers)
