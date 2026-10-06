@@ -1,66 +1,62 @@
 # ROADMAP — Naze 2.0
 
-**Format per milestone:**
-```
-MILESTONE-XXX
-Name:
-Objective:
-Dependencies:
-Requirements:
-Deliverables:
-Acceptance Criteria:
-Status:
-```
 **Status legend:** PLANNED / ACTIVE / IN REVIEW / DONE / BLOCKED
 
-> Milestone didefinisikan hanya saat dibuka, sesuai prinsip no overengineering. Outline bawah hanya indikatif.
+---
+
+## MILESTONE-001 — Project Foundation ✅ DONE (2026-10-06)
+Struktur repo, pytest+ruff, README, docs SDD.
+
+## MILESTONE-002 — Neural Network Engine (Stage 1) ✅ DONE (2026-10-06)
+Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8bdb1aa.
+
+## MILESTONE-003 — Automatic Differentiation (Stage 2) ✅ DONE (2026-10-06)
+- **Objective:** Gradien via backprop terstruktur per-layer (DECISION-009), tervalidasi numerical gradient check.
+- **Requirements:** REQ-003
+- **Deliverables:** backward pada Layer/Linear/Activation/Sequential; core.gradcheck; test gradient check.
+- **Acceptance Criteria:** [x] Gradient check lulus semua operasi; [x] backward-before-forward guarded.
+- Commit 3432b73.
+
+## MILESTONE-004 — Tokenizer (Stage 3) ✅ DONE (2026-10-06)
+- **Objective:** Byte-level tokenizer (DECISION-010).
+- **Requirements:** REQ-004
+- **Deliverables:** naze.token.ByteTokenizer; test roundtrip ASCII/unicode.
+- **Acceptance Criteria:** [x] Roundtrip lossless; [x] deterministik; [x] vocab fixed 256.
+- Commit 3432b73.
+
+## MILESTONE-005 — Dataset Pipeline (Stage 4) ✅ DONE (2026-10-06)
+- **Objective:** Sliding-window batch next-token, deterministik per-seed (DECISION-011).
+- **Requirements:** REQ-005
+- **Deliverables:** naze.data.TextWindows; test determinisme/shape/validasi.
+- **Acceptance Criteria:** [x] Batch reproducible per-seed; [x] memori terkendali (index saja).
+- Commit eb412ca.
+
+## MILESTONE-006 — First Language Model + Training Minimal (Stage 5 + sebagian Stage 7) ✅ DONE (2026-10-06)
+- **Objective:** LM pertama trainable end-to-end: MLP Bengio-style (DECISION-012), SGD (DECISION-013), checkpoint (DECISION-014), generation greedy+temperature.
+- **Requirements:** REQ-006, REQ-007, REQ-010
+- **Deliverables:** naze.lm (MLPLM, cross_entropy, generate); naze.train (SGDTrainer, save/load checkpoint); test end-to-end (loss turun, generation deterministik, checkpoint roundtrip, integrasi byte tokenizer).
+- **Acceptance Criteria:** [x] Gradient check LM lulus; [x] loss menurun pada toy corpus; [x] generation valid & deterministik; [x] checkpoint save/load identik; [x] encode→train→generate→decode berjalan.
+- Commits eb412ca, aba7baa.
 
 ---
 
-## MILESTONE-001 — Project Foundation ✅
-- **Objective:** Struktur repo, tooling (pytest + ruff, DECISION-006 ACCEPTED), dokumentasi SDD. Tanpa kode AI.
-- **Status:** DONE (disetujui project owner, 2026-10-06)
+## Milestone Berikutnya (PLANNED — menunggu persetujuan owner)
 
----
+## MILESTONE-007 — Transformer (Stage 6) — PLANNED
+Menunggu: persetujuan hasil M-003..M-006 + OPEN DECISION-101 (accelerasi, bila perlu) + OPEN DECISION-113 (coverage target). Komponen: scaled dot-product attention, positional encoding, residual blocks, LayerNorm; container non-sekuensial.
 
-## MILESTONE-002
-- **Name:** Neural Network Engine (Stage 1)
-- **Objective:** Fondasi komputasi neural: numerical core deterministik, layer modular, aktivasi, dan forward pass teruji — tanpa backprop (Stage 2).
-- **Dependencies:** MILESTONE-001 (DONE).
-- **Requirements:** REQ-001, REQ-002, REQ-101, REQ-103, REQ-104
-- **Deliverables:**
-  - `naze.core.numeric` — seeded RNG deterministik, validasi array, konvensi dtype (DECISION-007).
-  - `naze.nn.layers` — `Layer`, `Linear`, `Activation`, `Sequential` (forward-only, DECISION-008).
-  - `naze.nn.activations` — relu, sigmoid stabil, tanh, softmax stabil.
-  - Test suite: determinisme per-seed, nilai acuan hand-computed, validasi shape/input.
-- **Acceptance Criteria:**
-  - [x] Semua operasi teruji; unit test lulus (numeric, activations, layers).
-  - [x] Forward pass model susunan-layer sederhana terverifikasi numerik (hand-computed).
-  - [x] Inisialisasi parameter deterministik per-seed (reproducible).
-  - [ ] Test suite dijalankan & lulus di lingkungan project owner (`pytest`).
-- **Status:** IN REVIEW — menunggu verifikasi owner (jalankan `pytest` + `ruff check .`).
+## MILESTONE-008 — Training System lengkap (Stage 7 penuh) — PLANNED
+Optimizer tambahan (bila terukur perlu), logging terstruktur, evaluasi berkala, resume penuh.
 
----
-
-## Outline Indikatif (belum didefinisikan detail — jangan dikerjakan)
-
-| Milestone (indikatif) | Kaitan Stage | Catatan |
-|---|---|---|
-| M-003 | Stage 2 | Automatic Differentiation — menunggu OPEN DECISION-105 |
-| M-004 | Stage 3 | Tokenizer — menunggu OPEN DECISION-102 |
-| M-005 | Stage 4 | Dataset Pipeline — menunggu OPEN DECISION-103 |
-| M-006 | Stage 5 | First Language Model — menunggu OPEN DECISION-104 |
-| M-007 | Stage 6 | Transformer |
-| M-008 | Stage 7 | Training System |
-| M-009 | Stage 8 | Inference Engine |
-| M-010 | Stage 9 | Naze 1.0 — menunggu OPEN DECISION-107 |
-| M-011+ | Stage 10 | Multimodal / Physical AI — OPEN DECISION-108 |
+## MILESTONE-009 — Inference Engine (Stage 8) — PLANNED
+## MILESTONE-010 — Naze 1.0 (Stage 9) — PLANNED (menunggu OPEN DECISION-107)
+## MILESTONE-011+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
 
 ## Roadmap Change Log
 
 | Date | Milestone | Change | Reason |
 |---|---|---|---|
-| 2026-10-06 | ALL | Initial draft | Phase 1 — Specification Only |
-| 2026-10-06 | M-001 | Deliverables dibuat; status → IN REVIEW | Lanjut ke Define Tasks + Implement (M-001, non-AI) |
-| 2026-10-06 | M-001 | Status → DONE | Persetujuan project owner ("buat"), DECISION-006 ACCEPTED |
-| 2026-10-06 | M-002 | Milestone dibuka & diimplementasikan; status → IN REVIEW | Instruksi project owner ("buat") |
+| 2026-10-06 | ALL | Initial draft | Phase 1 |
+| 2026-10-06 | M-001 | DONE | Persetujuan owner |
+| 2026-10-06 | M-002 | IN REVIEW | Implementasi Stage 1 |
+| 2026-10-06 | M-002 | DONE; M-003..M-006 dibuka & selesai | Instruksi owner "kerjakan semuanya"; OPEN DECISION 102-106 diselesaikan via delegasi owner |

@@ -1,70 +1,37 @@
 # PROJECT SPEC — Naze 2.0
 
-**Version:** 0.1.0
-**Status:** Approved by Project Owner (Phase 1) — Milestone 2 in review
-**Repository:** model-naze2.0
-
----
+**Version:** 0.3.0 | **Status:** Milestones 1-6 complete (awaiting owner pytest validation)
 
 ## 1. Project Overview
-
-Naze 2.0 adalah proyek membangun model AI dari nol (from scratch), tanpa pretrained model dan tanpa API LLM eksternal sebagai core. Seluruh komponen inti — neural network engine, automatic differentiation, tokenizer, dataset pipeline, training system, dan inference engine — dibuat sendiri menggunakan Python dan NumPy sebagai fondasi komputasi numerik pada tahap awal.
-
-Proyek ini dikelola dengan pendekatan **Spec-Driven Development (SDD)**: spesifikasi adalah source of truth.
+Model AI dari nol: tanpa pretrained model, tanpa API LLM eksternal sebagai core. Seluruh komponen (engine, autodiff, tokenizer, dataset, training, inference) dibuat sendiri dengan Python + NumPy. SDD: spesifikasi = source of truth.
 
 ## 2. Vision
-
-Membangun core intelligence milik sendiri: model AI yang transparan end-to-end, dipahami penuh dari level numerik hingga arsitektur, berkembang bertahap dari fondasi komputasi neural → model bahasa → multimodal → physical AI / robotics.
+Core intelligence milik sendiri, transparan end-to-end: fondasi neural -> model bahasa -> multimodal -> physical AI/robotics.
 
 ## 3. Long-Term Objective
+1. Near: fondasi komputasi neural solid (TERCAPAI M-001..M-003).
+2. Mid: LM pertama trainable end-to-end (TERCAPAI M-006, versi MLP kecil).
+3. Long: Transformer sendiri + training lengkap + rilis Naze 1.0.
+4. Far: multimodal & physical AI.
 
-1. **Near term:** Fondasi komputasi neural (numerical core, engine, autodiff) yang solid dan teruji.
-2. **Mid term:** Language model pertama yang dapat dilatih dan diinferensikan end-to-end.
-3. **Long term:** Transformer buatan sendiri, training system lengkap, rilis Naze 1.0.
-4. **Far future:** Multimodal dan physical AI / robotics.
+## 4. Current Scope (setelah M-006)
+- Pipeline END-TO-END berfungsi: encode teks (byte tokenizer) -> batch dataset -> train MLP LM (SGD) -> checkpoint -> generate teks (greedy/temperature), seluruhnya deterministik per-seed dan teruji.
+- Menunggu persetujuan owner untuk M-007 (Transformer, Stage 6).
 
-## 4. Current Scope
-
-- Phase 1 (DONE): Spesifikasi proyek disetujui.
-- MILESTONE-001 (DONE): Project Foundation — tooling, struktur, README.
-- MILESTONE-002 (IN REVIEW): Neural Network Engine (Stage 1) — numerical core, layers, activations, forward pass teruji. Tanpa backprop.
-
-## 5. Out of Scope (Saat Ini)
-
-- Backprop/autodiff (Stage 2 — menunggu OPEN DECISION-105), tokenizer, dataset, training, LM, Transformer, chatbot.
-- Pretrained model sebagai core (dilarang permanen). API LLM eksternal sebagai core (dilarang permanen).
-- Multimodal / physical AI (ditangguhkan). Optimasi GPU / distribusi training (ditangguhkan).
+## 5. Out of Scope Saat Ini
+Transformer (M-007), training system penuh (M-008), inference engine penuh (M-009), Naze 1.0 (M-010), multimodal (M-011+). Larangan permanen: pretrained core, API LLM core.
 
 ## 6. Development Philosophy
-
-1. **Specification first.** 2. **No invention** (OPEN DECISION untuk hal yang belum jelas). 3. **Modular dan bertahap.** 4. **Resource efficiency.** 5. **No overengineering.** 6. **Traceability** (changelog + decision log).
+Spec first; no invention (OPEN DECISION); modular bertahap; resource efficiency; no overengineering; traceability.
 
 ## 7. SDD Workflow (Official)
-
-1. Define Specification → 2. Review Specification → 3. Define Architecture → 4. Define Tasks → 5. Implement → 6. Test → 7. Validate Against Specification → 8. Review → 9. Commit → 10. Update Specification if requirements change.
-
-Setiap perubahan requirement wajib dicatat (ID, tanggal, alasan, revisi).
+1. Define Spec -> 2. Review -> 3. Architecture -> 4. Tasks -> 5. Implement -> 6. Test -> 7. Validate vs Spec -> 8. Review -> 9. Commit -> 10. Update Spec if changed. Perubahan requirement tercatat di changelog REQUIREMENTS.md.
 
 ## 8. Technology Constraints
-
-| Constraint | Value |
-|---|---|
-| Bahasa utama | Python |
-| Komputasi numerik tahap awal | NumPy |
-| Core model | Dibuat sendiri (from scratch) |
-| Pretrained model sebagai core | **Dilarang** (permanen) |
-| API LLM eksternal sebagai core | **Dilarang** (permanen) |
-| Framework DL eksternal | **Dilarang** untuk core |
-| Test runner / linter | pytest + ruff (DECISION-006, ACCEPTED) |
-| Dtype / RNG | float64 + seeded RNG (DECISION-007, ACCEPTED) |
+Python; NumPy; core from scratch (pretrained/API LLM dilarang permanen; framework DL dilarang); pytest+ruff; float64+seeded RNG; backprop per-layer (D-009); tokenizer byte-level (D-010); SGD (D-013).
 
 ## 9. Hardware / Resource Constraints
-
-- Hardware terbatas (consumer-grade); model tahap awal kecil (jutaan parameter).
-- Batch size, dataset size, dimensi embedding dapat dikonfigurasi.
-- Training harus mendukung checkpoint & resume.
-- Benchmark memori/waktu termasuk acceptance criteria stage terkait.
+Consumer-grade; model kecil (toy: ratusan ribu parameter); batch/dimensi configurable; checkpoint+resume; benchmark memori/waktu di AC stage terkait.
 
 ## 10. Milestone Strategy
-
-Milestone kecil, berurutan, dibuka satu per satu setelah milestone sebelumnya disetujui. Detail lihat `docs/tasks/ROADMAP.md` dan `docs/tasks/TASKS.md`.
+Milestone kecil berurutan, dibuka setelah milestone sebelumnya disetujui. M-001..M-006 DONE. M-007 (Transformer) berikutnya — menunggu persetujuan owner.

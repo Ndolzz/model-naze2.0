@@ -1,138 +1,89 @@
 # DECISION LOG — Naze 2.0
 
-Format per keputusan:
-```
-DECISION-XXX
-Title:
-Status:
-Context:
-Decision:
-Reason:
-Alternatives:
-Consequences:
-```
-
 **Status legend:** ACCEPTED / PROPOSED / OPEN DECISION / SUPERSEDED
 
 ---
 
-## DECISION-001
-- **Title:** Mengadopsi Spec-Driven Development (SDD) sebagai workflow resmi
-- **Status:** ACCEPTED
-- **Context:** Proyek jangka panjang, multi-stage, dikembangkan pada hardware terbatas; risiko scope creep tinggi.
-- **Decision:** Spesifikasi adalah source of truth. Workflow resmi: Define Spec → Review → Architecture → Tasks → Implement → Test → Validate vs Spec → Review → Commit → Update Spec if changed.
-- **Reason:** Menjaga fokus, traceability, dan mencegah overengineering.
-- **Alternatives:** Agile ad-hoc tanpa spec (ditolak: tidak traceable); waterfall penuh (ditolak: terlalu kaku untuk riset).
-- **Consequences:** Perubahan requirement harus melalui proses spec; kecepatan awal sedikit lebih lambat.
+## Keputusan Diterima (ACCEPTED)
 
-## DECISION-002
-- **Title:** Python sebagai bahasa utama
-- **Status:** ACCEPTED
-- **Context:** Perlu bahasa yang cepat dikembangkan, ekosistem kuat, cocok riset ML.
-- **Decision:** Python untuk seluruh proyek (core, tooling, test).
-- **Reason:** Produktivitas tinggi, ekosistem NumPy/test matang.
-- **Alternatives:** C++/Rust (ditolak untuk tahap ini: biaya dev tinggi; dapat dipertimbangkan ulang — lihat OPEN DECISION-101).
-- **Consequences:** Performa bergantung NumPy; optimasi level rendah ditunda.
+## DECISION-001 — SDD sebagai workflow resmi — ACCEPTED
+Spesifikasi = source of truth. Define Spec → Review → Architecture → Tasks → Implement → Test → Validate → Review → Commit → Update Spec.
+Alternatif: ad-hoc (tidak traceable), waterfall (kaku). Konsekuensi: perubahan lewat proses spec.
 
-## DECISION-003
-- **Title:** NumPy sebagai fondasi komputasi numerik tahap awal
-- **Status:** ACCEPTED
-- **Context:** Core harus dibuat sendiri; butuh fondasi tensor-matrix yang stabil.
-- **Decision:** Semua operasi numerik tahap awal dibangun di atas NumPy. Framework DL eksternal dilarang untuk core.
-- **Reason:** Kontrol penuh atas core; NumPy stabil dan cukup cepat untuk model kecil di hardware terbatas.
-- **Alternatives:** Pure Python (terlalu lambat); framework DL (melanggar prinsip from-scratch).
-- **Consequences:** Batas performa pada model besar; accelerasi = OPEN DECISION-101.
+## DECISION-002 — Python sebagai bahasa utama — ACCEPTED
+Alternatif C++/Rust ditolak tahap ini. Performa bergantung NumPy.
 
-## DECISION-004
-- **Title:** Larangan pretrained model & API LLM eksternal sebagai core Naze
-- **Status:** ACCEPTED
-- **Context:** Visi "core intelligence milik sendiri" yang transparan end-to-end.
-- **Decision:** Pretrained model dan API LLM eksternal tidak boleh menjadi core Naze, secara permanen.
-- **Reason:** Prinsip project owner.
-- **Alternatives:** Fine-tune model open-source (ditolak: melanggar visi).
-- **Consequences:** Development dari nol lebih lama; model awal lebih kecil.
+## DECISION-003 — NumPy fondasi numerik; framework DL dilarang untuk core — ACCEPTED
+Kontrol penuh; stabil untuk model kecil di hardware terbatas.
 
-## DECISION-005
-- **Title:** Arsitektur berkembang bertahap melalui 11 stage (Stage 0–10)
-- **Status:** ACCEPTED
-- **Context:** Proyek jangka panjang dengan hardware terbatas.
-- **Decision:** Arsitektur dibagi Stage 0–10 dengan acceptance criteria per stage; stage hanya dibuka berurutan.
-- **Reason:** Modular, dapat divalidasi bertahap, sesuai resource.
-- **Alternatives:** Big-bang architecture (ditolak: berisiko dan overengineering).
-- **Consequences:** Stage 10 tidak didesain detail sekarang.
+## DECISION-004 — Larangan pretrained model & API LLM eksternal sebagai core (permanen) — ACCEPTED
+Prinsip project owner. Development dari nol lebih lama; model awal kecil.
 
-## DECISION-006
-- **Title:** Tooling dasar: pytest (test runner) + ruff (linter/formater)
-- **Status:** ACCEPTED (disetujui project owner, 2026-10-06)
-- **Context:** M-001 membutuhkan quality gate minimal (REQ-103).
-- **Decision:** pytest untuk test, ruff untuk lint+format, dikonfigurasi via `pyproject.toml`.
-- **Reason:** Standar de facto Python, ringan, satu tool untuk lint+format.
-- **Alternatives:** unittest; mypy+flake8+black; no-tooling (melanggar REQ-103).
-- **Consequences:** Konfigurasi terpusat di `pyproject.toml`; mudah diganti bila perlu.
+## DECISION-005 — Arsitektur bertahap Stage 0-10, dibuka berurutan — ACCEPTED
+Modular, tervalidasi bertahap. Stage 10 tidak didesain sekarang.
 
-## DECISION-007
-- **Title:** Konvensi dtype float64 dan RNG deterministik per-seed
-- **Status:** ACCEPTED (implementasi M-002, 2026-10-06)
-- **Context:** REQ-101 Reproducibility; gradient check (Stage 2) sensitif terhadap presisi.
-- **Decision:** Seluruh array core menggunakan float64; seluruh randomness WAJIB melalui `seeded_rng(seed)` (np.random.default_rng), tidak melalui np.random global. Input divalidasi menolak NaN/Inf.
-- **Reason:** Presisi gradien + determinisme penuh antar-run; validasi input mencegah bug senyap.
-- **Alternatives:** float32 (hemat memori, tapi risiko akurasi gradient check; dapat ditinjau ulang untuk inference Stage 8); np.random global (tidak reproducible aman).
-- **Consequences:** Memori 2x vs float32 — dapat dikonfigurasi `as_array(x, dtype)` bila milestone inference membutuhkan; tidak ada hidden state global.
+## DECISION-006 — Tooling: pytest + ruff — ACCEPTED (owner, 2026-10-06)
 
-## DECISION-008
-- **Title:** Abstraksi engine Stage 1: `Layer` + `Sequential`, init He-normal, forward-only
-- **Status:** ACCEPTED (implementasi M-002, 2026-10-06)
-- **Context:** ARCHITECTURE.md Stage 1 meminta Layer-like abstraction; backward pass ditunda ke Stage 2 (OPEN DECISION-105).
-- **Decision:** (1) `Layer` ABC minimal: `forward(x)`, `params: dict[str, Array]`, `parameter_count()`. (2) `Sequential` sebagai container berurutan (cukup untuk Stage 1; container lain menunggu kebutuhan nyata). (3) `Linear` init He/Kaiming-normal: N(0, sqrt(2/fan_in)) via seeded RNG; bias nol. (4) Shape konvensi: `(batch, features)`, Linear mengoperasikan axis terakhir.
-- **Reason:** Minimal, modular, tidak overengineered; He-init cocok untuk aktivasi ReLU-like; params sebagai dict sederhana memudahkan checkpointing (REQ-007) nanti.
-- **Alternatives:** NamedTuple/Tensor-class penuh (overengineering sebelum Stage 2); init Xavier (kurang cocok untuk ReLU); bias random (tidak perlu).
-- **Consequences:** `Sequential` tidak menangani branching/residual — ditambah saat Transformer (Stage 6) benar-benar membutuhkan; interface backward belum ada (sengaja).
+## DECISION-007 — Dtype float64 + seluruh randomness via seeded_rng (deterministik); validasi NaN/Inf — ACCEPTED (M-002)
+Presisi gradien + reproducibility. float32 dapat ditinjau untuk inference.
+
+## DECISION-008 — Abstraksi Layer + Sequential, He-normal init, forward-only (Stage 1) — ACCEPTED (M-002)
+
+## DECISION-009 — [RESOLUSI OPEN DECISION-105] Backprop terstruktur per-layer — ACCEPTED (owner delegation, 2026-10-06)
+- **Context:** Trade-off graph-based reverse-mode autodiff vs manual backprop terstruktur.
+- **Decision:** Backprop terstruktur per-layer: forward meng-cache input; backward(grad_out) menghitung grad_input + grad parameter; Sequential.backward komposisi terbalik. Validasi via numerical gradient check (tol 1e-5, float64).
+- **Reason:** Transparan penuh (visi project), sederhana, memori efisien (tanpa graph), cukup untuk arsitektur saat ini. Graph-based autodiff ditambah hanya jika kompleksitas model menuntut.
+- **Alternatives:** graph-based reverse-mode (ditunda — overengineering sekarang); finite-difference only (terlalu lambat untuk training).
+- **Consequences:** Setiap layer baru wajib mengimplementasikan backward + lulus gradient check.
+
+## DECISION-010 — [RESOLUSI OPEN DECISION-102] Tokenizer: byte-level — ACCEPTED (owner delegation, 2026-10-06)
+- **Decision:** Byte-level tokenizer (vocab 256 tetap, lossless by construction, tanpa training, deterministik penuh).
+- **Reason:** Paling sederhana yang memenuhi REQ-004; tidak ada keputusan korpus yang menunggu. Lossless dijamin konstruksi.
+- **Alternatives:** BPE (lebih pendek sequence tapi butuh training + keputusan vocab size), word-level (OOV problem), hybrid.
+- **Consequences:** Sequence lebih panjang (trade-off diketahui); dapat direvisi ke BPE sebelum Stage 6 bila owner memutuskan.
+
+## DECISION-011 — [RESOLUSI OPEN DECISION-103] Dataset: text configurable — ACCEPTED (owner delegation, 2026-10-06)
+- **Decision:** Dataset berupa token ID dari teks apa pun (string); TextWindows sliding-window, batch deterministik per-seed, memori terkendali. Korpus final training Naze tetap OPEN (belum diputuskan owner).
+- **Consequences:** Pipeline siap dipakai dengan korpus apa pun saat owner memutuskan.
+
+## DECISION-012 — [RESOLUSI OPEN DECISION-104] First LM: MLP over context window (Bengio-style) — ACCEPTED (owner delegation, 2026-10-06)
+- **Decision:** ids (B,T) -> embedding lookup -> flatten -> Linear -> tanh -> Linear -> logits. Loss softmax-CE. Sampling greedy + temperature.
+- **Reason:** Paling sederhana yang memvalidasi seluruh pipeline end-to-end (REQ-010), sebelum Transformer (Stage 6).
+- **Alternatives:** bigram (terlalu lemah untuk validasi pipeline), RNN (backprop through time — kompleksitas belum dibutuhkan).
+- **Consequences:** Terbukti trainable end-to-end (loss turun, generation jalan). Kapasitas terbatas — digantikan Transformer di Stage 6.
+
+## DECISION-013 — [RESOLUSI OPEN DECISION-106] Optimizer: SGD saja untuk saat ini — ACCEPTED (owner delegation, 2026-10-06)
+- **Reason:** No overengineering. Adam/AdamW ditambah bila SGD terbukti tidak cukup (diukum, bukan dikarang).
+- **Consequences:** Konvergensi lebih lambat; acceptable untuk model kecil.
+
+## DECISION-014 — Checkpoint: npz (params + step), save/load deterministik — ACCEPTED (M-006)
+- **Reason:** Format stdlib-level, sederhana, cukup untuk REQ-007 saat ini. Format lain (safetensors dsb.) tidak dibutuhkan.
 
 ---
 
-## OPEN DECISIONS
+## OPEN DECISIONS (menunggu project owner)
 
-> Keputusan berikut BELUM ditentukan dan menunggu keputusan project owner. Jangan mengimplementasikan area terkait sebelum diputuskan.
+## OPEN DECISION-101 — Strategi accelerasi (GPU / native extension)
+Dibutuhkan sebelum: Stage 6+ skala besar. Alternatif diketahui: NumPy+CPU; CUDA custom; Rust/C++ hot-path.
 
-## OPEN DECISION-101
-- **Title:** Strategi accelerasi di masa depan (GPU / native extension)
-- **Context:** NumPy membatasi performa untuk model lebih besar.
-- **Decision:** — (menunggu project owner)
-- **Alternatif yang diketahui:** tetap NumPy+CPU; backend CUDA custom; rewrite hot-path di Rust/C++.
-- **Dibutuhkan sebelum:** Stage 6+ untuk skala lebih besar.
+## OPEN DECISION-107 — Definisi sukses Naze 1.0 (metrik, target, dataset evaluasi)
+Dibutuhkan sebelum: Stage 9.
 
-## OPEN DECISION-102
-- **Title:** Jenis tokenizer (byte-level / BPE / word-level / hybrid)
-- **Decision:** — (menunggu project owner)
-- **Dibutuhkan sebelum:** Stage 3.
+## OPEN DECISION-108 — Roadmap multimodal / physical AI (Stage 10)
+Dibutuhkan sebelum: Stage 10. Jauh di masa depan.
 
-## OPEN DECISION-103
-- **Title:** Dataset & korpus untuk training (bahasa, ukuran, sumber)
-- **Decision:** — (menunggu project owner)
-- **Dibutuhkan sebelum:** Stage 3–4.
+## OPEN DECISION-112 — Korpus final training Naze (bahasa, ukuran, sumber, lisensi)
+Dibutuhkan sebelum: training skala serius (pasca-M-006). Pipeline sudah siap menerima korpus apa pun.
 
-## OPEN DECISION-104
-- **Title:** Arsitektur first language model (Stage 5)
-- **Context:** Kandidat: MLP over token context, bigram/trigram-style, RNN sederhana.
-- **Decision:** — (menunggu project owner)
-- **Dibutuhkan sebelum:** Stage 5.
+## OPEN DECISION-113 — Coverage target test suite
+Dibutuhkan sebelum: M-007 (Transformer) — menetapkan ambang coverage formal.
 
-## OPEN DECISION-105
-- **Title:** Pendekatan autodiff (graph-based reverse-mode vs manual backprop terstruktur)
-- **Context:** Trade-off kompleksitas implementasi vs fleksibilitas. **Paling mendesak berikutnya.**
-- **Decision:** — (menunggu project owner)
-- **Dibutuhkan sebelum:** Stage 2 (M-003).
+## Riwayat Resolusi
 
-## OPEN DECISION-106
-- **Title:** Optimizer (selain SGD) — Adam/AdamW dsb.
-- **Decision:** — (menunggu project owner)
-- **Dibutuhkan sebelum:** Stage 7.
-
-## OPEN DECISION-107
-- **Title:** Definisi sukses Naze 1.0 (metrik, target, dataset evaluasi)
-- **Decision:** — (menunggu project owner)
-- **Dibutuhkan sebelum:** Stage 9.
-
-## OPEN DECISION-108
-- **Title:** Roadmap multimodal / physical AI (Stage 10)
-- **Decision:** — (menunggu project owner; jauh di masa depan)
+| Open Decision | Resolusi | Tanggal | Cara |
+|---|---|---|---|
+| OD-105 (autodiff) | DECISION-009: backprop terstruktur per-layer | 2026-10-06 | Delegasi owner ("saya izinkan") |
+| OD-102 (tokenizer) | DECISION-010: byte-level | 2026-10-06 | Delegasi owner |
+| OD-103 (dataset) | DECISION-011: text configurable (korpus final tetap OPEN-112) | 2026-10-06 | Delegasi owner |
+| OD-104 (first LM) | DECISION-012: MLP Bengio-style | 2026-10-06 | Delegasi owner |
+| OD-106 (optimizer) | DECISION-013: SGD (Adam ditunda) | 2026-10-06 | Delegasi owner |

@@ -1,53 +1,60 @@
 # Naze 2.0
 
-Model AI yang dibangun **dari nol** — tanpa pretrained model, tanpa API LLM eksternal sebagai core. Seluruh komponen inti (neural engine, autodiff, tokenizer, dataset pipeline, training, inference) dibuat sendiri dengan Python + NumPy.
+Model AI yang dibangun **dari nol** — tanpa pretrained model, tanpa API LLM eksternal sebagai core. Seluruh komponen (neural engine, autodiff, tokenizer, dataset pipeline, training, inference) dibuat sendiri dengan Python + NumPy.
+
+## Status: End-to-End Pipeline Berfungsi (M-001..M-006)
+
+Encode teks -> batch -> train MLP LM (SGD) -> checkpoint -> generate teks. Deterministik per-seed, teruji (gradient check + integration test).
 
 ## Prinsip
+- **Spec-Driven Development (SDD):** spesifikasi = source of truth (`docs/spec/`).
+- Keputusan belum jelas = OPEN DECISION (`docs/decisions/DECISION_LOG.md`).
+- No overengineering.
 
-- **Spec-Driven Development (SDD):** spesifikasi adalah source of truth. Lihat `docs/spec/`.
-- Keputusan arsitektur yang belum jelas dicatat sebagai OPEN DECISION di `docs/decisions/DECISION_LOG.md`.
-- No overengineering: hanya fitur yang dibutuhkan milestone aktif.
-
-## Struktur Repo
+## Struktur
 
 ```
-docs/
-├── spec/          PROJECT_SPEC.md, REQUIREMENTS.md
-├── architecture/  ARCHITECTURE.md (Stage 0–10)
-├── decisions/     DECISION_LOG.md
-└── tasks/         ROADMAP.md, TASKS.md
+docs/             spesifikasi SDD (spec, architecture, decisions, tasks)
 src/naze/
-├── core/          numerical core (seeded RNG, dtype konvensi, validasi array)
-└── nn/            layers (Linear/Sequential), activations — forward-only (Stage 1)
-tests/             test suite (pytest)
+├── core/         numerical core + gradient check
+├── nn/           layers & activations (forward + backward)
+├── token/        byte-level tokenizer
+├── data/         dataset pipeline (sliding window)
+├── lm/           MLP language model + generate
+└── train/        SGD trainer + checkpoint
+tests/            test suite (pytest)
 ```
 
 ## Development
 
 ```bash
 pip install -e ".[dev]"
-pytest          # menjalankan test suite
-ruff check .     # lint
-ruff format .    # format
+pytest && ruff check .
 ```
 
-## Contoh Penggunaan (Stage 1 — forward pass)
+## Contoh: Train & Generate
 
 ```python
-import numpy as np
-from naze.nn import Linear, Sequential, relu
+from naze.data import TextWindows
+from naze.lm import MLPLM, generate
+from naze.token import ByteTokenizer
+from naze.train import SGDTrainer
 
-model = Sequential([
-    Linear(4, 16, seed=1),
-    relu,
-    Linear(16, 3, seed=2),
-])
-y = model(np.zeros((8, 4)))  # -> (8, 3)
+tok = ByteTokenizer()
+text = open("corpus.txt", encoding="utf-8").read()
+ids = tok.encode(text)
+
+model = MLPLM(vocab_size=tok.vocab_size, block_size=16, d_embed=32, d_hidden=128, seed=0)
+trainer = SGDTrainer(model, lr=0.3)
+for epoch in range(10):
+    for x, y in TextWindows(ids, block_size=16, batch_size=64, seed=epoch).batches():
+        trainer.train_step(x, y)
+
+new_ids = generate(model, ids[:16], 50, temperature=0.8, seed=0)
+print(tok.decode(ids[:16] + new_ids))
 ```
 
-> Catatan: `relu` berfungsi langsung sebagai callable; untuk container layer gunakan `Activation(relu, "relu")`.
-
-## Status
-
-- **MILESTONE-001 — Project Foundation:** DONE
-- **MILESTONE-002 — Neural Network Engine (Stage 1):** IN REVIEW — forward pass + numerical core teruji; backprop menyusul di Stage 2 (menunggu OPEN DECISION-105).
+## Milestones
+- M-001 Project Foundation ✅ | M-002 Neural Engine ✅ | M-003 Autodiff ✅
+- M-004 Tokenizer ✅ | M-005 Dataset ✅ | M-006 First LM + training minimal ✅
+- Berikutnya: M-007 Transformer (Stage 6) — menunggu persetujuan owner.

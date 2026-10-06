@@ -1,31 +1,44 @@
 # TASKS — Naze 2.0
 
-Task didefinisikan per milestone aktif. Sesuai prinsip no overengineering, hanya milestone aktif yang memiliki task detail.
-
-**Format:** `TASK-<milestone-nomor>` | Status: PLANNED / IN-PROGRESS / DONE / BLOCKED
-Setiap commit wajib mereferensikan ID task/requirement terkait.
+**Format:** TASK-<milestone-nomor> | Status: PLANNED / IN-PROGRESS / DONE / BLOCKED
 
 ---
 
 ## MILESTONE-001 — Project Foundation ✅
+TASK-001-01 struktur proyek — DONE
+TASK-001-02 pyproject + tooling — DONE
+TASK-001-03 smoke test — DONE
+TASK-001-04 README — DONE
+TASK-001-05 .gitignore + konvensi commit — DONE
+TASK-001-06 update roadmap — DONE
 
-| Task | Description | Requirement | Status |
-|---|---|---|---|
-| TASK-001-01 | Finalisasi struktur direktori proyek (`src/naze/`, `tests/`) | REQ-104 | DONE |
-| TASK-001-02 | `pyproject.toml`: metadata + config pytest & ruff | REQ-103, DECISION-006 | DONE |
-| TASK-001-03 | Smoke test tooling (bukan test AI) | REQ-103 | DONE |
-| TASK-001-04 | README proyek | REQ-105 | DONE |
-| TASK-001-05 | `.gitignore` + konvensi commit | REQ-304 | DONE |
-| TASK-001-06 | Update ROADMAP + changelog | REQ-304 | DONE |
+## MILESTONE-002 — Neural Network Engine (Stage 1) ✅
+TASK-002-01 numerical core — DONE
+TASK-002-02 layer abstraction — DONE
+TASK-002-03 activations — DONE
+TASK-002-04 test suite — DONE
+TASK-002-05 update docs — DONE
 
-## MILESTONE-002 — Neural Network Engine (Stage 1)
+## MILESTONE-003 — Automatic Differentiation (Stage 2) ✅
+TASK-003-01 backward per-layer (Linear/Activation/Sequential) [REQ-003] — DONE
+TASK-003-02 core.gradcheck (numeric central difference) [REQ-003] — DONE
+TASK-003-03 test gradient check semua operasi [REQ-103] — DONE
 
-| Task | Description | Requirement | Status |
-|---|---|---|---|
-| TASK-002-01 | Numerical core: `seeded_rng`, `as_array`, dtype konvensi | REQ-001 | DONE |
-| TASK-002-02 | Layer abstraction: `Layer`, `Linear`, `Activation`, `Sequential` (forward-only) | REQ-002 | DONE |
-| TASK-002-03 | Aktivasi: relu, sigmoid (stabil), tanh, softmax (stabil) | REQ-002 | DONE |
-| TASK-002-04 | Test suite: determinisme, nilai acuan hand-computed, validasi shape | REQ-103, REQ-101 | DONE |
-| TASK-002-05 | Update dokumentasi (decisions, roadmap, changelog) | REQ-105, REQ-304 | DONE |
+## MILESTONE-004 — Tokenizer (Stage 3) ✅
+TASK-004-01 ByteTokenizer encode/decode [REQ-004] — DONE
+TASK-004-02 test roundtrip ASCII/unicode/emoji [REQ-004] — DONE
 
-**Catatan:** Backward pass/gradien TIDAK termasuk M-002 (Stage 2, menunggu OPEN DECISION-105).
+## MILESTONE-005 — Dataset Pipeline (Stage 4) ✅
+TASK-005-01 TextWindows sliding-window batch [REQ-005] — DONE
+TASK-005-02 test determinisme per-seed + validasi [REQ-005] — DONE
+
+## MILESTONE-006 — First LM + Training Minimal ✅
+TASK-006-01 MLPLM (embedding + MLP + softmax-CE) [REQ-010] — DONE
+TASK-006-02 backward LM + gradient check [REQ-003, REQ-010] — DONE
+TASK-006-03 SGDTrainer [REQ-006] — DONE
+TASK-006-04 checkpoint save/load [REQ-007] — DONE
+TASK-006-05 generate (greedy + temperature) [REQ-010] — DONE
+TASK-006-06 integration test end-to-end [REQ-103] — DONE
+TASK-006-07 update seluruh docs SDD [REQ-105, REQ-304] — DONE
+
+**Catatan:** Stage 6 (Transformer) ke atas belum dikerjakan — menunggu persetujuan owner (M-007).
