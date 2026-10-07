@@ -1,13 +1,14 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T006.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T007.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
 PositionalRepr (learned table (T_max, D), x + P[0:T]); T004 QKVProjection
 (3 Linear D->D terpisah + reshape (B,T,D)->(B,H,T,Dh)); T005 CausalAttention
 (scores QK^T/sqrt(Dh), mask kausal, softmax stabil, context = P @ V);
-T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O).
-Komponen berikutnya (LayerNorm, FFN, block, model, LM head) ditambahkan
-bertahap pada T007..T013 — agar tiap task terisolasi.
+T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O);
+T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta).
+Komponen berikutnya (FFN, block, model, LM head) ditambahkan
+bertahap pada T008..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -462,3 +463,77 @@ class MultiHeadAttention(Layer):
         d_ctx = d_merged.reshape(b, t, h, dh).transpose(0, 2, 1, 3)  # (B,H,T,Dh)
         dq, dk, dv = self.attention.backward(d_ctx)
         return self.qkv.backward((dq, dk, dv))
+
+
+class LayerNorm(Layer):
+    """Layer normalization per token: normalisasi pada dimensi terakhir D
+    (mu, variance per posisi (B,T) — independen antar token), lalu affine
+    y = gamma * x_hat + beta (TD §5 komponen 15, §7; REQ-011). Rumus per
+    token: mu = mean(x, axis=-1); variance = mean((x-mu)^2, axis=-1);
+    x_hat = (x - mu) / sqrt(variance + eps) — pembagi selalu > 0 karena
+    eps eksplisit (default 1e-5), sehingga input konstan (variance 0)
+    tetap finite. Normalisasi HANYA axis=-1 (bukan batch/sekuens).
+    Parameter trainable: gamma = ones(D), beta = zeros(D) (init standar
+    LN, TD §7/§9 — deterministik, tanpa seeded_rng); tidak ada parameter
+    lain. backward: d_beta = sum(dY, axes=(B,T)); d_gamma = sum(dY *
+    x_hat, axes=(B,T)); dx = derivative LayerNorm penuh yang stabil
+    (kontrak engine DECISION-009 — tanpa autograd baru); guard urutan
+    forward -> backward (RuntimeError, TD §10). dtype mengikuti
+    config.dtype (DECISION-007, adapter as_array).
+    """
+
+    def __init__(self, config: TransformerConfig, *, eps: float = 1e-5) -> None:
+        super().__init__(f"layernorm(d={config.d_model})")
+        self.config = config
+        # eps eksplisit & configurable; `not > 0` juga menolak NaN (TD §10).
+        if not float(eps) > 0.0:
+            raise ValueError(f"eps harus bilangan > 0, dapat {eps!r}")
+        self.eps = float(eps)
+        # Init standar (TD §7/§9): gamma ones, beta zeros — deterministik
+        # (tanpa randomness), dtype mengikuti config (DECISION-007).
+        self.params["gamma"] = as_array(np.ones(config.d_model, dtype=config.dtype))
+        self.params["beta"] = as_array(np.zeros(config.d_model, dtype=config.dtype))
+        self._x_hat: Array | None = None
+        self._inv_std: Array | None = None
+        self._shape: tuple[int, ...] | None = None
+
+    def forward(self, x: Array) -> Array:
+        """x (B,T,D) -> y (B,T,D); normalisasi per token axis=-1 (TD §5)."""
+        x = as_array(x, dtype=self.config.dtype)
+        if x.ndim != 3:
+            raise ValueError(f"input harus (batch, seq, d_model) 3D, dapat shape {x.shape}")
+        if x.shape[2] != self.config.d_model:
+            raise ValueError(
+                f"dimensi terakhir harus d_model ({self.config.d_model}), dapat {x.shape[2]}"
+            )
+        if x.shape[0] == 0 or x.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {x.shape}")
+        if x.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({x.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        mu = np.mean(x, axis=-1, keepdims=True)
+        variance = np.mean((x - mu) ** 2, axis=-1, keepdims=True)
+        self._inv_std = 1.0 / np.sqrt(variance + self.eps)  # eps > 0: stabil
+        self._x_hat = (x - mu) * self._inv_std
+        self._shape = x.shape
+        return self.params["gamma"] * self._x_hat + self.params["beta"]
+
+    def backward(self, grad_out: Array) -> Array:
+        """dY (B,T,D) -> dx (B,T,D) + grads gamma/beta (TD §7, REQ-003)."""
+        if self._x_hat is None or self._inv_std is None or self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        x_hat = self._x_hat
+        # Grad parameter: dijumlahkan atas dimensi (batch, seq) -> (D,).
+        self.grads["gamma"] = np.sum(g * x_hat, axis=(0, 1))
+        self.grads["beta"] = np.sum(g, axis=(0, 1))
+        # dx: derivative LayerNorm lengkap (stabil; pola standar LN):
+        # dx = inv_std * (dxhat - mean_D(dxhat) - x_hat * mean_D(dxhat*x_hat)).
+        dxhat = g * self.params["gamma"]
+        dx = (dxhat - np.mean(dxhat, axis=-1, keepdims=True)
+              - x_hat * np.mean(dxhat * x_hat, axis=-1, keepdims=True)) * self._inv_std
+        return dx
