@@ -1,12 +1,13 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T005.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T006.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
 PositionalRepr (learned table (T_max, D), x + P[0:T]); T004 QKVProjection
 (3 Linear D->D terpisah + reshape (B,T,D)->(B,H,T,Dh)); T005 CausalAttention
-(scores QK^T/sqrt(Dh), mask kausal, softmax stabil, context = P @ V).
-Komponen berikutnya (output projection, LayerNorm, FFN, block, model,
-LM head) ditambahkan bertahap pada T006..T013 — agar tiap task terisolasi.
+(scores QK^T/sqrt(Dh), mask kausal, softmax stabil, context = P @ V);
+T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O).
+Komponen berikutnya (LayerNorm, FFN, block, model, LM head) ditambahkan
+bertahap pada T007..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -378,3 +379,86 @@ class CausalAttention(Layer):
         d_q = np.matmul(d_s, k) / scale
         d_k = np.matmul(np.swapaxes(d_s, -1, -2), q) / scale
         return d_q, d_k, d_v
+
+
+class MultiHeadAttention(Layer):
+    """Multi-head attention: QKV -> causal attention -> concat -> W_O (TD §5 11-13).
+
+    Menyusun komponen yang sudah ada (tanpa menyalin ulang logika):
+    QKVProjection (T004) -> CausalAttention (T005) -> merge head
+    (B,H,T,Dh) -> (B,T,D) via transpose+reshape (layout kebalikan
+    reshape QKVProjection) -> output projection W_O = naze.nn.Linear
+    D->D (bias ya — TD §9), input di-flatten (B*T,D) karena kontrak
+    Linear 2D (pola QKVProjection). forward(x: (B,T,D)) -> (B,T,D)
+    (TD §7); invariant D = H * Dh dijaga TransformerConfig (T001).
+    Tanpa residual/LayerNorm/FFN/block (T007+). backward: dY (B,T,D)
+    -> out_proj.backward (dW_O/db_O oleh Linear) -> un-merge ->
+    (dq, dk, dv) via CausalAttention.backward -> dx (B,T,D) via
+    QKVProjection.backward (jumlah jalur Q/K/V; dW/db tiap proyeksi
+    oleh Linear-nya) — grad mengalir penuh sampai input tanpa sistem
+    autograd baru (pola Sequential). Seed per instance: Q/K/V memakai
+    seed, seed+1, seed+2 (QKVProjection) dan W_O seed+3 (offset
+    berturut); parameter di-cast ke config.dtype setelah konstruksi
+    (DECISION-007, adapter pola QKVProjection).
+    """
+
+    def __init__(self, config: TransformerConfig, *, seed: int | None = None) -> None:
+        super().__init__(f"mha(h={config.num_heads},dh={config.head_dim})")
+        self.config = config
+        # Seed per instance: default config.seed; kwarg seed untuk offset
+        # per komponen (pola Linear/MLPLM: seed, seed+1, ...).
+        s = config.seed if seed is None else seed
+        self.qkv = QKVProjection(config, seed=s)
+        self.attention = CausalAttention(config)
+        self.out_proj = Linear(config.d_model, config.d_model, seed=s + 3)
+        # Adapter dtype (DECISION-007): engine Linear selalu init float64.
+        self.out_proj.params["W"] = as_array(self.out_proj.params["W"], dtype=config.dtype)
+        self.out_proj.params["b"] = as_array(self.out_proj.params["b"], dtype=config.dtype)
+        self._shape: tuple[int, ...] | None = None
+
+    def parameter_count(self) -> int:
+        # Pola Sequential: parameter layer = jumlah parameter sub-layer.
+        # CausalAttention murni operator (0 parameter).
+        return self.qkv.parameter_count() + self.out_proj.parameter_count()
+
+    def forward(self, x: Array) -> Array:
+        """x (B,T,D) -> attention_out (B,T,D) (TD §5 11-13). Fail-fast."""
+        x = as_array(x, dtype=self.config.dtype)
+        if x.ndim != 3:
+            raise ValueError(f"input harus (batch, seq, d_model) 3D, dapat shape {x.shape}")
+        if x.shape[2] != self.config.d_model:
+            raise ValueError(
+                f"dimensi terakhir harus d_model ({self.config.d_model}), dapat {x.shape[2]}"
+            )
+        if x.shape[0] == 0 or x.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {x.shape}")
+        if x.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({x.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        self._shape = x.shape
+        b, t, d = x.shape
+        h, dh = self.config.num_heads, self.config.head_dim
+        # Pipeline T004 -> T005 -> merge -> W_O; sub-layer memvalidasi
+        # kontraknya sendiri (posisi finite via as_array engine, H/Dh config).
+        q, k, v = self.qkv.forward(x)
+        context = self.attention.forward(q, k, v)  # (B,H,T,Dh)
+        merged = context.transpose(0, 2, 1, 3).reshape(b * t, d)  # (B*T, D)
+        out = self.out_proj.forward(merged)  # (B*T, D); kontrak Linear 2D
+        return out.reshape(b, t, d)
+
+    def backward(self, grad_out: Array) -> Array:
+        """dY (B,T,D) -> dx (B,T,D); grad parameter per sub-layer (TD §7)."""
+        if self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        b, t, d = self._shape
+        h, dh = self.config.num_heads, self.config.head_dim
+        # W_O backward (dW_O/db_O dihitung Linear) -> un-flatten -> un-merge.
+        d_merged = self.out_proj.backward(g.reshape(b * t, d)).reshape(b, t, d)
+        d_ctx = d_merged.reshape(b, t, h, dh).transpose(0, 2, 1, 3)  # (B,H,T,Dh)
+        dq, dk, dv = self.attention.backward(d_ctx)
+        return self.qkv.backward((dq, dk, dv))
