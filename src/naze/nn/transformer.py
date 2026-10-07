@@ -1,11 +1,12 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T004.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T005.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
 PositionalRepr (learned table (T_max, D), x + P[0:T]); T004 QKVProjection
-(3 Linear D->D terpisah + reshape (B,T,D)->(B,H,T,Dh)). Komponen berikutnya
-(attention, LayerNorm, FFN, block, model, LM head) ditambahkan bertahap
-pada T005..T013 — agar tiap task terisolasi.
+(3 Linear D->D terpisah + reshape (B,T,D)->(B,H,T,Dh)); T005 CausalAttention
+(scores QK^T/sqrt(Dh), mask kausal, softmax stabil, context = P @ V).
+Komponen berikutnya (output projection, LayerNorm, FFN, block, model,
+LM head) ditambahkan bertahap pada T006..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -22,6 +23,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from naze.core.numeric import Array, as_array, seeded_rng
+from naze.nn.activations import softmax
 from naze.nn.layers import Layer, Linear
 
 # Byte-level tokenizer (DECISION-010/015): vocab size 256 tetap.
@@ -287,3 +289,92 @@ class QKVProjection(Layer):
         dx = dx + self.k_proj.backward(flat[1])
         dx = dx + self.v_proj.backward(flat[2])
         return dx.reshape(b, t, d)
+
+
+class CausalAttention(Layer):
+    """Causal scaled dot-product attention: (q, k, v) -> context (TD §5 5-10).
+
+    scores = q @ k^T / sqrt(Dh) — (B,H,T,T); mask kausal: query t hanya
+    melihat key 0..t (posisi = sequence index, tanpa API position ID);
+    softmax stabil per baris axis=-1 (reuse naze.nn.activations.softmax —
+    M007_TASKS T005); context = weights @ v — (B,H,T,Dh). Tanpa output
+    projection (TD §5 komponen 13 = T006). Mask memakai sentinel finite
+    relatif max baris: entri future = row_max - 1e9 — ekuivalen numerik
+    dengan -inf (TD §5: bobot future = 0 eksak karena exp(-1e9)
+    underflow), aman untuk softmax engine yang menolak input non-finite,
+    dan robust untuk skor valid ekstrem positif/negatif (diagonal selalu
+    valid sehingga row_max finite). backward: dV = P^T @ dC;
+    dP = dC @ V^T; dS = P * (dP - sum(P*dP, -1)); dQ = dS @ K / sqrt(Dh);
+    dK = dS^T @ Q / sqrt(Dh) — P = 0 di future sehingga grad tidak
+    menembus mask (kausal terjaga); tanpa grad terhadap mask (bukan
+    parameter). forward(q, k, v) & backward -> tuple (dq, dk, dv):
+    deviasi terdokumentasi dari kontrak Layer satu-tensor (pola
+    QKVProjection). Layer tanpa parameter — attention murni operator.
+    """
+
+    def __init__(self, config: TransformerConfig) -> None:
+        super().__init__(f"causal_attention(h={config.num_heads},dh={config.head_dim})")
+        self.config = config
+        self._q: Array | None = None
+        self._k: Array | None = None
+        self._v: Array | None = None
+        self._probs: Array | None = None
+        self._shape: tuple[int, ...] | None = None
+
+    def forward(self, q: Array, k: Array, v: Array) -> Array:
+        """q/k/v (B,H,T,Dh) -> context (B,H,T,Dh) (TD §5 5-10). Fail-fast."""
+        q = as_array(q, dtype=self.config.dtype)
+        k = as_array(k, dtype=self.config.dtype)
+        v = as_array(v, dtype=self.config.dtype)
+        for name, arr in (("q", q), ("k", k), ("v", v)):
+            if arr.ndim != 4:
+                raise ValueError(f"{name} harus (B,H,T,Dh) 4D, dapat shape {arr.shape}")
+        b, h, t, dh = q.shape
+        for name, arr in (("k", k), ("v", v)):
+            if arr.shape != q.shape:
+                raise ValueError(
+                    f"{name} harus berbentuk {q.shape} (sama dengan q), dapat {arr.shape}"
+                )
+        if h != self.config.num_heads:
+            raise ValueError(f"H harus num_heads ({self.config.num_heads}), dapat {h}")
+        if dh != self.config.head_dim:
+            raise ValueError(f"Dh harus head_dim ({self.config.head_dim}), dapat {dh}")
+        if b == 0 or t == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {q.shape}")
+        if t > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({t}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        # Skor mentah wajib finite SEBELUM mask (TD §10); matmul overflow
+        # (q . k -> inf) tertangkap fail-fast di sini, bukan NaN diam-diam.
+        scale = float(np.sqrt(dh))
+        scores = as_array(np.matmul(q, np.swapaxes(k, -1, -2)) / scale, dtype=self.config.dtype)
+        # Mask kausal (TD §5/§8): query t hanya melihat key 0..t. Sentinel
+        # finite relatif row_max = ekuivalen -inf — lihat docstring class.
+        causal = np.tril(np.ones((t, t), dtype=bool))
+        row_max = np.max(np.where(causal, scores, -np.inf), axis=-1, keepdims=True)
+        scores = np.where(causal, scores, row_max - 1e9)
+        probs = as_array(softmax(scores), dtype=self.config.dtype)
+        context = np.matmul(probs, v)
+        self._q, self._k, self._v, self._probs = q, k, v, probs
+        self._shape = (b, h, t, dh)
+        return context
+
+    def backward(self, grad_out: Array) -> tuple[Array, Array, Array]:
+        """dC (B,H,T,Dh) -> (dq, dk, dv) (TD §7); jalur kausal terjaga."""
+        if self._probs is None or self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        probs, q, k, v = self._probs, self._q, self._k, self._v
+        scale = float(np.sqrt(self._shape[3]))
+        d_v = np.matmul(np.swapaxes(probs, -1, -2), g)
+        d_p = np.matmul(g, np.swapaxes(v, -1, -2))
+        # Softmax backward per baris; P = 0 di posisi future -> dS future = 0
+        # sehingga grad tidak mengalir ke key/value masa depan (kausal).
+        d_s = probs * (d_p - np.sum(probs * d_p, axis=-1, keepdims=True))
+        d_q = np.matmul(d_s, k) / scale
+        d_k = np.matmul(np.swapaxes(d_s, -1, -2), q) / scale
+        return d_q, d_k, d_v
