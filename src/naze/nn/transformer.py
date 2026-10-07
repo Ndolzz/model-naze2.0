@@ -1,4 +1,4 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T007.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T008.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
@@ -6,9 +6,10 @@ PositionalRepr (learned table (T_max, D), x + P[0:T]); T004 QKVProjection
 (3 Linear D->D terpisah + reshape (B,T,D)->(B,H,T,Dh)); T005 CausalAttention
 (scores QK^T/sqrt(Dh), mask kausal, softmax stabil, context = P @ V);
 T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O);
-T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta).
-Komponen berikutnya (FFN, block, model, LM head) ditambahkan
-bertahap pada T008..T013 — agar tiap task terisolasi.
+T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta);
+T008 FeedForward (Linear D->D_ff -> tanh -> Linear D_ff->D per token).
+Komponen berikutnya (block, model, LM head) ditambahkan
+bertahap pada T009..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -25,8 +26,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from naze.core.numeric import Array, as_array, seeded_rng
-from naze.nn.activations import softmax
-from naze.nn.layers import Layer, Linear
+from naze.nn.activations import softmax, tanh, tanh_grad
+from naze.nn.layers import Activation, Layer, Linear
 
 # Byte-level tokenizer (DECISION-010/015): vocab size 256 tetap.
 VOCAB_SIZE = 256
@@ -537,3 +538,78 @@ class LayerNorm(Layer):
         dx = (dxhat - np.mean(dxhat, axis=-1, keepdims=True)
               - x_hat * np.mean(dxhat * x_hat, axis=-1, keepdims=True)) * self._inv_std
         return dx
+
+
+class FeedForward(Layer):
+    """Feed-forward network position-wise: Linear(D -> D_ff) -> tanh ->
+    Linear(D_ff -> D), tiap token diproses independen (TD §5 komponen 16,
+    §7; REQ-011). Input di-flatten (B*T, D) karena kontrak Linear 2D
+    (pola QKVProjection/MHA); flatten row-major menjaga urutan token.
+    Aktivasi tanh: fungsi/grad existing (preseden pola Linear -> tanh ->
+    Linear pada MLPLM, DECISION-012); gap TD §5 "aktivasinya (lihat
+    §9/Risiko)" yang tidak menamai activation ditutup lewat keputusan
+    owner (2026-10-07) — tanpa activation baru. backward: fc2 ->
+    Activation(tanh) -> fc1 (dW/b tiap Linear dihitung Linear-nya) ->
+    dx (B,T,D); guard urutan forward -> backward (RuntimeError, TD §10);
+    tanpa autograd baru (kontrak engine DECISION-009). Seed per
+    instance: fc1 = seed, fc2 = seed+1 (pola Linear/MLPLM); parameter
+    di-cast ke config.dtype setelah konstruksi (DECISION-007, adapter
+    pola QKVProjection).
+    """
+
+    def __init__(self, config: TransformerConfig, *, seed: int | None = None) -> None:
+        super().__init__(f"ffn(d={config.d_model},d_ff={config.d_ff})")
+        self.config = config
+        # Seed per instance: default config.seed; kwarg seed untuk offset
+        # per komponen (pola Linear/MLPLM: seed, seed+1, ...).
+        s = config.seed if seed is None else seed
+        self.fc1 = Linear(config.d_model, config.d_ff, seed=s)
+        self.fc2 = Linear(config.d_ff, config.d_model, seed=s + 1)
+        self.act = Activation(tanh, tanh_grad, "tanh")
+        # Adapter dtype (DECISION-007): engine Linear selalu init float64.
+        for layer in (self.fc1, self.fc2):
+            for name in ("W", "b"):
+                layer.params[name] = as_array(layer.params[name], dtype=config.dtype)
+        self._shape: tuple[int, ...] | None = None
+
+    def parameter_count(self) -> int:
+        # Pola Sequential: parameter layer = jumlah parameter sub-layer.
+        # Activation stateless (0 parameter).
+        return self.fc1.parameter_count() + self.fc2.parameter_count()
+
+    def forward(self, x: Array) -> Array:
+        """x (B,T,D) -> y (B,T,D); tiap token independen (TD §5). Fail-fast."""
+        x = as_array(x, dtype=self.config.dtype)
+        if x.ndim != 3:
+            raise ValueError(f"input harus (batch, seq, d_model) 3D, dapat shape {x.shape}")
+        if x.shape[2] != self.config.d_model:
+            raise ValueError(
+                f"dimensi terakhir harus d_model ({self.config.d_model}), dapat {x.shape[2]}"
+            )
+        if x.shape[0] == 0 or x.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {x.shape}")
+        if x.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({x.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        self._shape = x.shape
+        b, t, d = x.shape
+        # Pipeline position-wise: flatten row-major (urutan token terjaga)
+        # -> fc1 -> tanh -> fc2 -> reshape balik (pola QKVProjection/MHA).
+        h = self.fc1.forward(x.reshape(b * t, d))  # (B*T, D_ff)
+        a = self.act.forward(h)  # tanh element-wise; (B*T, D_ff)
+        return self.fc2.forward(a).reshape(b, t, d)  # (B*T, D) -> (B,T,D)
+
+    def backward(self, grad_out: Array) -> Array:
+        """dY (B,T,D) -> dx (B,T,D); grad W1/b1/W2/b2 per sub-layer (TD §7)."""
+        if self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        b, t, d = self._shape
+        # fc2.backward (dW2/db2 oleh Linear) -> tanh backward -> fc1.backward.
+        d_out = self.fc2.backward(g.reshape(b * t, d))  # (B*T, D_ff)
+        d_act = self.act.backward(d_out)  # (B*T, D_ff)
+        return self.fc1.backward(d_act).reshape(b, t, d)  # (B,T,D)
