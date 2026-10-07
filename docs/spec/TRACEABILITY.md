@@ -1,56 +1,57 @@
 # TRACEABILITY MATRIX — Naze 2.0
 
-**Version:** 1.1.0 (SPEC_REVIEW tahap kedua, 2026-10-06)
-Format: Requirement | Architecture | Milestone | Acceptance Criteria | Status
+**Version:** 1.3.0 (updated for M-007 Technical Design, 2026-10-06)
+Chain of traceability (per DECISION-017):
+**Requirement → Decision → Architecture → Milestone → Technical Design → Task → Acceptance Criteria**
 
-> UNMAPPED = requirement belum punya mapping architecture/milestone (gap — wajib ditindaklanjuti owner).
+> UNMAPPED = requirement belum punya mapping. Tidak boleh ada requirement UNMAPPED.
+> TD = Technical Design (docs/architecture/M###_TECHNICAL_DESIGN.md, DECISION-017).
 
 ---
 
 ## Functional Requirements
 
-| Requirement | Architecture | Milestone | Acceptance Criteria | Status |
-|---|---|---|---|---|
-| REQ-001 Tensor/Numerical Core | Stage 1 | M-002 (DONE) | Operasi terdefinisi; unit test lulus; API docs | MAPPED — API docs belum ada (ISSUE-002) |
-| REQ-002 Neural Network Engine | Stage 1 | M-002 (DONE) | Layer tersusun; forward teruji hand-computed | MAPPED |
-| REQ-003 Automatic Differentiation | Stage 2 | M-003 (DONE) | Gradient check lulus; toleransi 1e-5; diuji di CI | MAPPED — CI tidak terdefinisi (ISSUE-003) |
-| REQ-004 Tokenizer | Stage 3 | M-004 (DONE) | Roundtrip lossless; vocab configurable; deterministik | MAPPED — **KONTRADIKSI** dengan DECISION-010 (ISSUE-004, MAJOR, belum diputuskan owner) |
-| REQ-005 Dataset Pipeline | Stage 4 | M-005 (DONE) | Batch reproducible per-seed; memori terkendali | MAPPED — "cleaning" tidak terdefinisi (ISSUE-005 / OD-115) |
-| REQ-006 Training System | Stage 5–7 | M-006 (DONE minimal) | Trainable/stoppable/resumable; loss menurun sesuai ambang | MAPPED — ambang loss tidak numerik (ISSUE-006, MAJOR / OD-116); resume formal belum lengkap (ISSUE-007) |
-| REQ-007 Checkpointing | Stage 7 | M-006 (DONE minimal) | Save/load deterministik; integritas terverifikasi | MAPPED — checksum belum ada (ISSUE-008) |
-| REQ-008 Inference Engine | Stage 8 | M-006 (partial) → M-009 (PLANNED) | Konsisten antar-run; benchmark memori/latensi | MAPPED — benchmark belum ada |
-| REQ-009 Evaluation | Stage 7 (ARCHITECTURE menyebut eval berkala di Stage 7; harness penuh dekat Stage 8) | M-008 (PLANNED) | Evaluasi dari checkpoint; format terstruktur | MAPPED — **ambiguitas mapping stage** (ISSUE-012); format hasil OPEN |
-| REQ-010 First Language Model | Stage 5 | M-006 (DONE) | Trainable end-to-end; generate dari checkpoint | MAPPED — generate-from-checkpoint belum teruji eksplisit (ISSUE-009) |
-| REQ-011 Transformer | Stage 6 | M-007 (PLANNED) | Unit test per komponen; dimensi scalable | MAPPED (PLANNED) — batas ukuran model belum ada (OD-118) |
+| Requirement | Decision | Architecture | Milestone | Technical Design | Task | Acceptance Criteria | Status |
+|---|---|---|---|---|---|---|---|
+| REQ-001 Numerical Core | D-007 | Stage 1 | M-002 (DONE) | — (pra-D-017) | TASK-002-* | Operasi terdefinisi; unit test; API docs (pending ISSUE-002) | MAPPED |
+| REQ-002 Neural Engine | D-007, D-008 | Stage 1 | M-002 (DONE) | — | TASK-002-* | Layer tersusun; forward hand-computed | MAPPED |
+| REQ-003 Autodiff | D-009 | Stage 2 | M-003 (DONE) | — | TASK-002-*; M007-T006/007/008/015 | Gradient check (1e-5); CI = OD-114 | MAPPED |
+| REQ-004 Tokenizer | D-010, D-015 | Stage 3 | M-004 (DONE) | — (M007 TD §9: vocab 256 fixed) | M007-T001/012/013/016 | Roundtrip lossless; deterministik; vocab fixed 256 | MAPPED — ISSUE-004 RESOLVED |
+| REQ-005 Dataset | D-011 | Stage 4 | M-005 (DONE) | — | M007-T013/016 | Batch reproducible; memori terkendali; cleaning = OD-115 | MAPPED |
+| REQ-006 Training | D-013, D-016 | Stage 5–7 | M-006 (DONE minimal) → M-008 | M008_TD (upcoming) | M007-T013/016 (sanity); M008 tasks | AC evaluasi 5-basis (D-016); resume penuh = M-008 | MAPPED — ISSUE-006 RESOLVED |
+| REQ-007 Checkpointing | D-014 | Stage 7 | M-006 (DONE minimal) → M-008 | M008_TD (upcoming) | M008 tasks | Save/load deterministik; checksum+rng-state = M-008 | MAPPED |
+| REQ-008 Inference | — | Stage 8 | M-006 (partial) → M-009 | M009_TD (upcoming) | M009 tasks | Konsisten antar-run; benchmark (M-009) | MAPPED |
+| REQ-009 Evaluation | D-016 | Stage 7 (harness; benchmark = Stage 8) | M-008 (PLANNED) | M008_TD (upcoming) | M008 tasks; M007-T016 sanity | 5-basis evaluasi (D-016); format hasil OPEN di TD M-008 | MAPPED |
+| REQ-010 First LM | D-012, D-016 | Stage 5 | M-006 (DONE) | M007 TD §8 (integrasi pipeline) | M007-T013/016 | Trainable end-to-end (basis 1-2-3); generate deterministik; generate-from-checkpoint = M-008 | MAPPED |
+| REQ-011 Transformer | D-009 (backward per-layer), D-015 (vocab 256), D-016 (evaluasi) | Stage 6 | M-007 (TECHNICAL DESIGN READY) | **M007_TECHNICAL_DESIGN.md** | **M007-T001..T018** | TD §13: 17 AC objective (shapes, causal mask, MHA, residual, LayerNorm, FFN, stacking, logits 256, pipeline, from-scratch, regression, determinisme, resource docs); batas ukuran = OD-118 | MAPPED |
 
 ## Non-Functional Requirements
 
-| Requirement | Architecture | Milestone | Acceptance Criteria | Status |
-|---|---|---|---|---|
-| REQ-101 Reproducibility | Cross-stage | M-002..M-006 (parsial) | Dokumen reproduksi; metadata per run | PARTIAL MAPPED — metadata per-run belum ada (ISSUE-010) |
-| REQ-102 Resource Efficiency | Cross-stage | M-006 (parsial) | Batas memori configurable/diuji | PARTIAL MAPPED — metrik tidak terdefinisi (ISSUE-011 / OD-117) |
-| REQ-103 Testability | Cross-stage | M-001..M-006 (parsial) | Suite satu perintah; coverage target | MAPPED — coverage target OPEN (OD-113) |
-| REQ-104 Modularity | Cross-stage | M-001/M-002 (DONE) | Dependency antar modul terdokumentasi | MAPPED |
-| REQ-105 Documentation | Cross-stage | M-001..M-006 (DONE) | Docs selaras per milestone | MAPPED |
+| Requirement | Decision | Architecture | Milestone | Technical Design | Task | Acceptance Criteria | Status |
+|---|---|---|---|---|---|---|---|
+| REQ-101 Reproducibility | D-007 | Cross-stage | M-002..M-006 parsial → M-008 | M007 TD §9/§11 (determinisme per-seed) | M007-T015 | Metadata per-run = M-008; determinisme diuji | MAPPED |
+| REQ-102 Resource Efficiency | D-007 | Cross-stage | M-006 parsial → M-008 | **M007 TD §12 (estimasi param/memori)** | M007-T001 (config) | Metrik memori = OD-117; estimasi resource terdokumentasi | MAPPED |
+| REQ-103 Testability | D-006 | Cross-stage | M-001..M-006 parsial | M007 TD §11 | M007-T014..T017 | Coverage target = OD-113 (DEFERRED ke implementasi) | MAPPED |
+| REQ-104 Modularity | D-008 | Cross-stage | M-001/M-002 (DONE) | **M007 TD §6 (module boundaries)** | semua M007 task | Dependency direction: train/lm → nn → core | MAPPED |
+| REQ-105 Documentation | D-017 | Cross-stage | M-001..M-006 (DONE) | M007 TD (dokumen itu sendiri) | M007-T018 | Docs selaras per milestone; maintenance policy PROJECT_SPEC §7 | MAPPED |
 
 ## Technical & Development Constraints
 
-| Requirement | Architecture | Milestone | Acceptance Criteria | Status |
-|---|---|---|---|---|
-| REQ-201 No Pretrained Core | Cross-stage (permanen) | Semua | Bebas bobot pretrained di core | MAPPED (constraint) |
-| REQ-202 No External LLM API Core | Cross-stage (permanen) | Semua | Bebas API LLM eksternal | MAPPED (constraint) |
-| REQ-203 Python + NumPy Foundation | Cross-stage | Semua | Core tanpa framework DL | MAPPED (constraint) |
-| REQ-301 Spec-Driven Only | Process | Semua | Implementasi setelah spec disetujui | MAPPED (process) |
-| REQ-302 No Overengineering | Process | Semua | Fitur hanya milestone aktif | MAPPED (process) |
-| REQ-303 Open Decisions Escalated | Process | Semua | OPEN DECISION tercatat | MAPPED (process) |
-| REQ-304 Change Log | Process | Semua | Changelog up-to-date | MAPPED (process) |
+| Requirement | Decision | Architecture | Milestone | Technical Design | Task | Acceptance Criteria | Status |
+|---|---|---|---|---|---|---|---|
+| REQ-201 No Pretrained Core | D-004 | Cross-stage (permanen) | Semua | M007 TD §5/§13 (AC 11) | semua | Enforce di Review | MAPPED |
+| REQ-202 No External LLM API | D-004 | Cross-stage (permanen) | Semua | M007 TD §13 (AC 12) | semua | idem | MAPPED |
+| REQ-203 Python + NumPy | D-002, D-003 | Cross-stage | Semua | M007 TD §5/§13 (AC 13) | semua | idem | MAPPED |
+| REQ-301 Spec-Driven Only | D-001 | Process | Semua | M007 TD dibuat sebelum task/impl | M007-T001.. | Workflow §7 | MAPPED |
+| REQ-302 No Overengineering | D-005 | Process | Semua | M007 TD §3 Non-goals (dropout, attention efisien, LM head penuh ditunda) | — | Fitur = milestone aktif | MAPPED |
+| REQ-303 Open Decisions Escalated | D-001 | Process | Semua | M007 TD §15 (OD-118, OD-113, OD-114, OD-121) | — | OD tercatat | MAPPED |
+| REQ-304 Change Log | D-001 | Process | Semua | — | M007-T018 | Changelog up-to-date | MAPPED |
 
 ---
 
-## Ringkasan Traceability (v1.1.0)
+## Ringkasan Traceability (v1.3.0)
 
-- **Total requirement:** 26 — **ID semua unik** ✅ — semua punya priority, status, dan AC ✅
-- **MAPPED penuh:** 18 | **MAPPED parsial:** 8 | **UNMAPPED:** 0
-- **Kontradiksi requirement-vs-decision:** 1 (REQ-004 ↔ DECISION-010) — **belum diputuskan owner**
-- **Ambiguitas mapping stage:** 1 (REQ-009 ↔ ARCHITECTURE, ISSUE-012 — baru di review ini)
-- Tidak ada milestone tanpa requirement; tidak ada requirement tanpa milestone.
+- **Total requirement:** 26 — **UNMAPPED: 0** — kontradiksi: 0
+- **M-007 kini terlacak penuh:** REQ-011 → D-009/015/016 → Stage 6 → M-007 → M007_TECHNICAL_DESIGN.md → M007-T001..T018 → 17 AC objective.
+- OD baru dari TD M-007: OD-121 (skema positional; default learned).
+- Maintenance policy dipatuhi: TD baru → TRACEABILITY diperbarui (PROJECT_SPEC §7).
