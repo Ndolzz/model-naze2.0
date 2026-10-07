@@ -1,9 +1,9 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — konfigurasi foundation (M007-T001).
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001 + M007-T002.
 
-Scope T001: TransformerConfig + invariant check saja (M007_TASKS).
-Komponen (Embedding, positional, attention, LayerNorm, FFN, block, model,
-LM head) ditambahkan bertahap pada T002..T013 — modul ini sengaja belum
-memuatnya agar tiap task tetap terisolasi.
+Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
+(token embedding lookup (B,T)->(B,T,D), backward scatter-add). Komponen
+berikutnya (positional, Q/K/V, attention, LayerNorm, FFN, block, model,
+LM head) ditambahkan bertahap pada T003..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -19,7 +19,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from naze.core.numeric import seeded_rng
+from naze.core.numeric import Array, as_array, seeded_rng
+from naze.nn.layers import Layer
 
 # Byte-level tokenizer (DECISION-010/015): vocab size 256 tetap.
 VOCAB_SIZE = 256
@@ -81,3 +82,61 @@ class TransformerConfig:
     def rng(self) -> np.random.Generator:
         """Generator acak deterministik dari seed config (REQ-101, DECISION-007)."""
         return seeded_rng(self.seed)
+
+
+class Embedding(Layer):
+    """Token embedding: lookup E[ids], ids (B, T) -> (B, T, d_model) (TD §5/§7).
+
+    E: (vocab_size, d_model) — parameter tunggal layer ini (256 × D);
+    init normal(0, 0.1) per-seed via seeded_rng (konvensi embedding MLPLM
+    Stage 5); dtype mengikuti config (DECISION-007). Backward: scatter-add
+    seperti MLPLM.E (TD §7). Mengembalikan None dari backward karena grad
+    terhadap token ID tidak terdefinisi (lookup diskrit) — embedding adalah
+    layer pertama, tidak disusun via Sequential.
+    """
+
+    def __init__(self, config: TransformerConfig, *, seed: int | None = None) -> None:
+        super().__init__(f"embedding({config.vocab_size}x{config.d_model})")
+        self.config = config
+        # Seed per instance: default config.seed; kwarg seed untuk offset
+        # per komponen (pola Linear/MLPLM: seed, seed+1, ...).
+        rng = seeded_rng(config.seed if seed is None else seed)
+        self.params["E"] = as_array(
+            rng.normal(0.0, 0.1, (config.vocab_size, config.d_model)), dtype=config.dtype
+        )
+        self._ids: Array | None = None
+
+    def forward(self, ids: Array) -> Array:
+        """Lookup baris E pada indeks ids (TD §5 komponen 1). Validasi fail-fast."""
+        raw = np.asarray(ids)
+        if not np.issubdtype(raw.dtype, np.integer):
+            raise ValueError(f"token ID harus integer, dapat dtype {raw.dtype!r}")
+        if raw.ndim != 2:
+            raise ValueError(f"input harus (batch, seq) 2D, dapat shape {raw.shape}")
+        if raw.shape[0] == 0 or raw.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {raw.shape}")
+        if raw.min() < 0 or raw.max() >= self.config.vocab_size:
+            raise ValueError(
+                f"token ID di luar rentang [0, {self.config.vocab_size}) "
+                f"(min={raw.min()}, max={raw.max()})"
+            )
+        if raw.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({raw.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        self._ids = raw.astype(np.int64, copy=False)
+        return self.params["E"][self._ids]
+
+    def backward(self, grad_out: Array) -> None:
+        """Scatter-add grad_out ke dE (TD §7); tidak menyalin E."""
+        if self._ids is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.params["E"].dtype)
+        expected = self._ids.shape + (self.config.d_model,)
+        if g.shape != expected:
+            raise ValueError(f"grad_out harus berbentuk {expected}, dapat {g.shape}")
+        d_e = np.zeros_like(self.params["E"])
+        np.add.at(d_e, self._ids, g)
+        self.grads["E"] = d_e
+        return None
