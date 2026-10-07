@@ -3,10 +3,11 @@
 from naze.nn import activations, layers, transformer
 from naze.nn.activations import relu, relu_grad, sigmoid, sigmoid_grad, softmax, tanh, tanh_grad
 from naze.nn.layers import Activation, Layer, Linear, Sequential
-from naze.nn.transformer import Embedding, TransformerConfig
+from naze.nn.transformer import Embedding, PositionalRepr, TransformerConfig
 
 __all__ = [
     "activations", "layers", "transformer",
-    "Activation", "Embedding", "Layer", "Linear", "Sequential", "TransformerConfig",
+    "Activation", "Embedding", "Layer", "Linear", "PositionalRepr", "Sequential",
+    "TransformerConfig",
     "relu", "relu_grad", "sigmoid", "sigmoid_grad", "softmax", "tanh", "tanh_grad",
 ]
