@@ -1,9 +1,14 @@
 # SPEC REVIEW REPORT — Naze 2.0
 
+> **[RECONSTRUCTED GOVERNANCE — 2026-10-07]**
+> Dokumen ini adalah RECONSTRUCTED GOVERNANCE, bukan pemulihan file asli. Versi lokal SPEC_REVIEW v1.2.0 hilang dan tidak pernah di-commit.
+> **Basis rekonstruksi:** SPEC_REVIEW v1.1.0 dari GitHub commit `bab6eb9` (Section 1–9 — verbatim dari git history, akurat) + Section 10 baru yang mendokumentasikan resolusi governance dan status M-007 sesuai DECISION-015/016/017, TRACEABILITY v1.3.0, dan M007_TECHNICAL_DESIGN/M007_TASKS.
+> Wording Section 10 BUKAN teks asli yang hilang.
+
 **Reviewer:** Senior AI Architect / SDD Reviewer
-**Date:** 2026-10-06
-**Review version:** 1.1.0 (review tahap kedua — verifikasi menyeluruh ulang atas v1.0.0)
-**Scope:** PROJECT_SPEC, REQUIREMENTS, ARCHITECTURE, DECISION_LOG, ROADMAP, TASKS, TRACEABILITY (v1.0.0)
+**Date:** 2026-10-06 (v1.1.0) · 2026-10-07 (v1.2.0 — rekonstruksi)
+**Review version:** 1.2.0 (governance update: resolusi kondisi wajib v1.1.0 §9; M-007 READY FOR IMPLEMENTATION)
+**Scope:** PROJECT_SPEC, REQUIREMENTS, ARCHITECTURE, DECISION_LOG, ROADMAP, TASKS, TRACEABILITY (v1.0.0 → v1.3.0)
 
 ---
 
@@ -11,13 +16,13 @@
 
 Review tahap kedua dilakukan terhadap seluruh dokumen SDD yang sama, dengan checklist diperdalam — khususnya **SDD Integrity** (kelengkapan setiap tahap workflow) yang di v1.0.0 belum tersorot penuh. Hasil: spesifikasi tetap **konsisten, from-scratch, dan realistis untuk hardware terbatas**. Temuan v1.0.0 **masih berlaku dan belum diselesaikan owner** (ISSUE-004 dan ISSUE-006 tetap MAJOR & blocking-implementasi). Ditemukan **3 temuan baru** (ISSUE-012..014, semua minor/proses) dan **1 gap workflow** yang kini teridentifikasi formal: **tahap Technical Design belum memiliki template/dokumen yang didefinisikan**. Tidak ada perubahan besar yang dilakukan otomatis.
 
-**Kesimpulan status: tetap READY FOR TECHNICAL DESIGN — dengan kondisi wajib yang sama + syarat tambahan (lihat §9).**
+**Kesimpulan status: tetap READY FOR TECHNICAL DESIGN — dengan kondisi wajib yang sama + syarat tambahan (lihat §9).** *(Status historis v1.1.0; lihat §10 untuk update v1.2.0.)*
 
 ---
 
 ## 2. Valid Requirements (terverifikasi ulang)
 
-Semua 26 requirement: **ID unik** ✅, tujuan jelas ✅, memiliki AC ✅, priority ✅, status ✅, konsisten dengan scope ✅ — kecuali deviasi yang tercatat sebagai ISSUE di §3.
+Semua **23 requirement** (jumlah dikoreksi dari klaim "26" pra-existing per keputusan owner 2026-10-07 — lihat §10.4): **ID unik** ✅, tujuan jelas ✅, memiliki AC ✅, priority ✅, status ✅, konsisten dengan scope ✅ — kecuali deviasi yang tercatat sebagai ISSUE di §3. *(Teks asli v1.1.0 menyebut "Semua 26 requirement" — kesalahan hitung pra-existing; tidak ada 3 requirement tambahan yang valid ditemukan di git history.)*
 
 | ID | Verdict |
 |---|---|
@@ -37,7 +42,7 @@ Semua 26 requirement: **ID unik** ✅, tujuan jelas ✅, memiliki AC ✅, priori
 
 ## 3. Issues Found
 
-### Temuan v1.0.0 — status tidak berubah (belum ditindaklanjuti owner)
+### Temuan v1.0.0 — status tidak berubah (belum ditindaklanjuti owner) *(status historis v1.1.0; lihat §10)*
 
 ISSUE-001 — Consistency (minor): penomoran DECISION stabil sejak b53259b. *KEEP.*
 ISSUE-002 — REQ-001 API docs belum ada. *MODIFY: jadwalkan task; dokumen: TASKS.md.*
@@ -138,11 +143,13 @@ ISSUE-014
 **Baru dari review ini:**
 - **OD-120** — Format & lokasi technical design per milestone (template docs/design/DESIGN-MXXX.md?) — dibutuhkan sebelum M-007 masuk technical design.
 
+*(Status historis v1.1.0; resolusi di §10.)*
+
 ---
 
 ## 9. Specification Readiness
 
-**Verdict: ✅ READY FOR TECHNICAL DESIGN — dengan kondisi wajib:**
+**Verdict (v1.1.0): ✅ READY FOR TECHNICAL DESIGN — dengan kondisi wajib:**
 
 1. **Owner memutuskan ISSUE-004** (REQ-004 ↔ DECISION-010) — masih terbuka sejak v1.0.0.
 2. **Owner memutuskan OD-116** (ambang loss numerik) — masih terbuka sejak v1.0.0.
@@ -153,3 +160,46 @@ Issue lain tidak memblokir dan dapat ditangani bertahap di technical design M-00
 **Milestone berikutnya yang siap masuk technical design: M-007 — Transformer (Stage 6)** — dengan rekomendasi OD-113 & OD-118 juga diputuskan sebelum implementasinya dimulai.
 
 **Perubahan yang dilakukan review ini:** tidak ada perubahan requirement/arsitektur otomatis. Dokumen diperbarui: TRACEABILITY.md (v1.1.0) dan SPEC_REVIEW.md (laporan ini). Semua rekomendasi menunggu persetujuan owner sesuai change policy (KEEP/MODIFY/CLARIFY/REMOVE/OPEN DECISION).
+
+---
+
+## 10. Governance Update (v1.2.0) — [RECONSTRUCTED]
+
+> Bagian ini direkonstruksi (teks asli v1.2.0 hilang). Substansi sesuai keputusan yang terdokumentasi di DECISION_LOG (D-015/016/017), TRACEABILITY v1.3.0, M007_TECHNICAL_DESIGN.md, dan M007_TASKS.md.
+
+### 10.1 Resolusi kondisi wajib §9 (v1.1.0)
+
+| Kondisi wajib (v1.1.0 §9) | Status | Resolusi |
+|---|---|---|
+| ISSUE-004 (REQ-004 ↔ DECISION-010, MAJOR) | ✅ **RESOLVED** | **DECISION-015**: vocab byte-level FIXED 256; "configurable" ≠ vocab size. AC REQ-004 direvisi (REQUIREMENTS v0.4.0). |
+| OD-116 / ISSUE-006 (ambang loss, MAJOR) | ✅ **RESOLVED** | **DECISION-016**: kerangka evaluasi 5-basis (baseline, improvement terukur, konvergensi/stabilitas, validasi, config reproducible); tanpa ambang loss numerik universal. AC REQ-006/009/010 direvisi (REQUIREMENTS v0.4.0). |
+| OD-120 / ISSUE-013 (format technical design) | ✅ **RESOLVED** | **DECISION-017**: `docs/architecture/M###_TECHNICAL_DESIGN.md`, 15 section wajib. PROJECT_SPEC §7 → workflow 9 tahap eksplisit + governance maintenance policy (sekaligus menutup ISSUE-014). |
+
+### 10.2 Kemajuan setelah resolusi
+
+- **Technical Design M-007 selesai:** `docs/architecture/M007_TECHNICAL_DESIGN.md` — 15 section sesuai DECISION-017 (terverifikasi); 21 komponen arsitektur dengan invariant D = H × Dh; 17 AC objective; estimasi resource dev/test (~89k param).
+- **Task Breakdown M-007 selesai:** `docs/tasks/M007_TASKS.md` — M007-T001..T018, urutan kritis terdefinisi, setiap task memuat AC + Req ID + referensi TD.
+- **TRACEABILITY diperbarui ke v1.3.0** sesuai maintenance policy: seluruh requirement MAPPED (0 UNMAPPED); kolom Technical Design terisi untuk M-007; chain of traceability per DECISION-017.
+
+### 10.3 Status isu & open decision lain
+
+- **ISSUE-012** (mapping REQ-009): klarifikasi diterapkan di REQUIREMENTS v0.4.0 — evaluation harness = Stage 7; benchmark inference = Stage 8. *[RECONSTRUCTED — tidak dapat dipastikan apakah klarifikasi ini sudah tercatat di v1.2.0 asli atau hanya di REQUIREMENTS.]* Rumusan ini konsisten dengan baris REQ-009 TRACEABILITY v1.3.0.
+- **ISSUE-013/014**: tertutup via DECISION-017 + maintenance policy PROJECT_SPEC §7 (v0.4.0).
+- **ISSUE-001/002/003/005/007/008/009/010/011**: tidak berubah — jadwal M-008 sesuai v1.1.0.
+- **OD-113** (coverage): OPEN — DEFERRED ke fase implementasi M-007 (diputuskan sebelum implementasi dinyatakan selesai penuh).
+- **OD-114** (CI): OPEN — memengaruhi enforcement AC test-plan di masa depan.
+- **OD-118** (batas ukuran Transformer): OPEN — **BLOCKER untuk training skala serius; BUKAN blocker untuk konfigurasi dev/test M-007** (TD §15).
+- **OD-121** (skema positional; baru dari TD M-007): OPEN — default learned; owner dapat mengubah sebelum/awal M007-T003.
+- **MISS-005**: tertutup via governance maintenance policy.
+
+### 10.4 Koreksi jumlah requirement (owner decision, 2026-10-07) [RECONSTRUCTED]
+
+Verifikasi final terhadap git history (REQUIREMENTS v0.1.0 commit `6722376` dan v0.3.0 commit `b53259b`) membuktikan jumlah REQ ID unik = **23** (REQ-001..011, REQ-101..105, REQ-201..203, REQ-301..304). Klaim "26 requirement" pada SPEC_REVIEW v1.0.0/v1.1.0 §2 dan ringkasan TRACEABILITY v1.1.0/v1.3.0 adalah **kesalahan hitung pra-existing** — tidak ditemukan 3 requirement tambahan yang valid.
+
+**Keputusan owner (2026-10-07):** 23 adalah jumlah yang benar; seluruh klaim "26" dikoreksi menjadi "23"; **tidak ada REQ baru yang dibuat** hanya untuk mencapai angka 26 (melanggar REQ-302/no-invention). Konsistensi dijaga lintas dokumen: REQUIREMENTS (23 REQ ID terdefinisi), TRACEABILITY v1.3.1 (**23/23 MAPPED, 0 UNMAPPED**), SPEC_REVIEW §2 (23 requirement valid).
+
+### 10.5 Verdict (v1.2.0)
+
+**✅ READY FOR IMPLEMENTATION — M-007 (Transformer, Stage 6).**
+
+Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Design + Task Breakdown M-007 selesai dan terlacak penuh di TRACEABILITY v1.3.0. Implementasi M007-T001..T018 dimulai hanya setelah persetujuan owner atas M007_TECHNICAL_DESIGN.md; commit implementasi wajib mereferensikan Task ID + Req ID. OD-113/OD-114/OD-118/OD-121 tercatat sebagai kondisi non-blocking untuk dev/test config (lihat TD §15).

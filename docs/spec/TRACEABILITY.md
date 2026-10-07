@@ -1,6 +1,12 @@
 # TRACEABILITY MATRIX — Naze 2.0
 
-**Version:** 1.3.0 (updated for M-007 Technical Design, 2026-10-06)
+> Perubahan vs GitHub (`81153d4`, v1.3.0): reconstruction notice di bagian atas + koreksi ringkasan "Total requirement: 26" → **23** (keputusan owner 2026-10-07). Seluruh baris matriks tidak berubah.
+
+> **[RECONSTRUCTION NOTICE — v1.3.1, 2026-10-07]**
+> DECISION_LOG (DECISION-015/016/017), REQUIREMENTS v0.4.0, PROJECT_SPEC v0.4.0, dan SPEC_REVIEW v1.2.0 yang dirujuk matriks ini adalah **RECONSTRUCTED GOVERNANCE** (direkonstruksi 2026-10-07 setelah versi asli hilang dan tidak pernah di-commit). Substansi keputusan konsisten dengan matriks ini; wording dokumen tersebut bukan teks asli. Baris matriks identik dengan v1.3.0 (commit `81153d4`).
+> **Koreksi jumlah requirement (owner decision, 2026-10-07):** ringkasan v1.3.0 menyebut "Total requirement: 26" — kesalahan hitung pra-existing (sejak v1.1.0). Verifikasi git history (REQUIREMENTS v0.1.0 & v0.3.0) membuktikan jumlah REQ ID unik = **23** (REQ-001..011, REQ-101..105, REQ-201..203, REQ-301..304), sama dengan jumlah baris matriks. Tidak ada REQ baru yang dibuat untuk mencapai angka lama.
+
+**Version:** 1.3.1 (reconstruction notice + koreksi jumlah requirement, 2026-10-07; baris matriks = v1.3.0, updated for M-007 Technical Design, 2026-10-06)
 Chain of traceability (per DECISION-017):
 **Requirement → Decision → Architecture → Milestone → Technical Design → Task → Acceptance Criteria**
 
@@ -49,9 +55,9 @@ Chain of traceability (per DECISION-017):
 
 ---
 
-## Ringkasan Traceability (v1.3.0)
+## Ringkasan Traceability
 
-- **Total requirement:** 26 — **UNMAPPED: 0** — kontradiksi: 0
+- **Total requirement: 23** *(dikoreksi dari "26" — kesalahan hitung pra-existing; keputusan owner 2026-10-07)* — **23/23 MAPPED** — **UNMAPPED: 0** — kontradiksi: 0
 - **M-007 kini terlacak penuh:** REQ-011 → D-009/015/016 → Stage 6 → M-007 → M007_TECHNICAL_DESIGN.md → M007-T001..T018 → 17 AC objective.
 - OD baru dari TD M-007: OD-121 (skema positional; default learned).
 - Maintenance policy dipatuhi: TD baru → TRACEABILITY diperbarui (PROJECT_SPEC §7).
