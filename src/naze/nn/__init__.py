@@ -1,11 +1,12 @@
-"""Naze neural network engine — forward + backward (Stage 1-2)."""
+"""Naze neural network engine — forward + backward (Stage 1-2; konfigurasi Transformer Stage 6)."""
 
-from naze.nn import activations, layers
+from naze.nn import activations, layers, transformer
 from naze.nn.activations import relu, relu_grad, sigmoid, sigmoid_grad, softmax, tanh, tanh_grad
 from naze.nn.layers import Activation, Layer, Linear, Sequential
+from naze.nn.transformer import TransformerConfig
 
 __all__ = [
-    "activations", "layers",
-    "Activation", "Layer", "Linear", "Sequential",
+    "activations", "layers", "transformer",
+    "Activation", "Layer", "Linear", "Sequential", "TransformerConfig",
     "relu", "relu_grad", "sigmoid", "sigmoid_grad", "softmax", "tanh", "tanh_grad",
 ]
