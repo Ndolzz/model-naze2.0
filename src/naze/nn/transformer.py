@@ -1,4 +1,4 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T010.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T011.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
@@ -9,9 +9,10 @@ T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O);
 T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta);
 T008 FeedForward (Linear D->D_ff -> tanh -> Linear D_ff->D per token);
 T009 ResidualBlock (helper x + branch(x) -> LayerNorm, post-norm);
-T010 TransformerBlock ([MHA + res+LN] -> [FFN + res+LN]).
-Komponen berikutnya (model, LM head) ditambahkan
-bertahap pada T011..T013 — agar tiap task terisolasi.
+T010 TransformerBlock ([MHA + res+LN] -> [FFN + res+LN]); T011
+TransformerModel (Embedding -> pos -> blocks x num_layers -> final LN).
+Komponen berikutnya (LM head, integrasi pipeline) ditambahkan
+bertahap pada T012..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -754,3 +755,93 @@ class TransformerBlock(Layer):
         # Grafik terbalik: ffn-block -> attn-block -> dx (REQ-003; D-009).
         d_h = self.ffn.backward(g)  # grad param sub-block FFN
         return self.attention.backward(d_h)  # grad param sub-block MHA + dx
+
+
+class TransformerModel(Layer):
+    """Transformer model stacked: ids (B,T) -> hidden states (B,T,D)
+    (TD §5 komponen 18-19; M007-T011): Embedding (T002) -> PositionalRepr
+    (T003) -> TransformerBlock x num_layers berurutan (T010; x_1 =
+    block_1(x_0), x_2 = block_2(x_1), ..., x_L = block_L(x_(L-1)) — output
+    tiap block menjadi input block berikutnya) -> final LayerNorm (T007;
+    gamma/beta init standar deterministik — tanpa seed baru). Output =
+    hidden states (B,T,D), BUKAN logits — language-model head = T012
+    (TD §5 komponen 20-21, di luar scope task ini). Orchestration
+    komponen existing; logika embedding/posisi/attention/LayerNorm/FFN/
+    residual/block TIDAK disalin ulang. backward (grafik forward
+    terbalik, tanpa autograd baru; DECISION-009): dH (B,T,D) ->
+    final_norm.backward (d_gamma/d_beta final LN) -> blocks dibalik
+    (block terakhir -> pertama; grad parameter tiap block oleh
+    block-nya sendiri) -> positional.backward (dP scatter-add per
+    posisi) -> embedding.backward (dE scatter-add) — mengembalikan None
+    karena grad terhadap token ID diskrit tidak terdefinisi (pola
+    Embedding.backward, deviasi terdokumentasi dari kontrak Layer
+    satu-tensor); guard urutan forward -> backward (RuntimeError,
+    TD §10) + shape grad (ValueError, TD §10). Parameter = parameter
+    aktual sub-komponen (embedding + positional + blocks + final norm;
+    tanpa duplikat/parameter baru — model.params kosong). Seed per
+    instance: default config.seed; kwarg seed untuk offset per
+    komponen — offset berturut: embedding seed=s, positional seed=s+1,
+    block ke-i seed=s+2+i untuk i = 0..L-1 (pola T006/T008/T010 —
+    sub-layer menurunkan offset-nya sendiri); final LayerNorm tanpa
+    seed (init standar deterministik, pola ResidualBlock). Jumlah
+    block = len(self.blocks) == config.num_layers (TD §9) — tidak
+    di-hard-code. dtype & validasi ikut pola komponen M007
+    (DECISION-007/§10); validasi ids (integer, rentang byte valid,
+    T <= max_sequence_length) dijaga Embedding (T002) — model tidak
+    memvalidasi ulang kontrak sub-komponen.
+    """
+
+    def __init__(self, config: TransformerConfig, *, seed: int | None = None) -> None:
+        super().__init__(f"transformer_model(L={config.num_layers},d={config.d_model})")
+        self.config = config
+        # Seed per instance: default config.seed; kwarg seed untuk offset
+        # per komponen (pola Linear/MLPLM: seed, seed+1, ...).
+        s = config.seed if seed is None else seed
+        self.embedding = Embedding(config, seed=s)
+        self.positional = PositionalRepr(config, seed=s + 1)
+        # Block ke-i: seed berturut s+2+i — tiap block punya parameter
+        # sendiri; tidak ada shared weights antar layer (TD §5 komponen 18).
+        self.blocks = [
+            TransformerBlock(config, seed=s + 2 + i) for i in range(config.num_layers)
+        ]
+        # Final LayerNorm (TD §5 komponen 19): init standar deterministik
+        # (gamma/beta — pola ResidualBlock; tanpa seed baru).
+        self.final_norm = LayerNorm(config)
+        self._shape: tuple[int, ...] | None = None
+
+    def parameter_count(self) -> int:
+        # Parameter aktual sub-komponen (embedding + positional + blocks
+        # + final norm); tanpa duplikat/hard-code (pola Sequential).
+        return (self.embedding.parameter_count()
+                + self.positional.parameter_count()
+                + sum(block.parameter_count() for block in self.blocks)
+                + self.final_norm.parameter_count())
+
+    def forward(self, ids: Array) -> Array:
+        """ids (B,T) -> hidden (B,T,D) (TD §5 18-19); fail-fast via sub-layer."""
+        # Pipeline T002 -> T003 -> T010 x L -> final LN (TASKS T011);
+        # sub-komponen memvalidasi kontraknya sendiri (ids di Embedding,
+        # T_max di PositionalRepr; TD §10) — model hanya menyimpan shape
+        # hidden utk guard backward (pola komponen lain).
+        x = self.embedding.forward(ids)  # (B,T,D); validasi ids T002
+        x = self.positional.forward(x)  # (B,T,D); validasi T_max T003
+        self._shape = x.shape
+        for block in self.blocks:  # stacking berurutan: x_i = block_i(x_(i-1))
+            x = block.forward(x)  # (B,T,D) — invarian antar layer (T010)
+        return self.final_norm.forward(x)  # final LN (TD §5 komponen 19)
+
+    def backward(self, grad_out: Array) -> None:
+        """dH (B,T,D) -> grads seluruh sub-komponen; None (pola Embedding)."""
+        if self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        # Grafik terbalik (REQ-003; D-009): final LN -> blocks terbalik
+        # (terakhir -> pertama) -> positional -> embedding (dE scatter-add).
+        g = self.final_norm.backward(g)  # d_gamma/d_beta final LN
+        for block in reversed(self.blocks):  # L-1, L-2, ..., 0
+            g = block.backward(g)  # grad parameter block + dx ke block sebelumnya
+        g = self.positional.backward(g)  # dP scatter-add per posisi + dx
+        self.embedding.backward(g)  # dE scatter-add; ids diskrit -> None
+        return None
