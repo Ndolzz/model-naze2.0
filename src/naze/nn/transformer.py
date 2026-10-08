@@ -1,4 +1,4 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T009.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T010.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
@@ -8,9 +8,10 @@ PositionalRepr (learned table (T_max, D), x + P[0:T]); T004 QKVProjection
 T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O);
 T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta);
 T008 FeedForward (Linear D->D_ff -> tanh -> Linear D_ff->D per token);
-T009 ResidualBlock (helper x + branch(x) -> LayerNorm, post-norm).
-Komponen berikutnya (block, model, LM head) ditambahkan
-bertahap pada T010..T013 — agar tiap task terisolasi.
+T009 ResidualBlock (helper x + branch(x) -> LayerNorm, post-norm);
+T010 TransformerBlock ([MHA + res+LN] -> [FFN + res+LN]).
+Komponen berikutnya (model, LM head) ditambahkan
+bertahap pada T011..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -685,3 +686,71 @@ class ResidualBlock(Layer):
         d_norm = self.norm.backward(g)  # d_gamma/d_beta oleh LayerNorm
         d_branch = self.branch.backward(d_norm)  # grad parameter branch
         return d_norm + d_branch  # jalur residual: grad langsung + grad branch
+
+
+class TransformerBlock(Layer):
+    """Transformer block: [MHA + res+LN] -> [FFN + res+LN] (TD §5 komponen
+    17; M007-T010): x1 = ResidualBlock(MHA)(x); y = ResidualBlock(FFN)(x1)
+    — orchestration komponen existing (T006 MultiHeadAttention, T008
+    FeedForward, T009 ResidualBlock); logika attention/LayerNorm/FFN/
+    residual TIDAK disalin ulang (tiap sub-block = instance ResidualBlock
+    persis kontrak T009, post-norm). Semua intermediate (B,T,D) — output
+    sub-block pertama menjadi input sub-block kedua; tanpa formula
+    gabungan custom. backward (grafik forward terbalik, tanpa autograd
+    baru; DECISION-009): dY -> ffn.backward (grad param sub-block FFN
+    oleh sublayer-nya) -> attention.backward (grad param sub-block MHA
+    + dx); guard urutan forward -> backward (RuntimeError, TD §10).
+    Parameter = parameter aktual sub-block (attention + ffn; tanpa
+    duplikat/parameter baru — block.params kosong); LayerNorm internal
+    tiap ResidualBlock tetap deterministik (tanpa seed baru). Seed per
+    instance: MHA-branch seed=s, FFN-branch seed=s+1 (offset berturut,
+    pola T006/T008 — sub-layer menurunkan offset-nya sendiri); dtype &
+    validasi ikut pola komponen M007 (DECISION-007/§10).
+    """
+
+    def __init__(self, config: TransformerConfig, *, seed: int | None = None) -> None:
+        super().__init__(f"transformer_block(d={config.d_model},h={config.num_heads})")
+        self.config = config
+        # Seed per instance: default config.seed; kwarg seed untuk offset
+        # per komponen (pola Linear/MLPLM: seed, seed+1, ...).
+        s = config.seed if seed is None else seed
+        self.attention = ResidualBlock(config, MultiHeadAttention(config, seed=s))
+        self.ffn = ResidualBlock(config, FeedForward(config, seed=s + 1))
+        self._shape: tuple[int, ...] | None = None
+
+    def parameter_count(self) -> int:
+        # Parameter aktual sub-block (attention + ffn); tanpa duplikat/hard-code.
+        return self.attention.parameter_count() + self.ffn.parameter_count()
+
+    def forward(self, x: Array) -> Array:
+        """x (B,T,D) -> y (B,T,D): attn residual -> ffn residual (TD §5 17)."""
+        x = as_array(x, dtype=self.config.dtype)
+        if x.ndim != 3:
+            raise ValueError(f"input harus (batch, seq, d_model) 3D, dapat shape {x.shape}")
+        if x.shape[2] != self.config.d_model:
+            raise ValueError(
+                f"dimensi terakhir harus d_model ({self.config.d_model}), dapat {x.shape[2]}"
+            )
+        if x.shape[0] == 0 or x.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {x.shape}")
+        if x.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({x.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        self._shape = x.shape
+        # Pipeline T009 -> T009 (TASKS T010): sub-block memvalidasi kontraknya
+        # sendiri; output sub-block pertama menjadi input sub-block kedua.
+        h = self.attention.forward(x)  # (B,T,D)
+        return self.ffn.forward(h)  # (B,T,D)
+
+    def backward(self, grad_out: Array) -> Array:
+        """dY (B,T,D) -> dx (B,T,D); grad param per sub-block (TD §7)."""
+        if self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        # Grafik terbalik: ffn-block -> attn-block -> dx (REQ-003; D-009).
+        d_h = self.ffn.backward(g)  # grad param sub-block FFN
+        return self.attention.backward(d_h)  # grad param sub-block MHA + dx
