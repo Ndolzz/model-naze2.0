@@ -1,4 +1,4 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T008.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T009.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
@@ -7,9 +7,10 @@ PositionalRepr (learned table (T_max, D), x + P[0:T]); T004 QKVProjection
 (scores QK^T/sqrt(Dh), mask kausal, softmax stabil, context = P @ V);
 T006 MultiHeadAttention (QKV -> attention -> merge (B,T,D) -> W_O);
 T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta);
-T008 FeedForward (Linear D->D_ff -> tanh -> Linear D_ff->D per token).
+T008 FeedForward (Linear D->D_ff -> tanh -> Linear D_ff->D per token);
+T009 ResidualBlock (helper x + branch(x) -> LayerNorm, post-norm).
 Komponen berikutnya (block, model, LM head) ditambahkan
-bertahap pada T009..T013 — agar tiap task terisolasi.
+bertahap pada T010..T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -613,3 +614,74 @@ class FeedForward(Layer):
         d_out = self.fc2.backward(g.reshape(b * t, d))  # (B*T, D_ff)
         d_act = self.act.backward(d_out)  # (B*T, D_ff)
         return self.fc1.backward(d_act).reshape(b, t, d)  # (B,T,D)
+
+
+class ResidualBlock(Layer):
+    """Residual + LayerNorm (TD §5 komponen 14-15; helper M007-T009):
+    y = LayerNorm(x + branch(x)) — post-norm persis TASKS T009
+    ("x + f(x) -> LN"); branch = sublayer existing (MHA/FFN), logika
+    internal TIDAK disalin ulang. Addition residual di dimensi model
+    (B,T,D) + (B,T,D); shape output branch diverifikasi eksplisit —
+    tidak ada implicit broadcasting. backward (grafik forward
+    terbalik, tanpa autograd baru; DECISION-009): d_norm =
+    norm.backward(dY) (d_gamma/d_beta oleh LayerNorm); d_branch =
+    branch.backward(d_norm) (grad parameter branch oleh sublayer);
+    dx = d_norm + d_branch — jalur residual menerima grad langsung
+    (y = x + f(x) -> dx = dY + df/dx); guard urutan forward ->
+    backward (RuntimeError, TD §10). Parameter = parameter aktual
+    sublayer (branch + norm; tidak ada duplikat/parameter baru —
+    block.params kosong); LayerNorm dibuat internal (gamma/beta init
+    standar deterministik, tanpa seed baru); seed allocation tetap di
+    lokasi konstruksi branch (pola T006/T008). dtype & validasi ikut
+    pola komponen M007 (DECISION-007/§10).
+    """
+
+    def __init__(self, config: TransformerConfig, branch: Layer) -> None:
+        super().__init__(f"residual({branch.name})")
+        self.config = config
+        self.branch = branch
+        # LayerNorm helper internal (init deterministik; tanpa seed baru).
+        self.norm = LayerNorm(config)
+        self._shape: tuple[int, ...] | None = None
+
+    def parameter_count(self) -> int:
+        # Parameter aktual sublayer (branch + norm); tanpa duplikat/hard-code.
+        return self.branch.parameter_count() + self.norm.parameter_count()
+
+    def forward(self, x: Array) -> Array:
+        """x (B,T,D) -> y = LN(x + branch(x)) (TD §5 14-15). Fail-fast."""
+        x = as_array(x, dtype=self.config.dtype)
+        if x.ndim != 3:
+            raise ValueError(f"input harus (batch, seq, d_model) 3D, dapat shape {x.shape}")
+        if x.shape[2] != self.config.d_model:
+            raise ValueError(
+                f"dimensi terakhir harus d_model ({self.config.d_model}), dapat {x.shape[2]}"
+            )
+        if x.shape[0] == 0 or x.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {x.shape}")
+        if x.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({x.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        self._shape = x.shape
+        # Sublayer memvalidasi kontraknya sendiri; guard shape residual
+        # mencegah implicit broadcasting (B,T,D) + (B,T,D) saja.
+        branch_out = self.branch.forward(x)  # (B,T,D)
+        if branch_out.shape != x.shape:
+            raise ValueError(
+                f"output branch {branch_out.shape} tidak kompatibel utk residual {x.shape}"
+            )
+        return self.norm.forward(x + branch_out)  # post-norm (TASKS T009)
+
+    def backward(self, grad_out: Array) -> Array:
+        """dY (B,T,D) -> dx = d_norm + d_branch; grad param sublayer (TD §7)."""
+        if self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        if g.shape != self._shape:
+            raise ValueError(f"grad_out harus berbentuk {self._shape}, dapat {g.shape}")
+        # Grafik terbalik: LN -> (residual + branch) -> dx (REQ-003; D-009).
+        d_norm = self.norm.backward(g)  # d_gamma/d_beta oleh LayerNorm
+        d_branch = self.branch.backward(d_norm)  # grad parameter branch
+        return d_norm + d_branch  # jalur residual: grad langsung + grad branch

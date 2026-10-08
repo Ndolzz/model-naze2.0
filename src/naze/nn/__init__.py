@@ -5,14 +5,14 @@ from naze.nn.activations import relu, relu_grad, sigmoid, sigmoid_grad, softmax,
 from naze.nn.layers import Activation, Layer, Linear, Sequential
 from naze.nn.transformer import (
     CausalAttention, Embedding, FeedForward, LayerNorm, MultiHeadAttention,
-    PositionalRepr, QKVProjection, TransformerConfig,
+    PositionalRepr, QKVProjection, ResidualBlock, TransformerConfig,
 )
 
 __all__ = [
     "activations", "layers", "transformer",
     "Activation", "CausalAttention", "Embedding", "FeedForward", "Layer",
     "LayerNorm", "Linear", "MultiHeadAttention", "PositionalRepr",
-    "QKVProjection", "Sequential",
+    "QKVProjection", "ResidualBlock", "Sequential",
     "TransformerConfig",
     "relu", "relu_grad", "sigmoid", "sigmoid_grad", "softmax", "tanh", "tanh_grad",
 ]
