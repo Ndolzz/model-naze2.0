@@ -1,4 +1,4 @@
-"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T011.
+"""Transformer decoder-only (REQ-011, Stage 6 / M-007) — M007-T001..M007-T012.
 
 Scope (M007_TASKS): T001 TransformerConfig + invariant check; T002 Embedding
 (token embedding lookup (B,T)->(B,T,D), backward scatter-add); T003
@@ -10,9 +10,11 @@ T007 LayerNorm (normalisasi per token pada dimensi D; gamma/beta);
 T008 FeedForward (Linear D->D_ff -> tanh -> Linear D_ff->D per token);
 T009 ResidualBlock (helper x + branch(x) -> LayerNorm, post-norm);
 T010 TransformerBlock ([MHA + res+LN] -> [FFN + res+LN]); T011
-TransformerModel (Embedding -> pos -> blocks x num_layers -> final LN).
-Komponen berikutnya (LM head, integrasi pipeline) ditambahkan
-bertahap pada T012..T013 — agar tiap task terisolasi.
+TransformerModel (Embedding -> pos -> blocks x num_layers -> final LN);
+T012 LanguageModelHead (Linear D->256, default tidak weight-tied
+-> logits (B,T,256)).
+Komponen berikutnya (integrasi pipeline) ditambahkan
+bertahap pada T013 — agar tiap task terisolasi.
 
 Kontrak konfigurasi (M007_TECHNICAL_DESIGN §7/§9/§10):
 - vocab_size FIXED 256 — byte-level (DECISION-010/015); validasi menolak selain 256.
@@ -845,3 +847,81 @@ class TransformerModel(Layer):
         g = self.positional.backward(g)  # dP scatter-add per posisi + dx
         self.embedding.backward(g)  # dE scatter-add; ids diskrit -> None
         return None
+
+
+class LanguageModelHead(Layer):
+    """Language-model head: hidden states (B,T,D) -> logits (B,T,256)
+    (TD §5 komponen 20-21; M007-T012): proyeksi Linear D -> vocab_size
+    (== 256, DECISION-015) per token — logits (B,T,256), dimensi terakhir
+    FIXED 256 (AC T012 / D-015). Default TIDAK weight-tied ke embedding
+    (TD §9: weight-tying LM head <-> embedding opsional, default tidak —
+    kesederhanaan): parameter proyeksi diinisialisasi independen via
+    seeded_rng, tanpa referensi/alias ke Embedding model. Logits =
+    keluaran affine mentah — TANPA softmax (TD §8): stabilitas dan
+    normalisasi tetap di loss softmax-CE pipeline yang sudah ada.
+    Orchestration komponen existing; tidak ada logika proyeksi baru —
+    proyeksi memakai naze.nn.Linear (bias ya — TD §9); input di-flatten
+    (B*T, D) karena kontrak Linear 2D (pola QKVProjection/MHA/FFN);
+    flatten row-major menjaga urutan token; reshape balik (B,T,256).
+    backward (kontrak engine DECISION-009, tanpa autograd baru):
+    dLogits (B,T,256) -> flatten (B*T,256) -> proj.backward (dW/db
+    oleh Linear) -> dx (B,T,D); guard urutan forward -> backward
+    (RuntimeError, TD §10) + shape grad (ValueError, TD §10).
+    Parameter = parameter aktual proyeksi (tanpa duplikat/parameter
+    baru — head.params kosong). Seed per instance: default
+    config.seed; kwarg seed untuk offset per komponen (pola Linear/
+    MLPLM); parameter di-cast ke config.dtype setelah konstruksi
+    (DECISION-007, adapter pola QKVProjection). dtype & validasi ikut
+    pola komponen M007 (DECISION-007/§10).
+    """
+
+    def __init__(self, config: TransformerConfig, *, seed: int | None = None) -> None:
+        super().__init__(f"lm_head(d={config.d_model}->{config.vocab_size})")
+        self.config = config
+        # Seed per instance: default config.seed; kwarg seed untuk offset
+        # per komponen (pola Linear/MLPLM: seed, seed+1, ...).
+        s = config.seed if seed is None else seed
+        self.proj = Linear(config.d_model, config.vocab_size, seed=s)
+        # Adapter dtype (DECISION-007): engine Linear selalu init float64.
+        self.proj.params["W"] = as_array(self.proj.params["W"], dtype=config.dtype)
+        self.proj.params["b"] = as_array(self.proj.params["b"], dtype=config.dtype)
+        self._shape: tuple[int, ...] | None = None
+
+    def parameter_count(self) -> int:
+        # Pola Sequential: parameter layer = jumlah parameter sub-layer.
+        return self.proj.parameter_count()
+
+    def forward(self, x: Array) -> Array:
+        """x (B,T,D) -> logits (B,T,256) (TD §5 20-21). Fail-fast."""
+        x = as_array(x, dtype=self.config.dtype)
+        if x.ndim != 3:
+            raise ValueError(f"input harus (batch, seq, d_model) 3D, dapat shape {x.shape}")
+        if x.shape[2] != self.config.d_model:
+            raise ValueError(
+                f"dimensi terakhir harus d_model ({self.config.d_model}), dapat {x.shape[2]}"
+            )
+        if x.shape[0] == 0 or x.shape[1] == 0:
+            raise ValueError(f"batch dan panjang sekuens harus > 0, dapat shape {x.shape}")
+        if x.shape[1] > self.config.max_sequence_length:
+            raise ValueError(
+                f"panjang sekuens T ({x.shape[1]}) melebihi max_sequence_length "
+                f"({self.config.max_sequence_length})"
+            )
+        self._shape = x.shape
+        b, t, d = x.shape
+        # Pipeline position-wise (pola FFN): flatten row-major -> Linear
+        # D->256 -> reshape balik; logits affine mentah tanpa softmax (§8).
+        logits = self.proj.forward(x.reshape(b * t, d))  # (B*T, 256)
+        return logits.reshape(b, t, self.config.vocab_size)  # (B,T,256)
+
+    def backward(self, grad_out: Array) -> Array:
+        """dLogits (B,T,256) -> dx (B,T,D); dW/db oleh Linear (TD §7)."""
+        if self._shape is None:
+            raise RuntimeError("backward dipanggil sebelum forward")
+        g = as_array(grad_out, dtype=self.config.dtype)
+        expected = self._shape[:2] + (self.config.vocab_size,)
+        if g.shape != expected:
+            raise ValueError(f"grad_out harus berbentuk {expected}, dapat {g.shape}")
+        b, t, d = self._shape
+        # proj.backward (dW/db oleh Linear) -> dx; un-flatten (pola FFN).
+        return self.proj.backward(g.reshape(b * t, self.config.vocab_size)).reshape(b, t, d)
