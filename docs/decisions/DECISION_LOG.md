@@ -87,6 +87,15 @@ Presisi gradien + reproducibility. float32 dapat ditinjau untuk inference.
 
 ---
 
+## DECISION-018 — [RESOLUSI OPEN DECISION-118] Batas ukuran Transformer final: checkpoint ≤ 1 MB — ACCEPTED (owner, 2026-10-09)
+- **Context:** OD-118 terbuka sejak SPEC_REVIEW v1.0.0 — blocker training skala serius; menunggu owner menetapkan d_model, num_layers, T_max produksi, budget RAM. TD M-007 §12/§15 membatasi estimasi ke config dev/test (~89k param, 0.7 MB) tanpa batas final.
+- **Decision:** Ukuran checkpoint final ≤ 1 MB (float64 npz params-only). Konfigurasi produksi: d_model=64, num_heads=4, num_layers=2, d_ff=128, T_max=128 — ~108k param ≈ 0.87 MB float64 (≈ 0.43 MB float32 saat inference).
+- **Reason:** Paling ringan dan tercepat untuk training CPU (REQ-102 hardware terbatas); konsisten target on-device nazeio (ARMv7 total app < 20 MB — model ≤ 1 MB menyisakan headroom besar); no-overengineering (REQ-302) — identik config dev/test TD §9 kecuali T_max 64→128.
+- **Alternatives:** ≤ 5 MB (D=128, L=4 — ditolak owner: belum ada kebutuhan terukur); ≤ 10-20 MB (menunda training serius di CPU); defer (membiarkan blocker untuk M-008).
+- **Consequences:** OD-118 RESOLVED; M-008 training system memakai batas ini sebagai constraint formal; batas dapat direvisi owner bila kapasitas terbukti kurang (diukur, bukan diasumsikan); nazeio spesifikasi 16 dapat ditetapkan mengacu keputusan ini.
+
+---
+
 ## OPEN DECISIONS (menunggu project owner)
 
 > **[RECONSTRUCTED]** Konsolidasi daftar ini dari SPEC_REVIEW v1.1.0 §8 (OD-114..120) + M007_TECHNICAL_DESIGN §15 (OD-121). Daftar pada versi GitHub sebelumnya hanya memuat OD-101/107/108/112/113; isi entri OD-101/107/108/112/113 di bawah verbatim dari versi tersebut.
@@ -113,15 +122,12 @@ Memengaruhi enforcement AC test-plan (TD M-007 §15; SPEC_REVIEW ISSUE-003: "diu
 
 ## OPEN DECISION-117 — Metrik memori formal REQ-102 (ISSUE-011)
 
-## OPEN DECISION-118 — Batas ukuran Transformer final
-BLOCKER untuk training skala serius; BUKAN blocker untuk konfigurasi dev/test M-007 (TD §15: d_model, num_layers, T_max produksi, budget RAM/waktu perangkat owner). Konfigurasi TD §9 hanya dev/test.
-
 ## OPEN DECISION-119 — Versioning & release policy Naze 1.0 (MISS-003)
 
 ## OPEN DECISION-121 — Skema positional final Transformer
 Default: learned positional embedding (TD M-007 §9/§15); owner dapat mengubah sebelum/awal implementasi M007-T003.
 
-**CLOSED oleh governance 2026-10-06/07:** OD-116 → DECISION-016; OD-120 → DECISION-017; ISSUE-004 → DECISION-015. ([HISTORICAL DETAIL UNAVAILABLE] — tanggal persis keputusan owner tidak tersedia pada sumber yang dapat dipulihkan; rekonstruksi dicatat 2026-10-07.)
+**CLOSED oleh governance 2026-10-06/07:** OD-116 → DECISION-016; OD-120 → DECISION-017; ISSUE-004 → DECISION-015. ([HISTORICAL DETAIL UNAVAILABLE] — tanggal persis keputusan owner tidak tersedia pada sumber yang dapat dipulihkan; rekonstruksi dicatat 2026-10-07.) **2026-10-09:** OD-118 → DECISION-018.
 
 ## Riwayat Resolusi
 
@@ -135,3 +141,4 @@ Default: learned positional embedding (TD M-007 §9/§15); owner dapat mengubah 
 | ISSUE-004 (REQ-004 ↔ D-010) | DECISION-015: vocab byte-level FIXED 256; "configurable" ≠ vocab size | [HISTORICAL DETAIL UNAVAILABLE] | Keputusan owner (governance M-007) |
 | OD-116 / ISSUE-006 (ambang loss) | DECISION-016: kerangka evaluasi 5-basis; tanpa ambang numerik universal | [HISTORICAL DETAIL UNAVAILABLE] | Keputusan owner (governance M-007) |
 | OD-120 / ISSUE-013 (format TD) | DECISION-017: `docs/architecture/M###_TECHNICAL_DESIGN.md`, 15 section wajib | [HISTORICAL DETAIL UNAVAILABLE] | Keputusan owner (governance M-007) |
+| OD-118 (batas ukuran Transformer) | DECISION-018: checkpoint ≤ 1 MB (f64); D=64 H=4 L=2 d_ff=128 T_max=128 | 2026-10-09 | Keputusan owner |

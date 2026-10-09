@@ -237,7 +237,7 @@ Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Des
 - OD-121 (positional): default learned DIPERTAHANKAN (implementasi T003); owner masih dapat mengubah dengan perubahan berikutnya.
 - OD-113 (coverage): tetap OPEN — coverage form belum diukur; suite penuh kini via CI.
 - OD-114 (CI): tereduksi sebagian — CI pytest ada (T017); kebijakan enforcement formal tetap menunggu owner.
-- OD-118 (batas ukuran): tetap OPEN — blocker hanya untuk training skala serius, bukan dev/test.
+- OD-118 (batas ukuran): ✅ RESOLVED — DECISION-018 (owner, 2026-10-09): checkpoint final ≤ 1 MB (float64); config produksi D=64, H=4, L=2, d_ff=128, T_max=128 (~108k param ≈ 0.87 MB f64). Constraint formal M-008; nazeio spec 16 mengacu keputusan ini.
 - ISSUE-002/003/005/007..011: jadwal tetap M-008.
 
 ### 11.4 Verdict (v1.3.0)
