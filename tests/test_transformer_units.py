@@ -161,7 +161,7 @@ def test_qkv_projection_reference():
 def test_causal_attention_hand_reference():
     # T005: contoh hand (B=H=1, T=2, Dh=1): skor [[1,1],[2,2]] -> baris 0
     # bobot [1,0] -> konteks 1.0; baris 1 bobot [0.5,0.5] -> konteks 1.5.
-    cfg = _config(d_model=2, num_heads=1, d_ff=4, max_sequence_length=4)
+    cfg = _config(d_model=1, num_heads=1, d_ff=4, max_sequence_length=4)
     attn = CausalAttention(cfg)
     q = np.array([[[[1.0], [2.0]]]])  # (1, 1, 2, 1)
     k = np.array([[[[1.0], [1.0]]]])
@@ -173,7 +173,7 @@ def test_causal_attention_hand_reference():
 
 def test_causal_attention_future_independence():
     # T005 (§8): mengubah token masa depan tidak mengubah konteks masa lalu.
-    cfg = _config(d_model=2, num_heads=1, d_ff=4, max_sequence_length=4)
+    cfg = _config(d_model=1, num_heads=1, d_ff=4, max_sequence_length=4)
     attn = CausalAttention(cfg)
     q = np.array([[[[1.0], [2.0], [3.0]]]])
     k = np.array([[[[1.0], [1.0], [1.0]]]])
@@ -188,7 +188,7 @@ def test_causal_attention_future_independence():
 
 def test_causal_attention_extreme_scores_stable():
     # T005: softmax stabil (shift-max) pada skor ekstrem -> tetap finite.
-    cfg = _config(d_model=2, num_heads=1, d_ff=4, max_sequence_length=4)
+    cfg = _config(d_model=1, num_heads=1, d_ff=4, max_sequence_length=4)
     attn = CausalAttention(cfg)
     big = np.array([[[[1e4], [1e4], [-1e4]]]])
     ctx = attn.forward(big, big, big)

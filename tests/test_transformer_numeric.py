@@ -25,6 +25,7 @@ from naze.nn.transformer import (
     MultiHeadAttention,
     PositionalRepr,
     QKVProjection,
+    TransformerBlock,
     TransformerConfig,
     TransformerModel,
 )

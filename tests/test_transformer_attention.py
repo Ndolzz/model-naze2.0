@@ -253,9 +253,9 @@ def test_stability_large_scores() -> None:
 def test_hand_computed_small() -> None:
     """AC: formula hand-computed — expected dihitung independen di test."""
     att = CausalAttention(TransformerConfig(d_model=2, num_heads=1, max_sequence_length=4))
-    q = np.array([[[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]])  # (1,1,3,2)
+    q = np.array([[[[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]]])  # (1,1,3,2)
     k = q.copy()
-    v = np.array([[[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]])
+    v = np.array([[[[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]]])
     c = att.forward(q, k, v)
     expected_probs = _manual_probs(q, k, np.sqrt(2.0))
     assert np.allclose(att._probs, expected_probs)

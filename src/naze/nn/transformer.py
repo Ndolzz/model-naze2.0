@@ -497,8 +497,10 @@ class LayerNorm(Layer):
         self.eps = float(eps)
         # Init standar (TD §7/§9): gamma ones, beta zeros — deterministik
         # (tanpa randomness), dtype mengikuti config (DECISION-007).
-        self.params["gamma"] = as_array(np.ones(config.d_model, dtype=config.dtype))
-        self.params["beta"] = as_array(np.zeros(config.d_model, dtype=config.dtype))
+        self.params["gamma"] = as_array(np.ones(config.d_model, dtype=config.dtype),
+                                          dtype=config.dtype)
+        self.params["beta"] = as_array(np.zeros(config.d_model, dtype=config.dtype),
+                                         dtype=config.dtype)
         self._x_hat: Array | None = None
         self._inv_std: Array | None = None
         self._shape: tuple[int, ...] | None = None

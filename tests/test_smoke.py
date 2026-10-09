@@ -7,7 +7,7 @@ import naze
 
 
 def test_package_importable() -> None:
-    assert naze.__version__ == "0.0.1"
+    assert naze.__version__ == "0.0.2"
 
 
 def test_numpy_available() -> None:

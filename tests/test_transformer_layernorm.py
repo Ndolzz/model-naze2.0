@@ -280,7 +280,9 @@ def test_constant_and_large_input_stability() -> None:
     big = _x(26) * 1e8  # besar tapi finite
     outb = ln.forward(big)
     assert np.all(np.isfinite(outb))
-    assert np.all(np.isfinite(ln.backward(g)))
+    # Grad harus cocok dengan cache forward terakhir (big: (2, 5, 4)).
+    g_big = seeded_rng(27).normal(size=(2, 5, 4))
+    assert np.all(np.isfinite(ln.backward(g_big)))
 
 
 def test_regression_t001_t006_compose() -> None:

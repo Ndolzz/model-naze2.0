@@ -53,7 +53,7 @@ class Linear(Layer):
         self._x: Array | None = None
 
     def forward(self, x: Array) -> Array:
-        x = as_array(x)
+        x = as_array(x, dtype=self.params["W"].dtype)
         if x.ndim != 2 or x.shape[1] != self.in_features:
             raise ValueError(f"Linear mengharapkan input (batch, {self.in_features}), dapat {x.shape}")
         self._x = x
@@ -62,7 +62,7 @@ class Linear(Layer):
     def backward(self, grad_out: Array) -> Array:
         if self._x is None:
             raise RuntimeError("backward dipanggil sebelum forward")
-        g = as_array(grad_out)
+        g = as_array(grad_out, dtype=self.params["W"].dtype)
         self.grads["W"] = self._x.T @ g
         self.grads["b"] = g.sum(axis=0)
         return g @ self.params["W"].T
