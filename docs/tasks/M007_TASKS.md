@@ -3,7 +3,7 @@
 **Milestone:** M-007 (Stage 6)
 **Status:** T001..T018 DONE — implementasi selesai 2026-10-09.
 Suite penuh dieksekusi via CI (`.github/workflows/tests.yml`, ditambahkan T017);
-hasil run dilihat pada tab Actions.
+pytest penuh HIJAU — terverifikasi pada run CI commit `7a53871` (2026-10-09).
 
 **Status implementasi:** T001..T012 komponen (commit `4e1b7daf` dan
 sebelumnya di git history) | T013 `6b676b24` | T014 `0ea18004` |
@@ -135,8 +135,17 @@ workflow CI) | T018 (dokumentasi ini).
 - **Catatan implementasi (2026-10-09):** audit commit M007 membuktikan tidak
   ada test lama yang dimodifikasi (T014..T016 murni file baru). Workflow CI
   `.github/workflows/tests.yml` ditambahkan agar pytest penuh benar-benar
-  dieksekusi pada setiap push/PR (sebelumnya tidak ada CI di repo); hasil
-  run pertama diverifikasi pada tab Actions.
+  dieksekusi pada setiap push/PR (sebelumnya tidak ada CI di repo).
+- **Update pasca-CI (2026-10-09):** run CI pertama (commit `4e0327ff`)
+  menemukan 23 test FAILED yang sebelumnya tak pernah tereksekusi: bug
+  engine nyata (dtype float32 diabaikan `Linear.forward/backward` dan init
+  LayerNorm — diperbaiki `91982fe`), bug test baru M007 (import
+  TransformerBlock, config Dh, prompt MLPLM, ambang baseline —
+  diperbaiki `91982fe`), dan test lama pra-existing yang tidak kompatibel
+  dengan kontrak engine saat ini (signature Activation, versi package,
+  bentuk q/k/v 4D, urutan cache LN — disesuaikan `91982fe`/`7a53871`,
+  tanpa mengubah perilaku yang di-spec). Run CI `7a53871`: pytest penuh
+  hijau — AC T017 terverifikasi terpenuhi.
 
 ## M007-T018 — Documentation Update
 - **Objective:** update TRACEABILITY (status M-007), ROADMAP (M-007 → DONE saat selesai), REQUIREMENTS changelog, SPEC_REVIEW issue status (per PROJECT_SPEC §7 maintenance policy).

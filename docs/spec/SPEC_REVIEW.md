@@ -217,7 +217,14 @@ Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Des
 - Komponen (T001..T012): `src/naze/nn/transformer.py` — config (vocab 256 fixed, invariant D = H × Dh), embedding scatter-add, positional learned, QKV, causal attention (mask stabil), MHA, LayerNorm, FFN tanh, residual, block, stacking, LM head (D-015).
 - Integrasi (T013): `src/naze/lm/transformer_lm.py` — TransformerLM (loss/backward 22 kunci params datar) + transformer_generate (greedy/temperature, konteks dipotong ke max_sequence_length); MLPLM tidak berubah.
 - Test (T014..T016): 3 suite baru — unit (per komponen, ≥1 nilai acuan), numeric (grad-check 1e-5, mask correctness level logits & attention, determinisme per-seed, LN stats), integration (tokenizer→dataset→model→loss, generate adapter, sanity 5-basis D-016 lulus: loss 5.58 → 2.48, holdout turun > 1.0).
-- Regresi (T017): audit commit membuktikan tidak ada test lama yang dimodifikasi; workflow CI `.github/workflows/tests.yml` ditambahkan (pytest penuh, Python 3.11, PYTHONPATH=src) — sebelumnya pytest tidak pernah dieksekusi otomatis. Hasil run CI dilihat pada tab Actions.
+- Regresi (T017): audit commit membuktikan tidak ada test lama yang
+  dimodifikasi; workflow CI `.github/workflows/tests.yml` ditambahkan
+  (pytest penuh, Python 3.11, PYTHONPATH=src) — sebelumnya pytest tidak
+  pernah dieksekusi otomatis. Run CI pertama menemukan 23 failure (bug
+  dtype engine + test lama pra-existing yang belum pernah tereksekusi);
+  diperbaiki commit `91982fe`/`7a53871` (fix dtype `Linear`/`LayerNorm`,
+  penyesuaian test). Run CI `7a53871`: pytest penuh HIJAU — AC T017
+  terverifikasi.
 - Dokumentasi (T018): TRACEABILITY v1.4.0, REQUIREMENTS v0.5.0, ROADMAP (M-007 DONE), M007_TASKS status — update ini.
 
 ### 11.2 Catatan teknis signifikan
@@ -235,4 +242,6 @@ Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Des
 
 ### 11.4 Verdict (v1.3.0)
 
-**✅ M-007 SELESAI (IMPLEMENTED). Milestone berikutnya: M-008 — Training System lengkap (PLANNED, menunggu persetujuan owner).**
+**✅ M-007 SELESAI (IMPLEMENTED) — pytest penuh hijau di CI (commit
+`7a53871`, 2026-10-09). Milestone berikutnya: M-008 — Training System
+lengkap (PLANNED, menunggu persetujuan owner).**
