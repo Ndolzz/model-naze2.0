@@ -40,6 +40,9 @@ class TransformerLM:
         self._p: Array | None = None
         self._targets: Array | None = None
         self._shape: tuple[int, int] | None = None
+        self._p_pos: Array | None = None
+        self._rows_pos: Array | None = None
+        self._pos_shape: tuple[int, int] | None = None
 
     def forward(self, ids: Array) -> Array:
         """ids (B,T) -> logits (B,T,256): model -> head (TD §5 18-21)."""
@@ -88,6 +91,52 @@ class TransformerLM:
         n = b * t
         dlogits = self._p.copy()
         dlogits[np.arange(n), np.repeat(self._targets, t)] -= 1.0
+        dlogits /= n
+        d_hidden = self.head.backward(dlogits.reshape(b, t, self.config.vocab_size))
+        self.model.backward(d_hidden)
+        return self._named("grads")
+
+    def loss_pos(self, logits: Array, targets: Array) -> float:
+        """Cross-entropy per-posisi: targets (B, T) beda tiap posisi (M-008).
+
+        Fail-fast seperti loss(): logits (B,T,256); targets (B,T),
+        integer, rentang [0, 256). Cache softmax per-posisi untuk
+        backward_pos. loss/backward lama tidak berubah (aditif).
+        """
+        logits = np.asarray(logits)
+        if logits.ndim != 3 or logits.shape[2] != self.config.vocab_size:
+            raise ValueError(
+                f"logits harus (batch, seq, {self.config.vocab_size}), dapat shape {logits.shape}"
+            )
+        targets = np.asarray(targets)
+        if targets.shape != logits.shape[:2]:
+            raise ValueError(
+                f"targets harus {logits.shape[:2]} (batch, seq), dapat shape {targets.shape}"
+            )
+        if not np.issubdtype(targets.dtype, np.integer):
+            raise ValueError(f"target ID harus integer, dapat dtype {targets.dtype!r}")
+        if targets.min() < 0 or targets.max() >= self.config.vocab_size:
+            raise ValueError(
+                f"target ID di luar rentang [0, {self.config.vocab_size}) "
+                f"(min={targets.min()}, max={targets.max()})"
+            )
+        b, t = logits.shape[0], logits.shape[1]
+        flat = logits.reshape(b * t, self.config.vocab_size)
+        p = softmax(flat)
+        rows = targets.astype(np.int64, copy=True).reshape(-1)
+        self._p_pos = p
+        self._rows_pos = rows
+        self._pos_shape = (b, t)
+        return float(-np.log(p[np.arange(b * t), rows] + 1e-12).mean())
+
+    def backward_pos(self) -> dict[str, Array]:
+        """dlogits per-posisi = (p - onehot)/(B*T) -> head -> model (M-008)."""
+        if self._p_pos is None or self._rows_pos is None or self._pos_shape is None:
+            raise RuntimeError("backward_pos dipanggil sebelum loss_pos")
+        b, t = self._pos_shape
+        n = b * t
+        dlogits = self._p_pos.copy()
+        dlogits[np.arange(n), self._rows_pos] -= 1.0
         dlogits /= n
         d_hidden = self.head.backward(dlogits.reshape(b, t, self.config.vocab_size))
         self.model.backward(d_hidden)
