@@ -96,6 +96,36 @@ Presisi gradien + reproducibility. float32 dapat ditinjau untuk inference.
 
 ---
 
+## DECISION-019 — [RESOLUSI OPEN DECISION-113] Coverage target: ≥ 80% baris di src/naze — ACCEPTED (owner, 2026-10-09)
+- **Context:** OD-113 terbuka sejak SPEC_REVIEW v1.0.0; ISSUE-003/AC "diuji di CI" menunggu ambang coverage formal. M-007 selesai tanpa coverage terukur (pytest penuh hijau, 335 test).
+- **Decision:** Target coverage formal: **≥ 80% baris** pada `src/naze` (pytest-cov), diverifikasi via CI.
+- **Reason:** Praktis dan standar industri; realistis untuk repositori ukuran ini; mencegah regresi modul yang tak tersentuh test (23 failure pra-existing yang baru terlihat setelah CI ada membuktikan pentingnya pengukuran).
+- **Alternatives:** ≥ 90% (ditolak: biaya marginal tinggi pada kode validasi fail-fast); tanpa angka (ditolak: tidak verifiable).
+- **Consequences:** CI menambah pengukuran coverage (pytest-cov) — implementasi menyusul di M-008; kegagalan ambang = pipeline merah.
+
+## DECISION-020 — [RESOLUSI OPEN DECISION-114] CI enforcement: pytest wajib hijau untuk main — ACCEPTED (owner, 2026-10-09)
+- **Context:** OD-114 terbuka sejak SPEC_REVIEW v1.0.0; ISSUE-003: "diuji di CI" belum actionable. Workflow CI ada sejak M007-T017 tetapi pasif.
+- **Decision:** CI pytest **wajib hijau** untuk push/merge ke `main` — diaktifkan via branch protection rule (required status check `pytest`); PR/push yang merah ditolak.
+- **Reason:** Menutup gap enforcement AC test-plan secara formal; mencegah main berada dalam keadaan merah seperti run CI pertama (23 failure).
+- **Alternatives:** CI pasif (ditolak: tanpa enforcement, red main terjadi lagi); CI + ruff gate (ditunda: lint belum ada kebutuhan terukur — REQ-302).
+- **Consequences:** Branch protection diaktifkan di GitHub (aturan repo, bukan file); ISSUE-003 tertutup untuk M-007 ke atas.
+
+## DECISION-021 — [RESOLUSI OPEN DECISION-117 / ISSUE-011] Metrik memori formal REQ-102: checkpoint ≤ 1 MB + RAM training < 2 GB — ACCEPTED (owner, 2026-10-09)
+- **Context:** REQ-102 (resource constraints) tanpa metrik terdefinisi sejak ISSUE-011 (SPEC_REVIEW v1.0.0); TD M-007 §12 hanya estimasi dev/test.
+- **Decision:** Dua metrik formal: (1) **ukuran checkpoint params-only ≤ 1 MB** (mengacu DECISION-018); (2) **RAM puncak proses training < 2 GB** (params + grads + aktivasi cache + batch data), diukur pada config produksi D-018.
+- **Reason:** Angka konkret dan terukur (menutup "tidak actionable"); < 2 GB aman untuk laptop/PC umum; konsisten target on-device nazeio (RAM perangkat ARMv7 jauh lebih kecil — inference float32).
+- **Alternatives:** tanpa angka RAM (tidak verifiable); batas RAM lebih ketat 1 GB (ditolak: float64 + aktivasi scores bisa mendekati batas pada T_max=128).
+- **Consequences:** REQ-102 AC diperbarui di REQUIREMENTS (menyusul per change policy); M-008 training loop wajib memverifikasi kedua metrik.
+
+## DECISION-022 — [RESOLUSI OPEN DECISION-121] Skema positional final: learned positional embedding — ACCEPTED (owner, 2026-10-09)
+- **Context:** OD-121 dibuka di TD M-007 §15: default learned; owner dapat mengubah sebelum/awal M007-T003. T003 terimplementasi dengan learned dan lulus seluruh test M-007.
+- **Decision:** Skema positional final = **learned positional embedding** (tabel (T_max, D), init normal(0, 0.1) per-seed). Tidak bermigrasi ke sinusoidal.
+- **Reason:** Sudah terimplementasi dan teruji penuh (CI hijau); paling sederhana dengan engine yang ada; sinusoidal tidak menawarkan keuntungan terukur pada T_max ≤ 128 (REQ-302).
+- **Alternatives:** sinusoidal (ditolak: revisi tanpa kebutuhan terukur; learned berkinerja baik pada sekuens pendek).
+- **Consequences:** OD-121 RESOLVED; komponen PositionalRepr tidak berubah; revisi masa depan tetap mungkin lewat change policy.
+
+---
+
 ## OPEN DECISIONS (menunggu project owner)
 
 > **[RECONSTRUCTED]** Konsolidasi daftar ini dari SPEC_REVIEW v1.1.0 §8 (OD-114..120) + M007_TECHNICAL_DESIGN §15 (OD-121). Daftar pada versi GitHub sebelumnya hanya memuat OD-101/107/108/112/113; isi entri OD-101/107/108/112/113 di bawah verbatim dari versi tersebut.
@@ -112,22 +142,11 @@ Dibutuhkan sebelum: Stage 10. Jauh di masa depan.
 ## OPEN DECISION-112 — Korpus final training Naze (bahasa, ukuran, sumber, lisensi)
 Dibutuhkan sebelum: training skala serius (pasca-M-006). Pipeline sudah siap menerima korpus apa pun.
 
-## OPEN DECISION-113 — Coverage target test suite
-Dibutuhkan sebelum: implementasi M-007 dinyatakan selesai penuh (TD M-007 §15: DEFERRED ke fase implementasi) — menetapkan ambang coverage formal.
-
-## OPEN DECISION-114 — CI platform
-Memengaruhi enforcement AC test-plan (TD M-007 §15; SPEC_REVIEW ISSUE-003: "diuji di CI" belum actionable).
-
 ## OPEN DECISION-115 — Definisi "cleaning" dataset (ISSUE-005)
-
-## OPEN DECISION-117 — Metrik memori formal REQ-102 (ISSUE-011)
 
 ## OPEN DECISION-119 — Versioning & release policy Naze 1.0 (MISS-003)
 
-## OPEN DECISION-121 — Skema positional final Transformer
-Default: learned positional embedding (TD M-007 §9/§15); owner dapat mengubah sebelum/awal implementasi M007-T003.
-
-**CLOSED oleh governance 2026-10-06/07:** OD-116 → DECISION-016; OD-120 → DECISION-017; ISSUE-004 → DECISION-015. ([HISTORICAL DETAIL UNAVAILABLE] — tanggal persis keputusan owner tidak tersedia pada sumber yang dapat dipulihkan; rekonstruksi dicatat 2026-10-07.) **2026-10-09:** OD-118 → DECISION-018.
+**CLOSED oleh governance 2026-10-06/07:** OD-116 → DECISION-016; OD-120 → DECISION-017; ISSUE-004 → DECISION-015. ([HISTORICAL DETAIL UNAVAILABLE] — tanggal persis keputusan owner tidak tersedia pada sumber yang dapat dipulihkan; rekonstruksi dicatat 2026-10-07.) **2026-10-09:** OD-118 → DECISION-018. **2026-10-09 (batch):** OD-113 → DECISION-019; OD-114 → DECISION-020; OD-117/ISSUE-011 → DECISION-021; OD-121 → DECISION-022.
 
 ## Riwayat Resolusi
 
@@ -142,3 +161,7 @@ Default: learned positional embedding (TD M-007 §9/§15); owner dapat mengubah 
 | OD-116 / ISSUE-006 (ambang loss) | DECISION-016: kerangka evaluasi 5-basis; tanpa ambang numerik universal | [HISTORICAL DETAIL UNAVAILABLE] | Keputusan owner (governance M-007) |
 | OD-120 / ISSUE-013 (format TD) | DECISION-017: `docs/architecture/M###_TECHNICAL_DESIGN.md`, 15 section wajib | [HISTORICAL DETAIL UNAVAILABLE] | Keputusan owner (governance M-007) |
 | OD-118 (batas ukuran Transformer) | DECISION-018: checkpoint ≤ 1 MB (f64); D=64 H=4 L=2 d_ff=128 T_max=128 | 2026-10-09 | Keputusan owner |
+| OD-113 (coverage target) | DECISION-019: ≥ 80% baris src/naze via pytest-cov di CI | 2026-10-09 | Keputusan owner (batch) |
+| OD-114 (CI enforcement) | DECISION-020: pytest wajib hijau utk main (branch protection) | 2026-10-09 | Keputusan owner (batch) |
+| OD-117 / ISSUE-011 (metrik memori) | DECISION-021: checkpoint ≤ 1 MB + RAM training < 2 GB | 2026-10-09 | Keputusan owner (batch) |
+| OD-121 (skema positional) | DECISION-022: learned positional embedding (final) | 2026-10-09 | Keputusan owner (batch) |

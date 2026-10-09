@@ -234,10 +234,11 @@ Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Des
 
 ### 11.3 Status isu & OD pasca-implementasi
 
-- OD-121 (positional): default learned DIPERTAHANKAN (implementasi T003); owner masih dapat mengubah dengan perubahan berikutnya.
-- OD-113 (coverage): tetap OPEN — coverage form belum diukur; suite penuh kini via CI.
-- OD-114 (CI): tereduksi sebagian — CI pytest ada (T017); kebijakan enforcement formal tetap menunggu owner.
+- OD-121 (positional): ✅ RESOLVED — DECISION-022: learned positional embedding FINAL (owner, 2026-10-09).
+- OD-113 (coverage): ✅ RESOLVED — DECISION-019: ≥ 80% baris src/naze via pytest-cov (owner, 2026-10-09); pengukuran masuk CI menyusul di M-008.
+- OD-114 (CI): ✅ RESOLVED — DECISION-020: pytest wajib hijau untuk main via branch protection (owner, 2026-10-09); ISSUE-003 tertutup untuk M-007 ke atas.
 - OD-118 (batas ukuran): ✅ RESOLVED — DECISION-018 (owner, 2026-10-09): checkpoint final ≤ 1 MB (float64); config produksi D=64, H=4, L=2, d_ff=128, T_max=128 (~108k param ≈ 0.87 MB f64). Constraint formal M-008; nazeio spec 16 mengacu keputusan ini.
+- OD-117 / ISSUE-011 (metrik memori REQ-102): ✅ RESOLVED — DECISION-021: checkpoint ≤ 1 MB + RAM puncak training < 2 GB pada config D-018 (owner, 2026-10-09); AC REQ-102 diperbarui menyusul.
 - ISSUE-002/003/005/007..011: jadwal tetap M-008.
 
 ### 11.4 Verdict (v1.3.0)
