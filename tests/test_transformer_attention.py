@@ -262,7 +262,7 @@ def test_hand_computed_small() -> None:
     assert np.allclose(c, np.matmul(expected_probs, v))
     # Arah mask: query 0 hanya melihat key 0 -> context[0] == v[0] eksak.
     assert np.array_equal(att._probs[0, 0, 0], [1.0, 0.0, 0.0])
-    assert np.array_equal(c[0, 0, 0], v[0, 0])
+    assert np.array_equal(c[0, 0, 0], v[0, 0, 0])
     # Softmax tanpa mask akan melihat semua key -> jelas berbeda.
     no_mask = np.exp(q[0, 0] @ k[0, 0].T / np.sqrt(2.0))
     no_mask = no_mask / no_mask.sum(axis=-1, keepdims=True)
