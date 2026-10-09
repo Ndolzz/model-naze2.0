@@ -56,8 +56,18 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - Commits: 4e1b7daf (T001..T012), 6b676b24 (T013), 0ea18004 (T014),
   d3d24e9c (T015), ee386b5b (T016), 938cdc5f (T017), T018 (dokumentasi).
 
-## MILESTONE-008 — Training System lengkap (Stage 7 penuh) — PLANNED
-Optimizer tambahan (bila terukur perlu), logging terstruktur, evaluasi berkala, resume penuh.
+## MILESTONE-008 — Training System lengkap (Stage 7 penuh) — ACTIVE (2026-10-09)
+- **Objective:** Training loop penuh sesuai M008_TECHNICAL_DESIGN.md (disetujui
+  owner): TrainConfig, checkpoint v2 (checksum + meta, D-018), evaluasi
+  berkala (loss/perplexity), run log JSONL, resume penuh, metrik memori
+  (D-021), coverage CI >=80% (D-019). Optimizer tetap SGD (no overengineering).
+- **Requirements:** REQ-007, REQ-101, REQ-102, REQ-103.
+- **Deliverables:** src/naze/train/{config,checkpoint,evaluate,runlog,loop}.py;
+  batches_pos (aditif); loss_pos/backward_pos (aditif); CI coverage;
+  tests/test_m008_units.py + test_m008_integration.py.
+- **Acceptance Criteria:** [ ] T001..T010 selesai berurutan; [ ] loss train
+  menurun; [ ] resume eksak deterministik; [ ] checkpoint <=1 MB; [ ] test
+  lama tidak dimodifikasi; [ ] CI hijau dengan coverage >=80%.
 
 ## MILESTONE-009 — Inference Engine (Stage 8) — PLANNED
 ## MILESTONE-010 — Naze 1.0 (Stage 9) — PLANNED (menunggu OPEN DECISION-107)
@@ -72,3 +82,4 @@ Optimizer tambahan (bila terukur perlu), logging terstruktur, evaluasi berkala, 
 | 2026-10-06 | M-002 | IN REVIEW | Implementasi Stage 1 |
 | 2026-10-06 | M-002 | DONE; M-003..M-006 dibuka & selesai | Instruksi owner "kerjakan semuanya"; OPEN DECISION 102-106 diselesaikan via delegasi owner |
 | 2026-10-09 | M-007 | DONE | T001..T018 selesai berurutan; CI pytest ditambahkan (T017) |
+| 2026-10-09 | M-008 | ACTIVE | TD disetujui owner; task breakdown T001..T010 dibuat |
