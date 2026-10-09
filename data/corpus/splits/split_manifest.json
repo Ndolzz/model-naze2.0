@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "name": "Naze 1.0 Hybrid Corpus Splits",
+  "seed": 42,
+  "total_lines": 86435,
+  "total_tokens": 7387706,
+  "splits": {
+    "train": {
+      "lines": 69148,
+      "tokens": 5859468,
+      "sha256": "177459507bfbc0b5f12b08bc3f7ff5e966e88f62095d7c7d9250d6bc33ccd681",
+      "percentage": 80.0
+    },
+    "validation": {
+      "lines": 8643,
+      "tokens": 749894,
+      "sha256": "8bea63cd48532ed2c4f80b17856844ddfe0a6128d4110ff2b91a68525d477cae",
+      "percentage": 10.0
+    },
+    "holdout": {
+      "lines": 8644,
+      "tokens": 773864,
+      "sha256": "f79032b65780ea74ce939196165f58216db9daa346e157156609dd79c4e54dea",
+      "percentage": 10.0,
+      "note": "TIDAK BOLEH digunakan untuk training atau hyperparameter tuning"
+    }
+  },
+  "method": "line-based split with deterministic shuffle (seed=42)",
+  "date": "2026-10-09T12:00:00+00:00"
+}

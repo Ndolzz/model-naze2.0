@@ -1,0 +1,125 @@
+potong video dari detik 10 sampai detik 20
+potong video dari detik 15 sampai detik 25
+potong video dari detik 0 sampai detik 30
+potong video dari detik 45 sampai detik 60
+potong video dari awal sampai detik 10
+potong video dari detik 50 sampai akhir
+potong bagian tengah video dari detik 20 sampai detik 40
+gabungkan video video1 dan video2
+gabungkan video video1 video2 dan video3
+gabungkan semua video di folder proyek
+gabungkan video dengan transisi fade
+gabungkan video dengan transisi slide
+gabungkan video dengan transisi zoom
+gabungkan video dengan durasi transisi 1 detik
+gabungkan video dengan durasi transisi 2 detik
+tambahkan audio lagu1 ke video
+tambahkan audio lagu2 ke video
+tambahkan audio suara ke video
+tambahkan audio dari file mp3 ke video
+hapus audio dari video
+extrak audio dari video
+simpan audio dari video ke file mp3
+ubah kecepatan video menjadi 1.5x
+ubah kecepatan video menjadi 2x
+ubah kecepatan video menjadi 0.5x
+ubah kecepatan video menjadi 0.75x
+balik video secara horizontal
+balik video secara vertikal
+putar video 90 derajat searah jarum jam
+putar video 180 derajat searah jarum jam
+putar video 270 derajat searah jarum jam
+perbesar video 2x
+perkecil video 0.5x
+potong gambar dengan rasio 16:9
+potong gambar dengan rasio 4:3
+potong gambar dengan rasio 1:1
+potong gambar dengan ukuran 800x600
+potong gambar dengan ukuran 1024x768
+potong gambar dengan ukuran 1920x1080
+ubah ukuran gambar ke 800x600
+ubah ukuran gambar ke 1024x768
+ubah ukuran gambar ke 1920x1080
+ubah ukuran gambar ke 50% asli
+ubah ukuran gambar ke 200% asli
+pertajam gambar
+pertajam gambar dengan tingkat 50%
+pertajam gambar dengan tingkat 100%
+buat gambar lebih cerah
+buat gambar lebih gelap
+buat gambar lebih kontras
+buat gambar kurang kontras
+ubah gambar ke hitam putih
+ubah gambar ke skala abu-abu
+ubah gambar ke sepia
+ubah gambar ke negatif
+balik gambar secara horizontal
+balik gambar secara vertikal
+putar gambar 90 derajat searah jarum jam
+putar gambar 180 derajat searah jarum jam
+putar gambar 270 derajat searah jarum jam
+potong gambar dengan bentuk lingkaran
+potong gambar dengan bentuk persegi
+potong gambar dengan bentuk segitiga
+tambahkan filter blur ke gambar
+tambahkan filter sharpen ke gambar
+tambahkan filter emboss ke gambar
+tambahkan filter sketch ke gambar
+tambahkan teks ke gambar
+tambahkan teks ke gambar dengan font arial
+tambahkan teks ke gambar dengan ukuran 24
+tambahkan teks ke gambar dengan warna merah
+tambahkan teks ke gambar di posisi tengah
+tambahkan teks ke gambar di posisi kiri atas
+tambahkan watermark ke gambar
+tambahkan watermark ke gambar di pojok kanan bawah
+tambahkan border ke gambar
+tambahkan border ke gambar dengan warna hitam
+tambahkan border ke gambar dengan ketebalan 5 piksel
+buat kolase gambar dengan 2 gambar
+buat kolase gambar dengan 4 gambar
+buat kolase gambar dengan layout 2x2
+buat kolase gambar dengan layout 3x3
+buat kolase gambar dengan jarak 10 piksel
+simpan gambar dengan kualitas 90%
+simpan gambar dengan kualitas 100%
+simpan gambar dengan format jpg
+simpan gambar dengan format png
+simpan gambar dengan format webp
+konversi gambar ke format jpg
+konversi gambar ke format png
+konversi gambar ke format webp
+kompres gambar ke ukuran 500kb
+kompres gambar ke ukuran 1mb
+kompres gambar dengan kualitas 75%
+buat gambar transparan
+buat latar belakang gambar transparan
+hapus latar belakang gambar
+ganti latar belakang gambar dengan warna putih
+ganti latar belakang gambar dengan warna hitam
+tambahkan efek bayangan ke gambar
+tambahkan efek cahaya ke gambar
+tambahkan efek bokeh ke gambar
+sesuaikan warna gambar
+sesuaikan warna gambar dengan tingkat kecerahan
+sesuaikan warna gambar dengan tingkat kontras
+sesuaikan warna gambar dengan tingkat saturasi
+buat gambar hitam putih dengan ambang 50%
+buat gambar hitam putih dengan ambang 100%
+buat gambar hitam putih dengan ambang otomatis
+buat gambar lebih hangat
+buat gambar lebih dingin
+buat gambar dengan tone sepiha
+buat gambar dengan tone vintage
+buat gambar dengan tone modern
+buat gambar dengan tone film
+potong objek dari gambar
+potong objek dari gambar dengan latar belakang putih
+potong objek dari gambar dengan latar belakang hitam
+potong objek dari gambar dengan alat magic wand
+buat gambar dari teks
+buat gambar dari teks dengan ukuran 1024x1024
+buat gambar dari teks dengan warna latar belakang putih
+buat gambar dari teks dengan warna teks hitam
+buat gambar dari teks dengan font arial
+buat gambar dari teks dengan ukuran font 32

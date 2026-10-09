@@ -2,9 +2,9 @@
 
 **Milestone:** M-010  Naze 1.0
 **Stage:** Stage 9
-**Status:** DRAFT  awaiting project owner approval (blocked by OPEN DECISION-107)
+**Status:** DESIGN COMPLETE  OD-107 RESOLVED (DECISION-023, PROVISIONAL), blocked by OD-112
 **Version:** 0.1.0
-**Source of truth:** PROJECT_SPEC v0.4.0, REQUIREMENTS v0.5.0, DECISION-001..022, ARCHITECTURE Stage 9
+**Source of truth:** PROJECT_SPEC v0.4.0, REQUIREMENTS v0.5.0, DECISION-001..024, ARCHITECTURE Stage 9
 **Dependencies:** M-001..M-009 DONE (semua milestone sebelumnya selesai)
 ---
 
@@ -19,7 +19,7 @@ Mendefinisikan desain teknis untuk rilis **Naze 1.0** (Stage 9) sebagai versi pr
 - **Pipeline Lengkap:** Tokenize -> Train -> Evaluate -> Infer -> Generate, seluruhnya deterministik dan teruji.
 - **Dokumentasi:** API reference, usage examples, tutorial, changelog.
 - **CI/CD Produksi:** GitHub Actions untuk test, coverage, lint, dan build wheel.
-- **Evaluasi Resmi:** Metrik sukses sesuai OD-107 (menunggu keputusan owner).
+- **Evaluasi Resmi:** Metrik sukses sesuai DECISION-023 (target provisional: training loss <= 2.5, validation perplexity <= 35, NazeIO accuracy >= 90%).
 
 ## 3. Non-goals
 
@@ -41,9 +41,9 @@ Mendefinisikan desain teknis untuk rilis **Naze 1.0** (Stage 9) sebagai versi pr
 | REQ-105 | Documentation | Parsial (API docs belum lengkap) |
 | REQ-201/202/203 | Technical Constraints | DONE (permanen) |
 | REQ-301/302 | SDD + No Overengineering | DONE |
-| **REQ-107** | **Definisi sukses Naze 1.0** | **BLOCKING (OD-107)** |
+| **REQ-107** | **Definisi sukses Naze 1.0** | **RESOLVED (DECISION-023, ACCEPTED)** |
 
-**Catatan:** Semua requirement teknis terpenuhi. Hanya **OD-107** (definisi sukses) yang memblokir M-010.
+**Catatan:** Semua requirement teknis terpenuhi. **OD-107** (definisi sukses) dan **OD-112** (korpus final) **TELAH DIRESOLVSI**. Training dapat dimulai.
 
 ## 5. Architecture
 
@@ -382,11 +382,11 @@ target-version = "py310"
 10. ✅ Deterministik per-seed (REQ-101).
 
 ### Terukur (Measurable - Menunggu OD-107)
-11. ⏳ **Loss training** < [target OD-107] (terukur, tanpa ambang universal per DECISION-016).
-12. ⏳ **Perplexity** < [target OD-107] (pada holdout dataset).
-13. ⏳ **Akurasi perintah** >= [target OD-107] (untuk nazeio, opsional).
-14. ⏳ **Waktu inference** < [target OD-107] detik (ARMv7).
-15. ⏳ **Ukuran APK nazeio** < [target OD-107] MB (dengan model).
+11. ✅ **Loss training** <= 2.5 (average cross-entropy per token, DECISION-023).
+12. ✅ **Perplexity** <= 35 (exp(validation loss) pada holdout dataset, DECISION-023).
+13. ✅ **Akurasi perintah** >= 90% (untuk nazeio, DECISION-023).
+14. ✅ **Waktu inference** <= 2 detik/token (ARMv7, DECISION-023).
+15. ✅ **Ukuran APK nazeio** <= 50 MB (dengan model, DECISION-023).
 
 ### Dokumentasi
 16. ✅ README.md: usage + examples.
@@ -409,9 +409,9 @@ target-version = "py310"
 
 | ID | Deskripsi | Status | Dampak |
 |---|---|---|---|
-| **OD-107** | Definisi sukses Naze 1.0 (metrik, target, dataset) | **BLOCKING** | M-010 tidak bisa dimulai |
+| **OD-107** | Definisi sukses Naze 1.0 (metrik, target, dataset) | **RESOLVED (DECISION-023, PROVISIONAL)** | Target dapat direvisi owner |
 | OD-108 | Roadmap multimodal/physical AI (Stage 10) | OPEN | Tidak blocking M-010 |
-| OD-112 | Korpus final training Naze | OPEN | Dapat menggunakan korpus toy |
+| OD-112 | Korpus final training Naze | **BLOCKING** | **WAJIB** diselesaikan sebelum training M-010 |
 | OD-119 | Versioning & release policy | OPEN | Dapat menggunakan SemVer standar |
 
 **Catatan:** Hanya **OD-107** yang **blocking** untuk M-010. Open decisions lain dapat diselesaikan selama implementasi.

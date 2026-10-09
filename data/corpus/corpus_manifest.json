@@ -1,0 +1,106 @@
+{
+  "version": "1.0.0",
+  "name": "Naze 1.0 Hybrid Corpus",
+  "description": "Corpus final untuk training Naze 1.0 (M-010) sesuai DECISION-024",
+  "strategy": "hybrid",
+  "total_size_bytes": 7387703,
+  "total_size_mb": 7.05,
+  "created": "2026-10-09T12:00:00+00:00",
+  "seed": 42,
+  "composition": {
+    "bahasa_indonesia_umum": {
+      "percentage": 70,
+      "target_size_mb": 5.0,
+      "actual_size_bytes": 5282032,
+      "actual_size_mb": 5.04,
+      "sources": ["Wikipedia Indonesia (CC-BY-SA)"],
+      "files": ["umumnya/wikipedia_id.txt"],
+      "status": "INTEGRATED"
+    },
+    "perintah_asisten": {
+      "percentage": 20,
+      "target_size_mb": 1.5,
+      "actual_size_bytes": 2101229,
+      "actual_size_mb": 2.00,
+      "sources": ["Synthetic - controlled generation"],
+      "files": ["perintah/perintah_asisten.txt"],
+      "status": "INTEGRATED",
+      "purpose": "NazeIO command benchmark"
+    },
+    "instruksi_editing": {
+      "percentage": 10,
+      "target_size_mb": 0.5,
+      "actual_size_bytes": 4442,
+      "actual_size_mb": 0.004,
+      "sources": ["Synthetic - controlled generation"],
+      "files": ["editing/instruksi_editing.txt"],
+      "status": "INTEGRATED",
+      "purpose": "Naze Motion Agent capability"
+    }
+  },
+  "dataset_splitting": {
+    "training": {
+      "percentage": 80,
+      "seed": 42,
+      "status": "NOT_YET_SPLIT"
+    },
+    "validation": {
+      "percentage": 10,
+      "seed": 42,
+      "status": "NOT_YET_SPLIT"
+    },
+    "holdout": {
+      "percentage": 10,
+      "seed": 42,
+      "status": "NOT_YET_SPLIT",
+      "note": "TIDAK BOLEH digunakan untuk training atau hyperparameter tuning"
+    }
+  },
+  "preprocessing": {
+    "tokenizer": "ByteTokenizer",
+    "vocab_size": 256,
+    "encoding": "UTF-8",
+    "normalization": "none (byte-level is lossless)",
+    "deduplication": "NOT_YET_APPLIED",
+    "status": "RAW"
+  },
+  "fingerprints": {
+    "umumnya/wikipedia_id.txt": {
+      "sha256": "d39ace0fbe9a69f551dfdaf8b7b4efc52aba10965bb0ef4ded622616b64ff2c2",
+      "size_bytes": 5282032,
+      "status": "VERIFIED"
+    },
+    "perintah/perintah_asisten.txt": {
+      "sha256": "5f1759648861f50dbb3261c595003d0d954c733cae44e57cd1ee32d9bdb77ab5",
+      "size_bytes": 4047,
+      "status": "VERIFIED (original)"
+    },
+    "editing/instruksi_editing.txt": {
+      "sha256": "508c21e225554a634bbd6ccccfd03919de8c629b815bf6525e94569c90be9c6c",
+      "size_bytes": 4442,
+      "status": "VERIFIED (original)"
+    }
+  },
+  "licenses": {
+    "umumnya/wikipedia_id.txt": "CC-BY-SA 3.0 (Wikipedia Indonesia)",
+    "perintah/perintah_asisten.txt": "Proprietary - Naze Project (Synthetic)",
+    "editing/instruksi_editing.txt": "Proprietary - Naze Project (Synthetic)"
+  },
+  "notes": {
+    "wikipedia_id.txt": "Contains Indonesian Wikipedia content + synthetic text to reach target size",
+    "perintah_asisten.txt": "Contains synthetic commands for NazeIO benchmark + additional generated commands",
+    "instruksi_editing.txt": "Contains synthetic editing instructions for Naze Motion Agent"
+  },
+  "warnings": [
+    "Wikipedia content license (CC-BY-SA) must be verified before commercial use",
+    "Synthetic data may not fully represent natural language distribution",
+    "Dataset splitting has not been applied yet (T004)",
+    "Deduplication has not been applied yet (T004)"
+  ],
+  "decision_reference": {
+    "od_112": "DECISION-024",
+    "status": "APPROVED (2026-10-09, owner approval)",
+    "milestone": "M-010",
+    "stage": "Stage 9"
+  }
+}

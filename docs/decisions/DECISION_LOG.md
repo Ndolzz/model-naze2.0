@@ -124,23 +124,98 @@ Presisi gradien + reproducibility. float32 dapat ditinjau untuk inference.
 - **Alternatives:** sinusoidal (ditolak: revisi tanpa kebutuhan terukur; learned berkinerja baik pada sekuens pendek).
 - **Consequences:** OD-121 RESOLVED; komponen PositionalRepr tidak berubah; revisi masa depan tetap mungkin lewat change policy.
 
+## DECISION-024 — [RESOLUSI OPEN DECISION-112] Korpus final training: strategi hybrid ~7 MB — ACCEPTED (owner, 2026-10-09)
+- **Context:** OD-112 blocking training skala serius sejak SPEC_REVIEW v1.0.0. Pipeline sudah siap menerima korpus apa pun (DECISION-011), tetapi korpus final untuk Naze 1.0 belum ditetapkan owner. DECISION-018 (batas checkpoint ≤ 1 MB) dan DECISION-023 (target sukses) menunggu keputusan ini.
+- **Decision:** Tetapkan **strategi corpus hybrid** untuk training Naze 1.0:
+  - **70% Bahasa Indonesia Umum:** ~5 MB, dari sumber dengan lisensi terbuka (Wikipedia, berita dengan lisensi CC/BY/mitra).
+  - **20% Perintah Asisten:** ~1.5 MB, data sintetis terkontrol untuk mendukung kemampuan command (nazeio).
+  - **10% Instruksi Editing:** ~0.5 MB, data sintetis untuk mendukung kemampuan editing (Naze Motion Agent).
+  - **Total target:** ~7 MB (ukuran file teks UTF-8 mentah, sebelum preprocessing).
+- **Sumber dan Lisensi:** Wikipedia (CC-BY-SA), berita dengan lisensi eksplisit. Verifikasi lisensi WAJIB sebelum penggunaan. Data sintetis dibuat untuk proyek.
+- **Preprocessing:** Pembersihan, normalisasi, deduplikasi. Tokenisasi: ByteTokenizer (D-010, D-015) vocab 256 fixed.
+- **Pembagian Dataset:** Training 80%, Validation 10%, Holdout 10% (TIDAK BOLEH untuk training). Deterministik per-seed (REQ-101).
+- **Acceptance Criteria:** Sumber data memiliki lisensi redistribusi. Ukuran aktual terdokumentasi. Fingerprint SHA-256. Tidak ada data leakage.
+- **Risiko:** Verifikasi lisensi WAJIB. Data sintetis tidak mencerminkan distribusi nyata. Ukuran estimasi.
+- **Alternatives:** Wikipedia+News Only (~10 MB), Synthetic Only (~5-7 MB), Minimal (~2 MB).
+- **Consequences:** OD-112 RESOLVED. Training M-010 dapat dimulai setelah corpus final disiapkan.
+
+
 ---
 
+
+- **Context:** OD-112 blocking training skala serius sejak SPEC_REVIEW v1.0.0. Pipeline sudah siap menerima korpus apa pun (DECISION-011), tetapi korpus final untuk Naze 1.0 belum ditetapkan owner. DECISION-018 (batas checkpoint ≤ 1 MB) dan DECISION-023 (target sukses) menunggu keputusan ini.
+- **Decision:** Tetapkan **strategi corpus hybrid** untuk training Naze 1.0:
+  - **70% Bahasa Indonesia Umum:** ~5 MB, dari sumber dengan lisensi terbuka (Wikipedia, berita dengan lisensi CC/BY/mitra).
+  - **20% Perintah Asisten:** ~1.5 MB, data sintetis terkontrol untuk mendukung kemampuan command (nazeio).
+  - **10% Instruksi Editing:** ~0.5 MB, data sintetis untuk mendukung kemampuan editing (Naze Motion Agent).
+  - **Total target:** ~7 MB (ukuran file teks UTF-8 mentah, sebelum preprocessing).
+- **Sumber dan Lisensi:** Wikipedia (CC-BY-SA), berita dengan lisensi eksplisit. Verifikasi lisensi WAJIB sebelum penggunaan. Data sintetis dibuat untuk proyek.
+- **Preprocessing:** Pembersihan, normalisasi, deduplikasi. Tokenisasi: ByteTokenizer (D-010, D-015) vocab 256 fixed.
+- **Pembagian Dataset:** Training 80%, Validation 10%, Holdout 10% (TIDAK BOLEH untuk training). Deterministik per-seed (REQ-101).
+- **Acceptance Criteria:** Sumber data memiliki lisensi redistribusi. Ukuran aktual terdokumentasi. Fingerprint SHA-256. Tidak ada data leakage.
+- **Risiko:** Verifikasi lisensi WAJIB. Data sintetis tidak mencerminkan distribusi nyata. Ukuran estimasi.
+- **Alternatives:** Wikipedia+News Only (~10 MB), Synthetic Only (~5-7 MB), Minimal (~2 MB).
+- **Consequences:** OD-112 RESOLVED. Training M-010 dapat dimulai setelah corpus final disiapkan.
 ## OPEN DECISIONS (menunggu project owner)
 
 > **[RECONSTRUCTED]** Konsolidasi daftar ini dari SPEC_REVIEW v1.1.0 §8 (OD-114..120) + M007_TECHNICAL_DESIGN §15 (OD-121). Daftar pada versi GitHub sebelumnya hanya memuat OD-101/107/108/112/113; isi entri OD-101/107/108/112/113 di bawah verbatim dari versi tersebut.
 
 ## OPEN DECISION-101 — Strategi accelerasi (GPU / native extension)
 Dibutuhkan sebelum: Stage 6+ skala besar. Alternatif diketahui: NumPy+CPU; CUDA custom; Rust/C++ hot-path.
+## DECISION-023  [RESOLUSI OPEN DECISION-107] Definisi sukses Naze 1.0: metrik, target provisional, dataset, release gate  ACCEPTED (2026-10-09, provisional)
+- **Context:** OD-107 blocking M-010 (Stage 9) sejak SPEC_REVIEW v1.0.0. M-001..M-009 DONE, pipeline end-to-end siap, tapi tanpa definisi sukses formal untuk rilis produksi. DECISION-016 menegaskan tidak ada ambang loss numerik universal; target harus spesifik per eksperimen.
+- **Decision:** Tetapkan **target provisional** (bukan hasil pengukuran, bukan jaminan) untuk Naze 1.0:
 
-## OPEN DECISION-107 — Definisi sukses Naze 1.0 (metrik, target, dataset evaluasi)
+  | Metrik | Target Provisional | Satuan | Release Gate |
+  |---|---|---|---|
+  | Training loss | <= 2.5 | average cross-entropy per token | **WAJIB** |
+  | Validation perplexity | <= 35 | exp(validation loss) | **WAJIB** |
+  | NazeIO command accuracy | >= 90% | persentase command benar | **WAJIB** |
+  | ARMv7 inference latency | <= 2 detik/token | rata-rata per token (prefill+generate) | Target optimasi |
+  | Model artifact dalam APK | <= 50 MB | ukuran total dengan model | Target optimasi |
+
+- **Definisi dan Metode Evaluasi:**
+  - **Training loss:** Average cross-entropy per token pada dataset training, dihitung via `naze.lm.cross_entropy` (softmax + negative log likelihood). Metode: rata-rata loss per batch selama training, dilaporkan di akhir epoch.
+  - **Validation perplexity:** exp(validation loss) pada holdout dataset (OD-112). Validation loss = average cross-entropy per token. Metode: evaluasi penuh pada holdout set, dilaporkan sebagai `perplexity` di `naze.train.EvalResult`.
+  - **NazeIO command accuracy:** Persentase command yang dieksekusi dengan benar. Metode: benchmark dengan command list eksplisit (input, expected output, aturan penilaian). Dataset command = bagian dari OD-112.
+  - **ARMv7 inference latency:** Rata-rata waktu per token (prefill + generation). Konfigurasi referensi: Raspberry Pi 3 (ARMv7, 4-core @1.2GHz), config D-018 (D=64, H=4, L=2, d_ff=128, T_max=128), float32 inference. Metode: `naze.inference.benchmark_model` dengan warmup=3, runs=5, rata-rata.
+  - **Model artifact dalam APK:** Ukuran total APK Android dengan model terintegrasi. Target berlaku untuk integrasi Android (nazeio), bukan ukuran paket PyPI. Metode: pengukuran ukuran APK final.
+
+- **Konsistensi Matematis:**
+  - Loss function: cross-entropy = -mean(log(p[target])) per token (lihat `src/naze/lm/mlp_lm.py::cross_entropy`).
+  - Perplexity = exp(loss) - valid untuk cross-entropy per-token.
+  - Training loss <= 2.5 => Perplexity training <= exp(2.5) ~ 12.18 (konsisten, target training lebih ketat dari validation).
+  - Validation perplexity <= 35 => Validation loss <= ln(35) ~ 3.55 (target validation lebih longgar, sesuai dengan generalisasi).
+  - **Catatan:** Target loss/perplexity adalah **provisional** dan harus divalidasi empiris. Jika training pada corpus final (OD-112) tidak mencapai target, target direvisi (bukan model di-overfit).
+
+- **Kondisi Pengujian:** Config model: DECISION-018 (D=64, H=4, L=2, d_ff=128, T_max=128, vocab=256). Training: SGD optimizer (DECISION-013), float64 precision (DECISION-007). Inference: float32 precision untuk nazeio.
+
+- **Acceptance Criteria:**
+  - **WAJIB (Release Gate):** Training loss <= 2.5 AND Validation perplexity <= 35 AND NazeIO command accuracy >= 90%.
+  - **Target Optimasi:** ARMv7 latency <= 2 detik/token dan APK size <= 50 MB. Jika tidak terpenuhi, rilis tetap dapat dilakukan dengan catatan keterbatasan.
+
+- **Risiko dan Keterbatasan:** Target provisional (belum divalidasi OD-112), ARMv7 latency tergantung hardware, APK size tergantung integrasi nazeio. **Bloker:** OD-112 **WAJIB** diselesaikan sebelum training.
+
+- **Dependensi:** OD-112 (korpus final), OD-119 (versioning policy), nazeio (command benchmark, APK integration).
+
+- **Alternatives:** Tidak menetapkan target (tidak actionable), target lebih ketat (risiko tidak konvergen), target lebih longgar (risiko kualitas rendah).
+
+- **Consequences:** OD-107 **RESOLVED** dengan status **PROVISIONAL**. Target dapat direvisi owner berdasarkan hasil empiris.
+
+
+## OPEN DECISION-107  Definisi sukses Naze 1.0 (metrik, target, dataset evaluasi)
 Dibutuhkan sebelum: Stage 9.
+
+**RESOLVED:** Lihat DECISION-023 di atas. Status: **ACCEPTED (2026-10-09, owner approval)**.
+
 
 ## OPEN DECISION-108 — Roadmap multimodal / physical AI (Stage 10)
 Dibutuhkan sebelum: Stage 10. Jauh di masa depan.
 
-## OPEN DECISION-112 — Korpus final training Naze (bahasa, ukuran, sumber, lisensi)
+
 Dibutuhkan sebelum: training skala serius (pasca-M-006). Pipeline sudah siap menerima korpus apa pun.
+
+
 
 ## OPEN DECISION-115 — Definisi "cleaning" dataset (ISSUE-005)
 

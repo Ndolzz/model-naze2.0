@@ -61,5 +61,9 @@ Chain of traceability (per DECISION-017):
 - **M-007 IMPLEMENTED (2026-10-09):** REQ-011 → D-009/015/016 → Stage 6 → M-007 (DONE) → M007_TECHNICAL_DESIGN.md → M007-T001..T018 (selesai) → 17 AC objective tervalidasi via 3 suite test baru + CI pytest penuh.
 - **M-008 DONE (2026-10-09):** REQ-007/009 → D-014/016/018/019/020/021 → Stage 7 → M-008 (DONE) → M008_TECHNICAL_DESIGN.md → M008-T001..T010 (selesai) → coverage 97.75%, CI hijau.
 - **M-009 DONE (2026-10-09):** REQ-008 → Stage 8 → M-009 (DONE) → M009_TECHNICAL_DESIGN.md → M009-T001..T016 (selesai) → forward-only path, batching, benchmark, coverage 93.40%.
-- OD tersisa pasca-M-008: OD-101 (accelerasi), OD-107 (definisi sukses Naze 1.0), OD-108 (multimodal), OD-112 (korpus final), OD-115 (cleaning), OD-119 (release policy), OD-122..126 (M-009 open decisions).
+- OD tersisa pasca-M-009: OD-101 (accelerasi), OD-108 (multimodal), OD-115 (cleaning), OD-119 (release policy), OD-122..126 (M-009 open decisions). OD-107 **RESOLVED** (DECISION-023, ACCEPTED). OD-112 **RESOLVED** (DECISION-024, APPROVED).
 - Maintenance policy dipatuhi: implementasi selesai → TRACEABILITY diperbarui (PROJECT_SPEC §7).
+
+| **REQ-107 Definisi Sukses Naze 1.0** | **D-023, D-024** | **Stage 9** | **M-010 (IMPLEMENTING)** | **M010_TECHNICAL_DESIGN.md** | **M010-T001..T020** | Target: training loss <= 2.5, validation perplexity <= 35, NazeIO accuracy >= 90%. Corpus hybrid ~7 MB (DECISION-024). | MAPPED |
+| **REQ-105 Documentation (M-010)** | **D-017** | **Stage 9** | **M-010 (IMPLEMENTING)** | **M010_TECHNICAL_DESIGN.md** | **M010-T011..T014, T018..T020** | API reference, tutorial, changelog, README update | MAPPED |
+
