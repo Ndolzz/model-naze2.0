@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 
+import naze
 import numpy as np
 import pytest
 
@@ -111,7 +112,7 @@ def test_meta_lengkap(tmp_path) -> None:
     for key in ("step", "epoch", "created", "naze_version", "size_bytes",
                 "checksum_sha256", "config", "config_hash"):
         assert key in meta
-    assert meta["naze_version"] == "0.0.2"
+    assert meta["naze_version"] == naze.__version__  # rilis 1.0.0 (M-010)
     loaded = load_checkpoint_v2(tmp_path, _model(cfg))
     assert loaded["meta"]["config_hash"] == cfg.config_hash()
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 
+import naze
 import numpy as np
 import pytest
 
@@ -131,7 +132,7 @@ def test_checkpoint_v2_roundtrip_and_meta(tmp_path) -> None:
     cfg = _tcfg()
     meta = save_checkpoint_v2(tmp_path, m1, step=12, epoch=2, config=cfg)
     assert meta["step"] == 12 and meta["epoch"] == 2
-    assert meta["naze_version"] == "0.0.2"
+    assert meta["naze_version"] == naze.__version__  # rilis 1.0.0 (M-010)
     assert meta["config_hash"] == cfg.config_hash()
     assert meta["size_bytes"] == checkpoint_size(tmp_path / "params.npz")
     m2 = _small_model(99)  # init beda — load harus menimpa seluruhnya
