@@ -6,9 +6,9 @@
 > Wording Section 10 BUKAN teks asli yang hilang.
 
 **Reviewer:** Senior AI Architect / SDD Reviewer
-**Date:** 2026-10-06 (v1.1.0) · 2026-10-07 (v1.2.0 — rekonstruksi)
-**Review version:** 1.2.0 (governance update: resolusi kondisi wajib v1.1.0 §9; M-007 READY FOR IMPLEMENTATION)
-**Scope:** PROJECT_SPEC, REQUIREMENTS, ARCHITECTURE, DECISION_LOG, ROADMAP, TASKS, TRACEABILITY (v1.0.0 → v1.3.0)
+**Date:** 2026-10-06 (v1.1.0) · 2026-10-07 (v1.2.0 — rekonstruksi) · 2026-10-09 (v1.3.0)
+**Review version:** 1.3.0 (M-007 IMPLEMENTED: T001..T018 selesai; update §11; dasar v1.2.0 = governance update)
+**Scope:** PROJECT_SPEC, REQUIREMENTS, ARCHITECTURE, DECISION_LOG, ROADMAP, TASKS, TRACEABILITY (v1.0.0 → v1.4.0)
 
 ---
 
@@ -203,3 +203,36 @@ Verifikasi final terhadap git history (REQUIREMENTS v0.1.0 commit `6722376` dan 
 **✅ READY FOR IMPLEMENTATION — M-007 (Transformer, Stage 6).**
 
 Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Design + Task Breakdown M-007 selesai dan terlacak penuh di TRACEABILITY v1.3.0. Implementasi M007-T001..T018 dimulai hanya setelah persetujuan owner atas M007_TECHNICAL_DESIGN.md; commit implementasi wajib mereferensikan Task ID + Req ID. OD-113/OD-114/OD-118/OD-121 tercatat sebagai kondisi non-blocking untuk dev/test config (lihat TD §15).
+
+---
+
+## 11. Implementation Update (v1.3.0, 2026-10-09)
+
+> Update pasca-implementasi M-007 sesuai maintenance policy PROJECT_SPEC §7 (implementasi selesai → review/status diperbarui).
+
+### 11.1 Status implementasi M-007
+
+**M-007 IMPLEMENTED — M007-T001..T018 selesai (2026-10-09).**
+
+- Komponen (T001..T012): `src/naze/nn/transformer.py` — config (vocab 256 fixed, invariant D = H × Dh), embedding scatter-add, positional learned, QKV, causal attention (mask stabil), MHA, LayerNorm, FFN tanh, residual, block, stacking, LM head (D-015).
+- Integrasi (T013): `src/naze/lm/transformer_lm.py` — TransformerLM (loss/backward 22 kunci params datar) + transformer_generate (greedy/temperature, konteks dipotong ke max_sequence_length); MLPLM tidak berubah.
+- Test (T014..T016): 3 suite baru — unit (per komponen, ≥1 nilai acuan), numeric (grad-check 1e-5, mask correctness level logits & attention, determinisme per-seed, LN stats), integration (tokenizer→dataset→model→loss, generate adapter, sanity 5-basis D-016 lulus: loss 5.58 → 2.48, holdout turun > 1.0).
+- Regresi (T017): audit commit membuktikan tidak ada test lama yang dimodifikasi; workflow CI `.github/workflows/tests.yml` ditambahkan (pytest penuh, Python 3.11, PYTHONPATH=src) — sebelumnya pytest tidak pernah dieksekusi otomatis. Hasil run CI dilihat pada tab Actions.
+- Dokumentasi (T018): TRACEABILITY v1.4.0, REQUIREMENTS v0.5.0, ROADMAP (M-007 DONE), M007_TASKS status — update ini.
+
+### 11.2 Catatan teknis signifikan
+
+- Grad bias K analitik ≈ 0 (softmax invarian pergeseran konstanta per baris) — dites absolut di suite numeric, didokumentasikan di docstring test (bukan defect; konsekuensi struktural arsitektur).
+- Evaluasi sanity 5-basis D-016 dieksekusi tanpa ambang numerik universal sesuai DECISION-016.
+
+### 11.3 Status isu & OD pasca-implementasi
+
+- OD-121 (positional): default learned DIPERTAHANKAN (implementasi T003); owner masih dapat mengubah dengan perubahan berikutnya.
+- OD-113 (coverage): tetap OPEN — coverage form belum diukur; suite penuh kini via CI.
+- OD-114 (CI): tereduksi sebagian — CI pytest ada (T017); kebijakan enforcement formal tetap menunggu owner.
+- OD-118 (batas ukuran): tetap OPEN — blocker hanya untuk training skala serius, bukan dev/test.
+- ISSUE-002/003/005/007..011: jadwal tetap M-008.
+
+### 11.4 Verdict (v1.3.0)
+
+**✅ M-007 SELESAI (IMPLEMENTED). Milestone berikutnya: M-008 — Training System lengkap (PLANNED, menunggu persetujuan owner).**
