@@ -1,7 +1,14 @@
 # M007 TASKS — Transformer Implementation Breakdown
 
-**Milestone:** M-007 (Stage 6) | **Status:** PLANNED — menunggu persetujuan owner atas M007_TECHNICAL_DESIGN.md
-**Rule:** task dikerjakan berurutan; setiap commit mereferensikan Task ID + Req ID. **Belum ada implementasi pada tahap ini.**
+**Milestone:** M-007 (Stage 6)
+**Status:** T001..T018 DONE — implementasi selesai 2026-10-09.
+Suite penuh dieksekusi via CI (`.github/workflows/tests.yml`, ditambahkan T017);
+hasil run dilihat pada tab Actions.
+
+**Status implementasi:** T001..T012 komponen (commit `4e1b7daf` dan
+sebelumnya di git history) | T013 `6b676b24` | T014 `0ea18004` |
+T015 `d3d24e9c` | T016 `ee386b5b` | T017 `938cdc5f` (audit regresi +
+workflow CI) | T018 (dokumentasi ini).
 
 ---
 
@@ -125,6 +132,11 @@
 - **Files:** tanpa file baru (jalankan pytest penuh); perbaiki bila ada break.
 - **AC:** pytest penuh hijau; test lama tidak dimodifikasi (kecuali adapter yang di-spec di T013).
 - **Req:** REQ-103, REQ-104. **TD:** §11 regression.
+- **Catatan implementasi (2026-10-09):** audit commit M007 membuktikan tidak
+  ada test lama yang dimodifikasi (T014..T016 murni file baru). Workflow CI
+  `.github/workflows/tests.yml` ditambahkan agar pytest penuh benar-benar
+  dieksekusi pada setiap push/PR (sebelumnya tidak ada CI di repo); hasil
+  run pertama diverifikasi pada tab Actions.
 
 ## M007-T018 — Documentation Update
 - **Objective:** update TRACEABILITY (status M-007), ROADMAP (M-007 → DONE saat selesai), REQUIREMENTS changelog, SPEC_REVIEW issue status (per PROJECT_SPEC §7 maintenance policy).

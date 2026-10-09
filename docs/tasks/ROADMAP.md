@@ -38,12 +38,23 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - **Acceptance Criteria:** [x] Gradient check LM lulus; [x] loss menurun pada toy corpus; [x] generation valid & deterministik; [x] checkpoint save/load identik; [x] encode→train→generate→decode berjalan.
 - Commits eb412ca, aba7baa.
 
----
-
-## Milestone Berikutnya (PLANNED — menunggu persetujuan owner)
-
-## MILESTONE-007 — Transformer (Stage 6) — PLANNED
-Menunggu: persetujuan hasil M-003..M-006 + OPEN DECISION-101 (accelerasi, bila perlu) + OPEN DECISION-113 (coverage target). Komponen: scaled dot-product attention, positional encoding, residual blocks, LayerNorm; container non-sekuensial.
+## MILESTONE-007 — Transformer (Stage 6) ✅ DONE (2026-10-09)
+- **Objective:** Decoder-only causal Transformer sesuai M007_TECHNICAL_DESIGN.md
+  (21 komponen, invariant D = H × Dh, vocab 256 fixed).
+- **Requirements:** REQ-011 (utama); REQ-003/004/005/010/101/103/104/105 pendukung.
+- **Deliverables:** src/naze/nn/transformer.py (config sampai TransformerModel +
+  LanguageModelHead); adapter src/naze/lm/transformer_lm.py (TransformerLM,
+  transformer_generate); 3 file test baru (unit/numeric/integration);
+  workflow CI .github/workflows/tests.yml (pytest penuh pada push/PR).
+- **Acceptance Criteria:** [x] T001..T018 selesai berurutan; [x] grad-check tol
+  1e-5 lulus komponen backward; [x] mask correctness teruji level logits dan
+  attention; [x] evaluasi sanity 5-basis D-016 lulus; [x] test lama tidak
+  dimodifikasi; [x] pytest penuh dieksekusi via CI (hasil run: tab Actions).
+- **Open decisions tersisa:** OD-113 (coverage target), OD-114 (CI enforcement
+  formal), OD-118 (batas ukuran untuk training skala serius — bukan blocker
+  dev/test), OD-121 (skema positional; default learned).
+- Commits: 4e1b7daf (T001..T012), 6b676b24 (T013), 0ea18004 (T014),
+  d3d24e9c (T015), ee386b5b (T016), 938cdc5f (T017), T018 (dokumentasi).
 
 ## MILESTONE-008 — Training System lengkap (Stage 7 penuh) — PLANNED
 Optimizer tambahan (bila terukur perlu), logging terstruktur, evaluasi berkala, resume penuh.
@@ -60,3 +71,4 @@ Optimizer tambahan (bila terukur perlu), logging terstruktur, evaluasi berkala, 
 | 2026-10-06 | M-001 | DONE | Persetujuan owner |
 | 2026-10-06 | M-002 | IN REVIEW | Implementasi Stage 1 |
 | 2026-10-06 | M-002 | DONE; M-003..M-006 dibuka & selesai | Instruksi owner "kerjakan semuanya"; OPEN DECISION 102-106 diselesaikan via delegasi owner |
+| 2026-10-09 | M-007 | DONE | T001..T018 selesai berurutan; CI pytest ditambahkan (T017) |
