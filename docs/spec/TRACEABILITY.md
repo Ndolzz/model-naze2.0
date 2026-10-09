@@ -25,9 +25,9 @@ Chain of traceability (per DECISION-017):
 | REQ-004 Tokenizer | D-010, D-015 | Stage 3 | M-004 (DONE) | — (M007 TD §9: vocab 256 fixed) | M007-T001/012/013/016 | Roundtrip lossless; deterministik; vocab fixed 256 | MAPPED — ISSUE-004 RESOLVED |
 | REQ-005 Dataset | D-011 | Stage 4 | M-005 (DONE) | — | M007-T013/016 | Batch reproducible; memori terkendali; cleaning = OD-115 | MAPPED |
 | REQ-006 Training | D-013, D-016 | Stage 5–7 | M-006 (DONE minimal) → M-008 | M008_TD (upcoming) | M007-T013/016 (sanity); M008 tasks | AC evaluasi 5-basis (D-016); resume penuh = M-008 | MAPPED — ISSUE-006 RESOLVED |
-| REQ-007 Checkpointing | D-014 | Stage 7 | M-006 (DONE minimal) → M-008 | M008_TD (upcoming) | M008 tasks | Save/load deterministik; checksum+rng-state = M-008 | MAPPED |
-| REQ-008 Inference | — | Stage 8 | M-006 (partial) → M-009 | M009_TD (upcoming) | M009 tasks; M007-T013/016 (adapter generate) | Konsisten antar-run; benchmark (M-009) | MAPPED |
-| REQ-009 Evaluation | D-016 | Stage 7 (harness; benchmark = Stage 8) | M-008 (PLANNED) | M008_TD (upcoming) | M008 tasks; M007-T016 sanity | 5-basis evaluasi (D-016); format hasil OPEN di TD M-008 | MAPPED |
+| REQ-007 Checkpointing | D-014 | Stage 7 | M-006 (DONE minimal) → M-008 | **M008_TECHNICAL_DESIGN.md** | **M008-T001..T002 (DONE)** | Save/load deterministik; checksum+rng-state = M-008; checkpoint v2 | MAPPED |
+| REQ-008 Inference | — | Stage 8 | M-006 (partial) → M-009 | **M009_TECHNICAL_DESIGN.md** | **M009-T001..T016 (PLANNED)** | Konsisten antar-run; benchmark (M-009); forward-only path, batching, sliding window | MAPPED |
+| REQ-009 Evaluation | D-016 | Stage 7 (harness; benchmark = Stage 8) | M-008 (DONE) | **M008_TECHNICAL_DESIGN.md** | **M008-T001..T010 (DONE)** | 5-basis evaluasi (D-016); format hasil di M008-T003; benchmark inference = M-009 | MAPPED |
 | REQ-010 First LM | D-012, D-016 | Stage 5 | M-006 (DONE) | M007 TD §8 (integrasi pipeline) | M007-T013/016 | Trainable end-to-end (basis 1-2-3); generate deterministik; generate-from-checkpoint = M-008 | MAPPED |
 | REQ-011 Transformer | D-009 (backward per-layer), D-015 (vocab 256), D-016 (evaluasi) | Stage 6 | M-007 (**DONE 2026-10-09**, T001..T018) | **M007_TECHNICAL_DESIGN.md** | **M007-T001..T018 (selesai)** | TD §13: 17 AC objective — tervalidasi via unit/numeric/integration tests; pytest penuh dieksekusi via CI (T017, `.github/workflows/tests.yml`); batas ukuran = OD-118 | MAPPED — IMPLEMENTED |
 
@@ -59,5 +59,7 @@ Chain of traceability (per DECISION-017):
 
 - **Total requirement: 23** *(dikoreksi dari "26" — kesalahan hitung pra-existing; keputusan owner 2026-10-07)* — **23/23 MAPPED** — **UNMAPPED: 0** — kontradiksi: 0
 - **M-007 IMPLEMENTED (2026-10-09):** REQ-011 → D-009/015/016 → Stage 6 → M-007 (DONE) → M007_TECHNICAL_DESIGN.md → M007-T001..T018 (selesai) → 17 AC objective tervalidasi via 3 suite test baru + CI pytest penuh.
-- OD tersisa pasca-M-007: OD-113 (coverage), OD-114 (CI enforcement formal), OD-117 (metrik memori), OD-118 (batas ukuran training serius), OD-121 (skema positional; default learned).
+- **M-008 DONE (2026-10-09):** REQ-007/009 → D-014/016/018/019/020/021 → Stage 7 → M-008 (DONE) → M008_TECHNICAL_DESIGN.md → M008-T001..T010 (selesai) → coverage 97.75%, CI hijau.
+- **M-009 PLANNED:** REQ-008 → Stage 8 → M-009 (PLANNED) → M009_TECHNICAL_DESIGN.md → M009-T001..T016 (PLANNED) → forward-only path, batching, benchmark.
+- OD tersisa pasca-M-008: OD-101 (accelerasi), OD-107 (definisi sukses Naze 1.0), OD-108 (multimodal), OD-112 (korpus final), OD-115 (cleaning), OD-119 (release policy), OD-122..126 (M-009 open decisions).
 - Maintenance policy dipatuhi: implementasi selesai → TRACEABILITY diperbarui (PROJECT_SPEC §7).

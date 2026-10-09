@@ -56,7 +56,7 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - Commits: 4e1b7daf (T001..T012), 6b676b24 (T013), 0ea18004 (T014),
   d3d24e9c (T015), ee386b5b (T016), 938cdc5f (T017), T018 (dokumentasi).
 
-## MILESTONE-008 — Training System lengkap (Stage 7 penuh) — ACTIVE (2026-10-09)
+## MILESTONE-008 — Training System lengkap (Stage 7 penuh) — DONE (2026-10-09)
 - **Objective:** Training loop penuh sesuai M008_TECHNICAL_DESIGN.md (disetujui
   owner): TrainConfig, checkpoint v2 (checksum + meta, D-018), evaluasi
   berkala (loss/perplexity), run log JSONL, resume penuh, metrik memori
@@ -65,11 +65,15 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - **Deliverables:** src/naze/train/{config,checkpoint,evaluate,runlog,loop}.py;
   batches_pos (aditif); loss_pos/backward_pos (aditif); CI coverage;
   tests/test_m008_units.py + test_m008_integration.py.
-- **Acceptance Criteria:** [ ] T001..T010 selesai berurutan; [ ] loss train
-  menurun; [ ] resume eksak deterministik; [ ] checkpoint <=1 MB; [ ] test
-  lama tidak dimodifikasi; [ ] CI hijau dengan coverage >=80%.
+- **Acceptance Criteria:** [x] T001..T010 selesai berurutan; [x] loss train
+  menurun; [x] resume eksak deterministik; [x] checkpoint <=1 MB; [x] test
+  lama tidak dimodifikasi; [x] CI hijau dengan coverage >=80% (97.75%).
 
-## MILESTONE-009 — Inference Engine (Stage 8) — PLANNED
+## MILESTONE-009 — Inference Engine (Stage 8) — PLANNED (TD siap, menunggu persetujuan owner)
+- **Objective:** Forward-only production path, batching efisien, benchmark memori/latensi untuk MLPLM dan TransformerLM.
+- **Requirements:** REQ-008, REQ-101, REQ-102, REQ-103, REQ-104.
+- **Deliverables:** src/naze/inference/{batch,engine,benchmark,__init__}.py; tests/test_m009_*.py (unit/numeric/integration/benchmark).
+- **Acceptance Criteria:** [ ] T001..T016 selesai berurutan; [ ] end-to-end encode->batch->forward->generate->decode berjalan; [ ] benchmark tokens_per_second > 0 dan peak_rss_kb < 2 GB; [ ] test lama tidak dimodifikasi; [ ] coverage >=80%.
 ## MILESTONE-010 — Naze 1.0 (Stage 9) — PLANNED (menunggu OPEN DECISION-107)
 ## MILESTONE-011+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
 
@@ -82,4 +86,5 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 | 2026-10-06 | M-002 | IN REVIEW | Implementasi Stage 1 |
 | 2026-10-06 | M-002 | DONE; M-003..M-006 dibuka & selesai | Instruksi owner "kerjakan semuanya"; OPEN DECISION 102-106 diselesaikan via delegasi owner |
 | 2026-10-09 | M-007 | DONE | T001..T018 selesai berurutan; CI pytest ditambahkan (T017) |
-| 2026-10-09 | M-008 | ACTIVE | TD disetujui owner; task breakdown T001..T010 dibuat |
+| 2026-10-09 | M-008 | DONE | T001..T010 selesai berurutan; coverage 97.75%; CI hijau |
+| 2026-10-09 | M-009 | PLANNED | TD + task breakdown T001..T016 siap, menunggu persetujuan owner |
