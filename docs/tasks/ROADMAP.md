@@ -69,12 +69,12 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
   menurun; [x] resume eksak deterministik; [x] checkpoint <=1 MB; [x] test
   lama tidak dimodifikasi; [x] CI hijau dengan coverage >=80% (97.75%).
 
-## MILESTONE-009 — Inference Engine (Stage 8) — PLANNED (TD siap, menunggu persetujuan owner)
+## MILESTONE-009 — Inference Engine (Stage 8) — DONE (2026-10-09)
 - **Objective:** Forward-only production path, batching efisien, benchmark memori/latensi untuk MLPLM dan TransformerLM.
 - **Requirements:** REQ-008, REQ-101, REQ-102, REQ-103, REQ-104.
 - **Deliverables:** src/naze/inference/{batch,engine,benchmark,__init__}.py; tests/test_m009_*.py (unit/numeric/integration/benchmark).
-- **Acceptance Criteria:** [ ] T001..T016 selesai berurutan; [ ] end-to-end encode->batch->forward->generate->decode berjalan; [ ] benchmark tokens_per_second > 0 dan peak_rss_kb < 2 GB; [ ] test lama tidak dimodifikasi; [ ] coverage >=80%.
-## MILESTONE-010 — Naze 1.0 (Stage 9) — PLANNED (menunggu OPEN DECISION-107)
+- **Acceptance Criteria:** [x] T001..T016 selesai berurutan; [x] end-to-end encode->batch->forward->generate->decode berjalan; [x] benchmark tokens_per_second > 0 dan peak_rss_kb < 2 GB; [x] test lama tidak dimodifikasi; [x] coverage >=80% (93.40%).
+## MILESTONE-010 — Naze 1.0 (Stage 9) — PLANNED (menunggu OPEN DECISION-107, OD-107)
 ## MILESTONE-011+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
 
 ## Roadmap Change Log

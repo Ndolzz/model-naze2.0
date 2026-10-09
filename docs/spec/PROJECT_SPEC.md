@@ -23,10 +23,12 @@ Core intelligence milik sendiri, transparan end-to-end: fondasi neural -> model 
 - Pipeline END-TO-END berfungsi: encode teks (byte tokenizer) -> batch dataset -> train MLP LM (SGD) -> checkpoint -> generate teks (greedy/temperature), seluruhnya deterministik per-seed dan teruji.
 - Governance M-007 selesai: DECISION-015 (vocab fixed 256), DECISION-016 (evaluasi 5-basis), DECISION-017 (format Technical Design) — ISSUE-004, ISSUE-006/OD-116, ISSUE-013/OD-120 resolved.
 - Technical Design M-007 selesai: `docs/architecture/M007_TECHNICAL_DESIGN.md` (15 section sesuai DECISION-017). Task Breakdown M-007 selesai: `docs/tasks/M007_TASKS.md` (M007-T001..T018).
-- Menunggu persetujuan owner untuk memulai implementasi M-007 (Transformer, Stage 6).
+- M-007 DONE: Transformer (Stage 6) terimplementasi penuh.
+- M-008 DONE: Training System lengkap (Stage 7) terimplementasi penuh.
+- M-009 DONE: Inference Engine (Stage 8) terimplementasi penuh.
 
 ## 5. Out of Scope Saat Ini [RECONSTRUCTED — Transformer keluar dari out-of-scope]
-Training system penuh (M-008), inference engine penuh (M-009), Naze 1.0 (M-010), multimodal (M-011+). Larangan permanen: pretrained core, API LLM core.
+Naze 1.0 (M-010), multimodal (M-011+). Larangan permanen: pretrained core, API LLM core.
 
 ## 6. Development Philosophy
 Spec first; no invention (OPEN DECISION); modular bertahap; resource efficiency; no overengineering; traceability.
