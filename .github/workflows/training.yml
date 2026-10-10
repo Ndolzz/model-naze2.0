@@ -1,0 +1,43 @@
+name: training
+
+on:
+  workflow_dispatch:
+    inputs:
+      epochs:
+        description: "Jumlah epoch training final (DECISION-023: training loss <= 2.5)"
+        required: false
+        default: "10"
+        type: string
+      resume:
+        description: "Epoch awal untuk resume penuh (0 = mulai dari awal)"
+        required: false
+        default: "0"
+        type: string
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependensi
+        run: python -m pip install --upgrade pip && python -m pip install numpy
+      - name: Training final Naze 1.0 (M010-T005)
+        run: |
+          python scripts/train_final.py \
+            --epochs "${{ github.event.inputs.epochs || '10' }}" \
+            --resume "${{ github.event.inputs.resume || '0' }}"
+        env:
+          PYTHONPATH: src
+      - name: Upload artefak (checkpoint + run log + summary)
+        uses: actions/upload-artifact@v4
+        with:
+          name: naze-training-${{ github.run_id }}
+          path: |
+            models/naze_v1/
+            runs/
+          retention-days: 30
+          if-no-files-found: error
