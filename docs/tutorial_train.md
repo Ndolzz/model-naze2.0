@@ -42,10 +42,15 @@ Output:
 ## 3. Training via GitHub Actions
 
 1. Buka tab Actions, pilih workflow "training", lalu klik Run workflow.
-2. Isi input `epochs` (default 10) dan `resume` (default 0), lalu jalankan.
+2. Isi input:
+   - `epochs` (default 10): jumlah epoch.
+   - `resume` (default 0): start_epoch untuk resume penuh.
+   - `resume_run_id` (default kosong): ID run sebelumnya; jika diisi, artifact run tersebut diunduh lebih dahulu sehingga training melanjutkan dari checkpoint-nya.
 3. Setelah selesai, unduh artifact `naze-training-<run_id>` yang berisi `models/naze_v1/` dan `runs/` (retensi 30 hari).
 
-Catatan: runner CI tidak menyimpan status antar run. Jika training terputus (misal karena timeout 350 menit), unduh artifact, letakkan `models/naze_v1/` kembali ke root repository, lalu jalankan ulang dengan `--resume <epoch_tercapai>`. Setelan hyperparameter (block size, batch size, lr, seed) wajib dipertahankan agar hasil konsisten.
+Catatan desain:
+- Langkah training memiliki timeout step 330 menit, di bawah timeout job 350 menit. Jika langkah training melewati batas step, step tersebut gagal, tetapi langkah unggah artifact tetap berjalan (`if: always()`) sehingga checkpoint dan run log tetap terselamatkan.
+- Untuk training yang tidak muat dalam satu run, gunakan strategi multi-run: jalankan run pertama dengan epoch per batch (misal 5), lalu jalankan run berikutnya dengan `resume_run_id` = ID run sebelumnya dan `resume` = epoch terakhir yang tercapai ditambah satu (cek `runs/m010_train.jsonl` pada artifact run sebelumnya). Hyperparameter (block size, batch size, lr, seed) wajib identik antar run.
 
 ## 4. Resume
 
