@@ -1,7 +1,7 @@
 # API Reference  Naze 1.0
 
-> **Status:** DRAFT  berdasarkan source code aktual (M-001..M-009 DONE)
-> **Version:** 1.0.0 (target)
+> **Status:** FINAL — berdasarkan source code aktual (M-001..M-009 DONE; M-010 ACTIVE, T011)
+> **Version:** 1.0.0 (T001 — disinkronkan dengan pyproject.toml)
 > **Source of truth:** `src/naze/`
 
 ---
@@ -53,7 +53,7 @@ naze/
 ### Attributes
 
 ```python
-__version__: str = "0.0.2"  # Will be "1.0.0" for release
+__version__: str = "1.0.0"  # T001: versi final Naze 1.0
 ```
 
 ### Exports
