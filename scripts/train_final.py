@@ -27,6 +27,7 @@ from naze.train.config import TrainConfig
 from naze.train.evaluate import evaluate
 from naze.train.loop import TrainingRun
 from naze.train.runlog import RunLog, checkpoint_size, measure_peak_rss
+from naze.train.checkpoint import load_checkpoint_v2
 
 SPLITS = ROOT / "data" / "corpus" / "splits"
 
@@ -74,6 +75,20 @@ def main() -> int:
     train_data = TextWindows(train_ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)
     val_data = TextWindows(val_ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)
 
+    if args.resume > 0:
+        ckpt_dir = ROOT / args.checkpoint_dir
+        if not (ckpt_dir / "params.npz").exists():
+            raise SystemExit(
+                f"--resume {args.resume} memerlukan checkpoint, tetapi "
+                f"{ckpt_dir / 'params.npz'} tidak ditemukan. Mulai dari awal "
+                "(--resume 0) atau pulihkan artifact run sebelumnya terlebih dahulu."
+            )
+        loaded_epoch = load_checkpoint_v2(str(ckpt_dir), model)["epoch"]
+        if loaded_epoch != args.resume:
+            raise SystemExit(
+                f"--resume {args.resume} tidak cocok dengan checkpoint "
+                f"(epoch={loaded_epoch}). Gunakan --resume {loaded_epoch}."
+            )
     log_path = ROOT / args.run_log
     log_path.parent.mkdir(parents=True, exist_ok=True)
     with RunLog(log_path) as log:

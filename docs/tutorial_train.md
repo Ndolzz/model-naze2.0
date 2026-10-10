@@ -35,7 +35,7 @@ Argumen (nilai default):
 | `--resume` | 0 | start_epoch (melanjutkan dari checkpoint) |
 
 Output:
-- `models/naze_v1/` — checkpoint v2 (params + metadata + checksum).
+- `models/naze_v1/` — checkpoint v2 (params + metadata + checksum), disimpan setiap epoch.
 - `runs/m010_train.jsonl` — run log per epoch (loss train/val, perplexity, metrik memori).
 - `runs/m010_summary.json` — ringkasan akhir: train loss, val perplexity, holdout loss/perplexity, ukuran checkpoint, peak RSS, config hash.
 
@@ -58,7 +58,7 @@ Catatan desain:
 python scripts/train_final.py --epochs 10 --resume 5
 ```
 
-`--resume N` menetapkan start_epoch dan melanjutkan dari checkpoint di `models/naze_v1/`. Jika `start_epoch == epochs`, training menjadi no-op dan peringatan ditampilkan.
+`--resume N` menetapkan start_epoch dan melanjutkan dari checkpoint di `models/naze_v1/`. Script memuat checkpoint secara eksplisit saat resume; nilai N harus sama dengan epoch yang tersimpan pada checkpoint (jumlah epoch selesai), jika tidak script keluar dengan galat. Jika `start_epoch == epochs`, training menjadi no-op dan peringatan ditampilkan.
 
 ## 5. Evaluasi release gate (DECISION-023)
 

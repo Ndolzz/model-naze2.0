@@ -4,7 +4,9 @@ TrainingRun menyusun komponen M-008 (batches/batches_pos per-epoch seed,
 loss/loss_pos, evaluate, checkpoint v2, RunLog) menjadi loop epoch-batch
 dengan SGD. Optimizer tetap SGD (no overengineering; OD-106 terbuka).
 Reproducible: seed batch epoch ke-e = config.seed + e; resume penuh via
-start_epoch + load_checkpoint_v2 (REQ-102).
+start_epoch + load_checkpoint_v2 (REQ-102). Checkpoint disimpan setiap
+epoch (M-010) agar run yang terputus (mis. timeout CI) tetap dapat
+dilanjutkan tanpa kehilangan bobot.
 """
 
 from __future__ import annotations
@@ -66,6 +68,9 @@ class TrainingRun:
                     log.write({"type": "eval", "epoch": e, "step": steps,
                                "train_loss": epoch_loss, "eval_loss": eval_loss,
                                "perplexity": perplexity, "n_tokens": res.n_tokens})
+            if cfg.checkpoint_path is not None:
+                save_checkpoint_v2(cfg.checkpoint_path, self.model,
+                                   step=steps, epoch=e + 1, config=cfg)
         checkpoint_dir = None
         checkpoint_bytes = None
         if cfg.checkpoint_path is not None:

@@ -14,6 +14,7 @@ Persiapan rilis Naze 1.0 (milestone M-010, Stage 9). Status: training final dala
 - Changelog ini (M010-T013).
 
 ### Diubah
+- Training system: checkpoint disimpan setiap epoch, dan `scripts/train_final.py` memuat checkpoint secara eksplisit saat `--resume` — run CI yang terputus kini dapat dilanjutkan tanpa kehilangan bobot.
 - `README.md` diperbarui: status M-001..M-010, struktur modul, instruksi training final, tautan dokumentasi (M010-T014).
 - `tests/test_smoke.py`: asersi versi disinkronkan ke 1.0.0 (perbaikan failure pra-existing pada CI).
 
