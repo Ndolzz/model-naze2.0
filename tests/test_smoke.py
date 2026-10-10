@@ -7,7 +7,7 @@ import naze
 
 
 def test_package_importable() -> None:
-    assert naze.__version__ == "0.0.2"
+    assert naze.__version__ == "1.0.0"  # T001: versi final Naze 1.0 (sinkron pyproject)
 
 
 def test_numpy_available() -> None:
