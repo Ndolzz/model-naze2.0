@@ -7,6 +7,7 @@ Semua perubahan penting pada proyek ini didokumentasikan dalam berkas ini. Forma
 Persiapan rilis Naze 1.0 (milestone M-010, Stage 9). Status: training final dalam proses — release gate DECISION-023 (training loss ≤ 2.5; validation perplexity ≤ 35; NazeIO command accuracy ≥ 90%) belum diverifikasi. Versi 1.0.0 efektif dirilis setelah seluruh gate terpenuhi.
 
 ### Ditambahkan
+- Workflow CI benchmark NazeIO (`.github/workflows/benchmark.yml`): memuat checkpoint dari artifact run training, menjalankan `scripts/benchmark_nazeio.py`, dan mengunggah laporan akurasi — M010-T008.
 - Workflow CI training manual (`.github/workflows/training.yml`): workflow_dispatch dengan input `epochs`/`resume`, timeout 350 menit, artifact `naze-training-<run_id>` (retensi 30 hari) — M010-T004.
 - Korpus hybrid ±7 MB (DECISION-024) dengan pembagian train/val/holdout 80/10/10 di `data/corpus/splits/`.
 - `docs/api.md` — API reference FINAL v1.0.0, sinkron dengan `pyproject.toml` (T001/T011).

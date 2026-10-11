@@ -70,6 +70,8 @@ Baca `runs/m010_summary.json`. Rilis Naze 1.0 memenuhi tiga gate wajib:
 | Validation perplexity | ≤ 35 (exp(val loss)) | `runs/m010_summary.json` |
 | NazeIO command accuracy | ≥ 90% | `python scripts/benchmark_nazeio.py` dengan `data/benchmark/commands.json` |
 
+Benchmark NazeIO dapat dijalankan di CI: workflow "benchmark" dengan input `run_id` = ID run training yang artifact-nya memuat checkpoint final. Laporan tersimpan pada artifact `nazeio-benchmark-<run_id>`.
+
 Angka holdout hanya dievaluasi sekali di akhir script dan tidak boleh dipakai untuk tuning (DECISION-024).
 
 ## 6. Generate teks
