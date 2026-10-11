@@ -34,9 +34,12 @@ PERINTAH = ROOT / "data" / "korpus" / "perintah_tingkat_1.txt"
 
 
 def load_perintah_text(path: Path) -> str:
+    # Pertahankan struktur baris asli: "perintah: X\nintent: Y\n\nperintah: ...".
+    # (Jangan gabungkan semua baris dengan \n\n - konteks kondisional
+    # "perintah -> intent" harus identik dengan format benchmark.)
     lines = [ln for ln in path.read_text(encoding="utf-8").splitlines()
-             if ln.strip() and not ln.startswith("#")]
-    return "\n\n".join(lines) + "\n"
+             if not ln.startswith("#")]
+    return "\n".join(lines).strip() + "\n"
 
 
 def main() -> int:
