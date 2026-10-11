@@ -47,6 +47,7 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=0.08)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--eval-every", type=int, default=50)
     parser.add_argument("--report", type=str, default="runs/finetune_nazeio_summary.json")
     args = parser.parse_args()
 
@@ -64,8 +65,8 @@ def main() -> int:
         batch_size=args.batch_size,
         lr=args.lr,
         epochs=args.epochs,
+        eval_every=args.eval_every,
         seed=args.seed,
-        eval_every=args.epochs,
         checkpoint_path=str(ckpt_dir),
     )
     model_cfg = TransformerConfig(
@@ -76,10 +77,11 @@ def main() -> int:
     loaded = load_checkpoint_v2(ckpt_dir, model)
     print(f"[finetune] checkpoint dimuat: epoch={loaded['epoch']} step={loaded['step']}")
 
+    holdout_data = TextWindows(ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)  # self-eval: target tahap ini adalah hafalan (loss mendekati 0)
     log_path = ROOT / "runs" / "finetune_nazeio.jsonl"
     with RunLog(log_path) as log:
         data = TextWindows(ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)
-        summary = TrainingRun(cfg, model, data).run(log=log)
+        summary = TrainingRun(cfg, model, data, holdout=holdout_data).run(log=log)
     summary["finetune_corpus_tokens"] = len(ids)
     summary["loaded_epoch"] = loaded["epoch"]
     summary["finetune_stage"] = "nazeio_command"
