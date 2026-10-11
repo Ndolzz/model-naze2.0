@@ -46,7 +46,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Fine-tuning command NazeIO (M-010)")
     parser.add_argument("--checkpoint", type=str, default="models/naze_v1")
     parser.add_argument("--epochs", type=int, default=100)
-    parser.add_argument("--block-size", type=int, default=32)
+    parser.add_argument("--block-size", type=int, default=64)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=0.08)
     parser.add_argument("--seed", type=int, default=0)

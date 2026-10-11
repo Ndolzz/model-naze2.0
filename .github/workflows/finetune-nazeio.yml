@@ -4,19 +4,29 @@ on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: "ID run training yang artifact-nya memuat checkpoint final"
+        description: "ID run sumber checkpoint"
         required: true
         type: string
       epochs:
-        description: "Jumlah epoch fine-tuning (default 100)"
+        description: "Jumlah epoch fine-tuning (default 500)"
         required: false
-        default: "100"
+        default: "500"
+        type: string
+      block_size:
+        description: "Ukuran jendela konteks (default 64; pasangan perintah terpanjang ~61 byte)"
+        required: false
+        default: "64"
+        type: string
+      artifact_name:
+        description: "Nama artifact sumber (opsional; default naze-training-<run_id>, untuk chaining pakai nazeio-finetune-<run_id>)"
+        required: false
+        default: ""
         type: string
 
 jobs:
   finetune:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,16 +34,19 @@ jobs:
           python-version: "3.11"
       - name: Install dependensi
         run: python -m pip install --upgrade pip && python -m pip install numpy
-      - name: Pulihkan checkpoint dari artifact run training
+      - name: Pulihkan checkpoint dari artifact run sumber
         uses: actions/download-artifact@v4
         with:
-          name: naze-training-${{ github.event.inputs.run_id }}
+          name: ${{ github.event.inputs.artifact_name != '' && github.event.inputs.artifact_name || format('naze-training-{0}', github.event.inputs.run_id) }}
           run-id: ${{ github.event.inputs.run_id }}
           github-token: ${{ github.token }}
           path: .
           artifact_fail_on_not_found: true
       - name: Fine-tuning command NazeIO (M-010)
-        run: python scripts/finetune_nazeio.py --checkpoint models/naze_v1 --epochs "${{ github.event.inputs.epochs || '100' }}"
+        run: |
+          python scripts/finetune_nazeio.py --checkpoint models/naze_v1 \
+            --epochs "${{ github.event.inputs.epochs || '500' }}" \
+            --block-size "${{ github.event.inputs.block_size || '64' }}"
         env:
           PYTHONPATH: src
       - name: Benchmark NazeIO (gate DECISION-023)
