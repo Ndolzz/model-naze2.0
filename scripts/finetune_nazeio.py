@@ -27,10 +27,13 @@ from naze.nn.transformer import TransformerConfig
 from naze.token import ByteTokenizer
 from naze.train.checkpoint import load_checkpoint_v2
 from naze.train.config import TrainConfig
+from naze.train.evaluate import evaluate
 from naze.train.loop import TrainingRun
 from naze.train.runlog import RunLog
 
 PERINTAH = ROOT / "data" / "korpus" / "perintah_tingkat_1.txt"
+VAL_SPLIT = ROOT / "data" / "corpus" / "splits" / "val.txt"
+VAL_SAMPLE_BYTES = 65_536  # sampel deterministik; evaluasi penuh tetap lewat train_final (no-op)
 
 
 def load_perintah_text(path: Path) -> str:
@@ -88,6 +91,16 @@ def main() -> int:
     summary["finetune_corpus_tokens"] = len(ids)
     summary["loaded_epoch"] = loaded["epoch"]
     summary["finetune_stage"] = "nazeio_command"
+
+    # Evaluasi kemampuan bahasa umum pasca fine-tuning (gate DECISION-023: ppl <= 35).
+    val_text = VAL_SPLIT.read_text(encoding="utf-8")[:VAL_SAMPLE_BYTES]
+    val_ids = ByteTokenizer().encode(val_text)
+    val_data = TextWindows(val_ids, 32, cfg.batch_size, seed=cfg.seed)
+    general = evaluate(model, val_data, per_pos=True, seed=cfg.seed)
+    summary["general_val_sample_loss"] = general.mean_loss
+    summary["general_val_sample_perplexity"] = general.perplexity
+    summary["general_val_sample_tokens"] = general.n_tokens
+    print(f"[finetune] sampel korpus umum: loss={general.mean_loss:.4f} ppl={general.perplexity:.4f} (gate: ppl <= 35)")
 
     out = ROOT / args.report
     out.parent.mkdir(parents=True, exist_ok=True)
