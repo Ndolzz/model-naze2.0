@@ -1,0 +1,402 @@
+imbuhan: main + ber
+jawab: bermain
+
+imbuhan: kerja + be
+jawab: bekerja
+
+imbuhan: lari + ber
+jawab: berlari
+
+imbuhan: renang + ber
+jawab: berenang
+
+imbuhan: jalan + ber
+jawab: berjalan
+
+imbuhan: diri + ber
+jawab: berdiri
+
+imbuhan: tani + ber
+jawab: bertani
+
+imbuhan: teman + ber
+jawab: berteman
+
+imbuhan: doa + ber
+jawab: berdoa
+
+imbuhan: puasa + ber
+jawab: berpuasa
+
+imbuhan: makan + -an
+jawab: makanan
+
+imbuhan: minum + -an
+jawab: minuman
+
+imbuhan: pakai + -an
+jawab: pakaian
+
+imbuhan: tulis + -an
+jawab: tulisan
+
+imbuhan: gambar + -an
+jawab: gambaran
+
+imbuhan: bangun + -an
+jawab: bangunan
+
+imbuhan: ajar + -an
+jawab: ajaran
+
+imbuhan: tanam + -an
+jawab: tanaman
+
+imbuhan: baca + me
+jawab: membaca
+
+imbuhan: tulis + me
+jawab: menulis
+
+imbuhan: makan + me
+jawab: memakan
+
+imbuhan: minum + me
+jawab: meminum
+
+imbuhan: bawa + mem
+jawab: membawa
+
+imbuhan: panggil + mem
+jawab: memanggil
+
+imbuhan: beli + mem
+jawab: membeli
+
+imbuhan: ajar + meng
+jawab: mengajar
+
+imbuhan: kirim + meng
+jawab: mengirim
+
+imbuhan: baca + di
+jawab: dibaca
+
+imbuhan: tulis + di
+jawab: ditulis
+
+imbuhan: makan + di
+jawab: dimakan
+
+imbuhan: buka + di
+jawab: dibuka
+
+imbuhan: tutup + di
+jawab: ditutup
+
+imbuhan: kirim + di
+jawab: dikirim
+
+imbuhan: ambil + di
+jawab: diambil
+
+imbuhan: pilih + di
+jawab: dipilih
+
+kata depan: tinggal Bandung
+jawab: tinggal di Bandung
+
+kata depan: pergi pasar
+jawab: pergi ke pasar
+
+kata depan: pulang sekolah
+jawab: pulang dari sekolah
+
+kata depan: datang Jakarta
+jawab: datang dari Jakarta
+
+kata depan: lahir Surabaya
+jawab: lahir di Surabaya
+
+kata depan: belajar kelas
+jawab: belajar di kelas
+
+kata depan: bermain lapangan
+jawab: bermain di lapangan
+
+kata depan: tidur kamar
+jawab: tidur di kamar
+
+kata depan: menunggu halte
+jawab: menunggu di halte
+
+kata depan: belanja toko
+jawab: belanja di toko
+
+kata depan: berenang kolam
+jawab: berenang di kolam
+
+kata depan: beribadah masjid
+jawab: beribadah di masjid
+
+kata depan: bekerja kantor
+jawab: bekerja di kantor
+
+kata depan: berobat rumah sakit
+jawab: berobat di rumah sakit
+
+kata depan: berangkat stasiun
+jawab: berangkat ke stasiun
+
+kata depan: kembali kampung
+jawab: kembali ke kampung
+
+kata depan: naik gunung
+jawab: naik ke gunung
+
+kata depan: tiba pelabuhan
+jawab: tiba di pelabuhan
+
+kata depan: duduk bangku
+jawab: duduk di bangku
+
+kata depan: berdiri pojok
+jawab: berdiri di pojok
+
+kata depan: hadir rapat
+jawab: hadir dalam rapat
+
+kata depan: hadiah anak
+jawab: hadiah untuk anak
+
+kata depan: surat ibu
+jawab: surat untuk ibu
+
+kata depan: uang makan
+jawab: uang untuk makan
+
+kata depan: buku sejarah
+jawab: buku tentang sejarah
+
+kata depan: berita banjir
+jawab: berita tentang banjir
+
+kata depan: makan sendok
+jawab: makan dengan sendok
+
+kata depan: menulis pensil
+jawab: menulis dengan pensil
+
+kata depan: pergi teman
+jawab: pergi dengan teman
+
+kata depan: pulang kantor
+jawab: pulang dari kantor
+
+kata depan: turun bus
+jawab: turun dari bus
+
+kata depan: turun gunung
+jawab: turun dari gunung
+
+kata depan: kue adik
+jawab: kue dari adik
+
+kata depan: kabar desa
+jawab: kabar dari desa
+
+kata depan: tugas guru
+jawab: tugas dari guru
+
+baku: apotik
+jawab: apotek
+
+baku: aktifitas
+jawab: aktivitas
+
+baku: analisa
+jawab: analisis
+
+baku: atlit
+jawab: atlet
+
+baku: bathin
+jawab: batin
+
+baku: cabe
+jawab: cabai
+
+baku: faham
+jawab: paham
+
+baku: hutang
+jawab: utang
+
+baku: ijin
+jawab: izin
+
+baku: jaman
+jawab: zaman
+
+baku: karir
+jawab: karier
+
+baku: konkrit
+jawab: konkret
+
+baku: kwalitas
+jawab: kualitas
+
+baku: kwitansi
+jawab: kuitansi
+
+baku: lembab
+jawab: lembap
+
+baku: makhlok
+jawab: makhluk
+
+baku: nasehat
+jawab: nasihat
+
+baku: nomer
+jawab: nomor
+
+baku: obyek
+jawab: objek
+
+baku: praktek
+jawab: praktik
+
+baku: propinsi
+jawab: provinsi
+
+baku: resiko
+jawab: risiko
+
+baku: sekedar
+jawab: sekadar
+
+baku: silahkan
+jawab: silakan
+
+baku: sistim
+jawab: sistem
+
+baku: tehnik
+jawab: teknik
+
+baku: telor
+jawab: telur
+
+baku: azas
+jawab: asas
+
+baku: aktifis
+jawab: aktivis
+
+baku: konsekwensi
+jawab: konsekuensi
+
+baku: frekwensi
+jawab: frekuensi
+
+baku: managemen
+jawab: manajemen
+
+baku: handal
+jawab: andal
+
+baku: fikir
+jawab: pikir
+
+baku: realita
+jawab: realitas
+
+status: Adik membaca buku di kamar.
+jawab: gramatikal
+
+status: Ibu memasak nasi di dapur.
+jawab: gramatikal
+
+status: Kami bermain bola di lapangan.
+jawab: gramatikal
+
+status: Ayah pergi ke kantor pagi ini.
+jawab: gramatikal
+
+status: Dia menulis surat untuk temannya.
+jawab: gramatikal
+
+status: Para siswa berbaris di halaman sekolah.
+jawab: gramatikal
+
+status: Nenek menyiram bunga setiap pagi.
+jawab: gramatikal
+
+status: Kakak sedang mengerjakan tugas.
+jawab: gramatikal
+
+status: Burung-burung terbang ke selatan.
+jawab: gramatikal
+
+status: Hujan turun sejak pagi tadi.
+jawab: gramatikal
+
+status: Pak guru menjelaskan materi dengan jelas.
+jawab: gramatikal
+
+status: Anak itu bermain layang-layang.
+jawab: gramatikal
+
+status: Kami tiba di stasiun pada jam lima.
+jawab: gramatikal
+
+status: Ia pergi setelah makan siang.
+jawab: gramatikal
+
+status: Waktu berlalu begitu cepat.
+jawab: gramatikal
+
+status: Adik buku membaca di kamar.
+jawab: tidak gramatikal
+
+status: Ibu dapur memasak nasi di.
+jawab: tidak gramatikal
+
+status: Kami lapangan bermain bola di.
+jawab: tidak gramatikal
+
+status: Ayah pagi pergi ke kantor ini.
+jawab: tidak gramatikal
+
+status: Dia menulis untuk surat temannya.
+jawab: tidak gramatikal
+
+status: Para siswa halaman berbaris di sekolah.
+jawab: tidak gramatikal
+
+status: Nenek setiap menyiram bunga pagi.
+jawab: tidak gramatikal
+
+status: Kakak tugas sedang mengerjakan.
+jawab: tidak gramatikal
+
+status: Burung terbang-burung ke selatan.
+jawab: tidak gramatikal
+
+status: Hujan pagi turun sejak tadi.
+jawab: tidak gramatikal
+
+status: Pak guru dengan menjelaskan materi jelas.
+jawab: tidak gramatikal
+
+status: Anak itu layang-layang bermain.
+jawab: tidak gramatikal
+
+status: Kami jam tiba di stasiun pada lima.
+jawab: tidak gramatikal
+
+status: Ia siang makan setelah pergi.
+jawab: tidak gramatikal
+

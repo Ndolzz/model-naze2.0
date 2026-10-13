@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "category": "punctuation",
+  "metric": "exact_match",
+  "items": [
+    {
+      "id": "punct-b01",
+      "prompt": "koreksi: ayah mencuci mobil di garasi\njawab:",
+      "expected": " Ayah mencuci mobil di garasi."
+    },
+    {
+      "id": "punct-b02",
+      "prompt": "koreksi: nenek menyiram bunga tiap pagi\njawab:",
+      "expected": " Nenek menyiram bunga tiap pagi."
+    },
+    {
+      "id": "punct-b03",
+      "prompt": "koreksi: apa kabar kakek di desa\njawab:",
+      "expected": " Apa kabar kakek di desa?"
+    },
+    {
+      "id": "punct-b04",
+      "prompt": "koreksi: mengapa lampu mati tiba-tiba\njawab:",
+      "expected": " Mengapa lampu mati tiba-tiba?"
+    },
+    {
+      "id": "punct-b05",
+      "prompt": "koreksi: ayo berangkat sekarang juga\njawab:",
+      "expected": " Ayo berangkat sekarang juga!"
+    },
+    {
+      "id": "punct-b06",
+      "prompt": "koreksi: aduh dompetku tertinggal\njawab:",
+      "expected": " Aduh, dompetku tertinggal!"
+    },
+    {
+      "id": "punct-b07",
+      "prompt": "koreksi: kakak menonton film kemarin\njawab:",
+      "expected": " Kakak menonton film kemarin."
+    },
+    {
+      "id": "punct-b08",
+      "prompt": "koreksi: berapa jumlah siswa kelas ini\njawab:",
+      "expected": " Berapa jumlah siswa kelas ini?"
+    },
+    {
+      "id": "punct-b09",
+      "prompt": "koreksi: jangan lupa kunci pintu rumah\njawab:",
+      "expected": " Jangan lupa kunci pintu rumah!"
+    },
+    {
+      "id": "punct-b10",
+      "prompt": "koreksi: kakek membaca koran di teras\njawab:",
+      "expected": " Kakek membaca koran di teras."
+    },
+    {
+      "id": "punct-b11",
+      "prompt": "jenis: budi menyapu halaman pagi tadi\njawab:",
+      "expected": " berita"
+    },
+    {
+      "id": "punct-b12",
+      "prompt": "jenis: ke mana kamu akan pergi\njawab:",
+      "expected": " tanya"
+    },
+    {
+      "id": "punct-b13",
+      "prompt": "jenis: tolong tepati janjimu\njawab:",
+      "expected": " seru"
+    },
+    {
+      "id": "punct-b14",
+      "prompt": "jenis: harga sayur naik bulan ini\njawab:",
+      "expected": " berita"
+    },
+    {
+      "id": "punct-b15",
+      "prompt": "jenis: siapa pemilik tas ini\njawab:",
+      "expected": " tanya"
+    }
+  ]
+}

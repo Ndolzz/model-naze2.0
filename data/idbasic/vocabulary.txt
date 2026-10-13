@@ -1,0 +1,402 @@
+sinonim: pintar
+jawab: cerdas
+
+sinonim: gesit
+jawab: lincah
+
+sinonim: indah
+jawab: cantik
+
+sinonim: sedih
+jawab: gundah
+
+sinonim: gembira
+jawab: riang
+
+sinonim: marah
+jawab: geram
+
+sinonim: takut
+jawab: gentar
+
+sinonim: lelah
+jawab: penat
+
+sinonim: miskin
+jawab: melarat
+
+sinonim: kaya
+jawab: berada
+
+sinonim: mahir
+jawab: terampil
+
+sinonim: awal
+jawab: permulaan
+
+sinonim: akhir
+jawab: ujung
+
+sinonim: bunga
+jawab: kembang
+
+sinonim: meninggal
+jawab: wafat
+
+sinonim: membangun
+jawab: mendirikan
+
+sinonim: melihat
+jawab: memandang
+
+sinonim: berbicara
+jawab: bertutur
+
+sinonim: berjalan
+jawab: melangkah
+
+sinonim: mendengar
+jawab: menyimak
+
+sinonim: meminta
+jawab: memohon
+
+sinonim: memilih
+jawab: menyeleksi
+
+sinonim: benda
+jawab: barang
+
+sinonim: langit
+jawab: angkasa
+
+sinonim: laut
+jawab: samudra
+
+sinonim: istana
+jawab: keraton
+
+sinonim: negara
+jawab: negeri
+
+sinonim: sahabat
+jawab: kawan
+
+sinonim: musuh
+jawab: lawan
+
+sinonim: ayah
+jawab: bapak
+
+antonim: panas
+jawab: dingin
+
+antonim: tinggi
+jawab: rendah
+
+antonim: besar
+jawab: kecil
+
+antonim: panjang
+jawab: pendek
+
+antonim: cepat
+jawab: lambat
+
+antonim: terang
+jawab: gelap
+
+antonim: bersih
+jawab: kotor
+
+antonim: basah
+jawab: kering
+
+antonim: jauh
+jawab: dekat
+
+antonim: mudah
+jawab: sulit
+
+antonim: kaya
+jawab: miskin
+
+antonim: kuat
+jawab: lemah
+
+antonim: senang
+jawab: sedih
+
+antonim: muda
+jawab: tua
+
+antonim: baru
+jawab: lama
+
+antonim: naik
+jawab: turun
+
+antonim: masuk
+jawab: keluar
+
+antonim: buka
+jawab: tutup
+
+antonim: mulai
+jawab: selesai
+
+antonim: banyak
+jawab: sedikit
+
+antonim: tebal
+jawab: tipis
+
+antonim: berat
+jawab: ringan
+
+antonim: mahal
+jawab: murah
+
+antonim: lapar
+jawab: kenyang
+
+antonim: diam
+jawab: berbicara
+
+antonim: suka
+jawab: benci
+
+antonim: rajin
+jawab: malas
+
+antonim: jujur
+jawab: curang
+
+antonim: sehat
+jawab: sakit
+
+antonim: ramai
+jawab: sepi
+
+arti: buku
+jawab: bahan bacaan
+
+arti: rumah
+jawab: tempat tinggal
+
+arti: sekolah
+jawab: tempat belajar
+
+arti: dokter
+jawab: penyembuh sakit
+
+arti: guru
+jawab: orang yang mengajar
+
+arti: nelayan
+jawab: pemburu ikan
+
+arti: petani
+jawab: penggarap sawah
+
+arti: pedagang
+jawab: penjual barang
+
+arti: pisau
+jawab: alat memotong
+
+arti: palu
+jawab: alat memukul
+
+arti: sapu
+jawab: alat pembersih
+
+arti: payung
+jawab: penahan hujan
+
+arti: lampu
+jawab: pemberi cahaya
+
+arti: kipas
+jawab: pembuat angin
+
+arti: baju
+jawab: penutup badan
+
+arti: sepatu
+jawab: pelindung kaki
+
+arti: topi
+jawab: penutup kepala
+
+arti: meja
+jawab: alas menulis
+
+arti: kursi
+jawab: tempat duduk
+
+arti: pintu
+jawab: jalan keluar masuk
+
+arti: jendela
+jawab: pemasuk cahaya
+
+arti: dapur
+jawab: tempat memasak
+
+arti: taman
+jawab: tempat bersantai
+
+arti: pasar
+jawab: tempat jual beli
+
+arti: sungai
+jawab: aliran air tawar
+
+arti: hutan
+jawab: kawasan banyak pohon
+
+arti: gunung
+jawab: daratan menjulang
+
+arti: awan
+jawab: uap di langit
+
+arti: hujan
+jawab: air yang turun
+
+arti: bunga
+jawab: hiasan tumbuhan
+
+kalimat: buku
+jawab: Saya membaca buku setiap malam.
+
+kalimat: sekolah
+jawab: Kami berangkat sekolah pagi ini.
+
+kalimat: guru
+jawab: Guru menjelaskan pelajaran dengan sabar.
+
+kalimat: kucing
+jawab: Kucing itu tidur di kursi tua.
+
+kalimat: air
+jawab: Ayah menyiram air ke tanaman.
+
+kalimat: nasi
+jawab: Ibu menanak nasi di dapur.
+
+kalimat: sepeda
+jawab: Adik berlatih sepeda tiap sore.
+
+kalimat: hujan
+jawab: Hujan turun sejak pagi tadi.
+
+kalimat: sungai
+jawab: Kami memancing di sungai desa.
+
+kalimat: bunga
+jawab: Taman itu penuh bunga cantik.
+
+kalimat: pasar
+jawab: Nenek berbelanja di pasar pagi.
+
+kalimat: teman
+jawab: Rani temanku sejak kecil.
+
+kalimat: belajar
+jawab: Belajar tiap hari itu penting.
+
+kalimat: tidur
+jawab: Bayi itu tidur nyenyak sekali.
+
+kalimat: berlari
+jawab: Anak-anak berlari di lapangan.
+
+kalimat: senyum
+jawab: Ia menyapa dengan senyum hangat.
+
+kalimat: musim
+jawab: Musim hujan tiba bulan ini.
+
+kalimat: matahari
+jawab: Matahari terbit di sebelah timur.
+
+kalimat: bulan
+jawab: Bulan purnama tampak jelas.
+
+kalimat: bintang
+jawab: Langit malam penuh bintang.
+
+kalimat: pantai
+jawab: Kami berlibur ke pantai selatan.
+
+kalimat: gunung
+jawab: Pendaki mencapai gunung saat subuh.
+
+kalimat: hutan
+jawab: Harimau itu hidup di hutan.
+
+kalimat: kota
+jawab: Kota Jakarta sangat ramai.
+
+kalimat: desa
+jawab: Desa kami damai dan asri.
+
+kalimat: jalan
+jawab: Jalan itu licin saat hujan.
+
+kalimat: mobil
+jawab: Mobil ayah dicuci tiap minggu.
+
+kalimat: kereta
+jawab: Kereta api berangkat jam tujuh.
+
+kalimat: kapal
+jawab: Kapal laut berlabuh di pelabuhan.
+
+kalimat: pesawat
+jawab: Pesawat mendarat tepat waktu.
+
+kalimat: warna
+jawab: Lukisan itu punya warna cerah.
+
+kalimat: musik
+jawab: Kakak suka musik jazz kalem.
+
+kalimat: gambar
+jawab: Anak itu membuat gambar kapal.
+
+kalimat: cerita
+jawab: Kakek menulis cerita rakyat.
+
+kalimat: masak
+jawab: Ibu sibuk masak di dapur.
+
+kalimat: minum
+jawab: Minum air putih itu sehat.
+
+kalimat: olahraga
+jawab: Olahraga menjaga tubuh tetap bugar.
+
+kalimat: sehat
+jawab: Makan sayur bikin tubuh sehat.
+
+kalimat: dokter
+jawab: Dokter memeriksa pasien itu.
+
+kalimat: obat
+jawab: Minum obat sesuai anjuran.
+
+kalimat: uang
+jawab: Uang itu disimpan di bank.
+
+kalimat: toko
+jawab: Toko buku itu buka sampai malam.
+
+kalimat: jendela
+jawab: Ia membuka jendela kamar.
+
+kalimat: mimpi
+jawab: Mimpi itu indah sekali.
+

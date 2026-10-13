@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "category": "sentence_structure",
+  "metric": "exact_match",
+  "items": [
+    {
+      "id": "struct-b01",
+      "prompt": "subjek: Sinta menyanyi lagu di panggung.\njawab:",
+      "expected": " Sinta"
+    },
+    {
+      "id": "struct-b02",
+      "prompt": "predikat: Sinta menyanyi lagu di panggung.\njawab:",
+      "expected": " menyanyi"
+    },
+    {
+      "id": "struct-b03",
+      "prompt": "objek: Sinta menyanyi lagu di panggung.\njawab:",
+      "expected": " lagu"
+    },
+    {
+      "id": "struct-b04",
+      "prompt": "keterangan: Sinta menyanyi lagu di panggung.\njawab:",
+      "expected": " di panggung"
+    },
+    {
+      "id": "struct-b05",
+      "prompt": "subjek: Pak Rustam memperbaiki sepeda di bengkel.\njawab:",
+      "expected": " Pak Rustam"
+    },
+    {
+      "id": "struct-b06",
+      "prompt": "predikat: Pak Rustam memperbaiki sepeda di bengkel.\njawab:",
+      "expected": " memperbaiki"
+    },
+    {
+      "id": "struct-b07",
+      "prompt": "objek: Pak Rustam memperbaiki sepeda di bengkel.\njawab:",
+      "expected": " sepeda"
+    },
+    {
+      "id": "struct-b08",
+      "prompt": "keterangan: Pak Rustam memperbaiki sepeda di bengkel.\njawab:",
+      "expected": " di bengkel"
+    },
+    {
+      "id": "struct-b09",
+      "prompt": "subjek: Mereka membersihkan halaman tiap jumat.\njawab:",
+      "expected": " Mereka"
+    },
+    {
+      "id": "struct-b10",
+      "prompt": "predikat: Mereka membersihkan halaman tiap jumat.\njawab:",
+      "expected": " membersihkan"
+    },
+    {
+      "id": "struct-b11",
+      "prompt": "objek: Mereka membersihkan halaman tiap jumat.\njawab:",
+      "expected": " halaman"
+    },
+    {
+      "id": "struct-b12",
+      "prompt": "keterangan: Mereka membersihkan halaman tiap jumat.\njawab:",
+      "expected": " tiap jumat"
+    },
+    {
+      "id": "struct-b13",
+      "prompt": "susun: menyalakan ayah lampu\njawab:",
+      "expected": " Ayah menyalakan lampu."
+    },
+    {
+      "id": "struct-b14",
+      "prompt": "susun: menyapu ibu halaman\njawab:",
+      "expected": " Ibu menyapu halaman."
+    },
+    {
+      "id": "struct-b15",
+      "prompt": "susun: menggoreng kakak pisang\njawab:",
+      "expected": " Kakak menggoreng pisang."
+    }
+  ]
+}

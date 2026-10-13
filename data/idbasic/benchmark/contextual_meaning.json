@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "category": "contextual_meaning",
+  "metric": "exact_match",
+  "items": [
+    {
+      "id": "ctx-b01",
+      "prompt": "makna: uang disimpan di bank kota\njawab:",
+      "expected": " lembaga keuangan"
+    },
+    {
+      "id": "ctx-b02",
+      "prompt": "makna: tebing bank sungai itu curam\njawab:",
+      "expected": " tepi sungai"
+    },
+    {
+      "id": "ctx-b03",
+      "prompt": "makna: mata air desa itu jernih\njawab:",
+      "expected": " sumber air"
+    },
+    {
+      "id": "ctx-b04",
+      "prompt": "makna: mata burung elang itu tajam\njawab:",
+      "expected": " organ penglihatan"
+    },
+    {
+      "id": "ctx-b05",
+      "prompt": "makna: rantai peristiwa itu ganjil\njawab:",
+      "expected": " rangkaian kejadian"
+    },
+    {
+      "id": "ctx-b06",
+      "prompt": "makna: jantung kota itu lengang\njawab:",
+      "expected": " pusat kota"
+    },
+    {
+      "id": "ctx-b07",
+      "prompt": "makna: akar persoalan itu dalam\njawab:",
+      "expected": " pokok persoalan"
+    },
+    {
+      "id": "ctx-b08",
+      "prompt": "makna: buah pengetahuan itu manis\njawab:",
+      "expected": " hasil perbuatan"
+    },
+    {
+      "id": "ctx-b09",
+      "prompt": "makna: lidah api menjilat dinding\njawab:",
+      "expected": " bagian api"
+    },
+    {
+      "id": "ctx-b10",
+      "prompt": "makna: tangan kanannya terluka\njawab:",
+      "expected": " anggota tubuh"
+    },
+    {
+      "id": "ctx-b11",
+      "prompt": "rujukan: ani memaafkan rina karena dia minta maaf\njawab:",
+      "expected": " rina"
+    },
+    {
+      "id": "ctx-b12",
+      "prompt": "rujukan: yoga menjemput raka karena dia kesiangan\njawab:",
+      "expected": " raka"
+    },
+    {
+      "id": "ctx-b13",
+      "prompt": "rujukan: mika mengajari dita berhitung karena dia sudah pandai\njawab:",
+      "expected": " mika"
+    },
+    {
+      "id": "ctx-b14",
+      "prompt": "rujukan: fajar menemani ibu berobat karena dia sakit\njawab:",
+      "expected": " ibu"
+    },
+    {
+      "id": "ctx-b15",
+      "prompt": "rujukan: ratna memuji fitri karena dia menang lomba\njawab:",
+      "expected": " fitri"
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "version": "1.0.0",
+  "category": "vocabulary",
+  "metric": "exact_match",
+  "items": [
+    {
+      "id": "voc-b01",
+      "prompt": "sinonim: pandai\njawab:",
+      "expected": " pintar"
+    },
+    {
+      "id": "voc-b02",
+      "prompt": "sinonim: susah\njawab:",
+      "expected": " sulit"
+    },
+    {
+      "id": "voc-b03",
+      "prompt": "sinonim: cepat\njawab:",
+      "expected": " tangkas"
+    },
+    {
+      "id": "voc-b04",
+      "prompt": "sinonim: selesai\njawab:",
+      "expected": " tuntas"
+    },
+    {
+      "id": "voc-b05",
+      "prompt": "sinonim: mulai\njawab:",
+      "expected": " bermula"
+    },
+    {
+      "id": "voc-b06",
+      "prompt": "sinonim: akrab\njawab:",
+      "expected": " karib"
+    },
+    {
+      "id": "voc-b07",
+      "prompt": "sinonim: haus\njawab:",
+      "expected": " dahaga"
+    },
+    {
+      "id": "voc-b08",
+      "prompt": "sinonim: terang\njawab:",
+      "expected": " cemerlang"
+    },
+    {
+      "id": "voc-b09",
+      "prompt": "sinonim: gelap\njawab:",
+      "expected": " kelam"
+    },
+    {
+      "id": "voc-b10",
+      "prompt": "sinonim: dingin\njawab:",
+      "expected": " sejuk"
+    },
+    {
+      "id": "voc-b11",
+      "prompt": "sinonim: basah\njawab:",
+      "expected": " lembap"
+    },
+    {
+      "id": "voc-b12",
+      "prompt": "sinonim: kuat\njawab:",
+      "expected": " tangguh"
+    },
+    {
+      "id": "voc-b13",
+      "prompt": "antonim: luas\njawab:",
+      "expected": " sempit"
+    },
+    {
+      "id": "voc-b14",
+      "prompt": "antonim: tajam\njawab:",
+      "expected": " tumpul"
+    },
+    {
+      "id": "voc-b15",
+      "prompt": "antonim: penuh\njawab:",
+      "expected": " kosong"
+    },
+    {
+      "id": "voc-b16",
+      "prompt": "antonim: lembut\njawab:",
+      "expected": " kasar"
+    },
+    {
+      "id": "voc-b17",
+      "prompt": "antonim: manis\njawab:",
+      "expected": " pahit"
+    },
+    {
+      "id": "voc-b18",
+      "prompt": "antonim: hangat\njawab:",
+      "expected": " dingin"
+    },
+    {
+      "id": "voc-b19",
+      "prompt": "antonim: cerah\njawab:",
+      "expected": " mendung"
+    },
+    {
+      "id": "voc-b20",
+      "prompt": "antonim: awal\njawab:",
+      "expected": " akhir"
+    },
+    {
+      "id": "voc-b21",
+      "prompt": "antonim: maju\njawab:",
+      "expected": " mundur"
+    },
+    {
+      "id": "voc-b22",
+      "prompt": "antonim: menang\njawab:",
+      "expected": " kalah"
+    },
+    {
+      "id": "voc-b23",
+      "prompt": "antonim: depan\njawab:",
+      "expected": " belakang"
+    },
+    {
+      "id": "voc-b24",
+      "prompt": "antonim: atas\njawab:",
+      "expected": " bawah"
+    },
+    {
+      "id": "voc-b25",
+      "prompt": "arti: perpustakaan\njawab:",
+      "expected": " tempat koleksi buku"
+    },
+    {
+      "id": "voc-b26",
+      "prompt": "arti: rumah sakit\njawab:",
+      "expected": " tempat berobat"
+    },
+    {
+      "id": "voc-b27",
+      "prompt": "arti: kantor\njawab:",
+      "expected": " tempat bekerja"
+    },
+    {
+      "id": "voc-b28",
+      "prompt": "arti: masjid\njawab:",
+      "expected": " tempat salat"
+    },
+    {
+      "id": "voc-b29",
+      "prompt": "arti: kamar\njawab:",
+      "expected": " ruang tidur"
+    },
+    {
+      "id": "voc-b30",
+      "prompt": "arti: gudang\njawab:",
+      "expected": " tempat penyimpanan"
+    },
+    {
+      "id": "voc-b31",
+      "prompt": "arti: toilet\njawab:",
+      "expected": " tempat buang air"
+    },
+    {
+      "id": "voc-b32",
+      "prompt": "arti: halte\njawab:",
+      "expected": " tempat menunggu bus"
+    },
+    {
+      "id": "voc-b33",
+      "prompt": "arti: kantin\njawab:",
+      "expected": " tempat jual makanan"
+    },
+    {
+      "id": "voc-b34",
+      "prompt": "arti: kolam\njawab:",
+      "expected": " tempat renang"
+    },
+    {
+      "id": "voc-b35",
+      "prompt": "kalimat: pohon\njawab:",
+      "expected": " Pohon mangga itu berbuah lebat."
+    },
+    {
+      "id": "voc-b36",
+      "prompt": "kalimat: mata\njawab:",
+      "expected": " Kedua mata elang itu tajam."
+    },
+    {
+      "id": "voc-b37",
+      "prompt": "kalimat: tangan\njawab:",
+      "expected": " Cuci tangan sebelum makan."
+    },
+    {
+      "id": "voc-b38",
+      "prompt": "kalimat: kaki\njawab:",
+      "expected": " Sepatu baru itu nyaman di kaki."
+    },
+    {
+      "id": "voc-b39",
+      "prompt": "kalimat: kupu-kupu\njawab:",
+      "expected": " Kupu-kupu hinggap di bunga."
+    },
+    {
+      "id": "voc-b40",
+      "prompt": "kalimat: semut\njawab:",
+      "expected": " Semut kecil itu kuat sekali."
+    },
+    {
+      "id": "voc-b41",
+      "prompt": "kalimat: daun\njawab:",
+      "expected": " Daun itu berguguran tiup angin."
+    },
+    {
+      "id": "voc-b42",
+      "prompt": "kalimat: angin\njawab:",
+      "expected": " Angin pantai terasa sejuk."
+    },
+    {
+      "id": "voc-b43",
+      "prompt": "kalimat: ombak\njawab:",
+      "expected": " Ombak besar menghantam karang."
+    },
+    {
+      "id": "voc-b44",
+      "prompt": "kalimat: pasir\njawab:",
+      "expected": " Pasir halus itu terasa hangat."
+    }
+  ]
+}

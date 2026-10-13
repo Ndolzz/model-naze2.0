@@ -1,0 +1,174 @@
+koreksi: bapak berangkat kerja pagi ini
+jawab: Bapak berangkat kerja pagi ini.
+
+koreksi: ibu membeli sayur di pasar
+jawab: Ibu membeli sayur di pasar.
+
+koreksi: adik bermain sepeda sore tadi
+jawab: Adik bermain sepeda sore tadi.
+
+koreksi: kami belajar bersama di rumah rina
+jawab: Kami belajar bersama di rumah Rina.
+
+koreksi: kucing itu tidur di kursi tua
+jawab: Kucing itu tidur di kursi tua.
+
+koreksi: harga buku murah sekali
+jawab: Harga buku murah sekali.
+
+koreksi: dokter memeriksa pasien itu
+jawab: Dokter memeriksa pasien itu.
+
+koreksi: hujan turun sejak pagi tadi
+jawab: Hujan turun sejak pagi tadi.
+
+koreksi: gunung itu terlihat dari sini
+jawab: Gunung itu terlihat dari sini.
+
+koreksi: nenek membuat kue di dapur
+jawab: Nenek membuat kue di dapur.
+
+koreksi: kamu mau pergi ke mana
+jawab: Kamu mau pergi ke mana?
+
+koreksi: siapa nama kepala sekolah
+jawab: Siapa nama kepala sekolah?
+
+koreksi: kapan kereta api berangkat
+jawab: Kapan kereta api berangkat?
+
+koreksi: berapa harga jeruk per kilo
+jawab: Berapa harga jeruk per kilo?
+
+koreksi: mengapa kamu datang terlambat
+jawab: Mengapa kamu datang terlambat?
+
+koreksi: apakah hujan akan turun nanti
+jawab: Apakah hujan akan turun nanti?
+
+koreksi: di mana kunci rumah tersimpan
+jawab: Di mana kunci rumah tersimpan?
+
+koreksi: bagaimana cuaca di bandung
+jawab: Bagaimana cuaca di Bandung?
+
+koreksi: ayo cepat masuk ke dalam
+jawab: Ayo cepat masuk ke dalam!
+
+koreksi: wah pemandangan indah sekali
+jawab: Wah, pemandangan indah sekali!
+
+koreksi: aduh kakinya terluka parah
+jawab: Aduh, kakinya terluka parah!
+
+koreksi: hei jangan berisik di sini
+jawab: Hei, jangan berisik di sini!
+
+koreksi: hore liburan sudah tiba
+jawab: Hore, liburan sudah tiba!
+
+koreksi: tolong bantu angkat meja ini
+jawab: Tolong bantu angkat meja ini!
+
+koreksi: jangan sentuh panci panas itu
+jawab: Jangan sentuh panci panas itu!
+
+koreksi: mari kita mulai belajar
+jawab: Mari kita mulai belajar.
+
+koreksi: tadi sore dia menang lomba
+jawab: Tadi sore dia menang lomba.
+
+koreksi: buku itu milik perpustakaan
+jawab: Buku itu milik perpustakaan.
+
+koreksi: langit malam penuh bintang
+jawab: Langit malam penuh bintang.
+
+koreksi: ombak pantai selatan sangat besar
+jawab: Ombak pantai selatan sangat besar.
+
+koreksi: surat itu ditulis ayah kemarin
+jawab: Surat itu ditulis ayah kemarin.
+
+koreksi: semua siswa ikut upacara
+jawab: Semua siswa ikut upacara.
+
+koreksi: aku dan rina satu kelompok
+jawab: Aku dan Rina satu kelompok.
+
+koreksi: apakah kamu sudah makan siang
+jawab: Apakah kamu sudah makan siang?
+
+koreksi: siapa yang memilih ketua kelas
+jawab: Siapa yang memilih ketua kelas?
+
+koreksi: di mana kamu menaruh sepatu
+jawab: Di mana kamu menaruh sepatu?
+
+koreksi: cepat ambil payung di teras
+jawab: Cepat ambil payung di teras!
+
+koreksi: hati-hati lantai licin
+jawab: Hati-hati, lantai licin!
+
+koreksi: sampai jumpa besok pagi
+jawab: Sampai jumpa besok pagi.
+
+koreksi: semoga lekas sembuh ya
+jawab: Semoga lekas sembuh ya.
+
+jenis: ibu memasak nasi goreng
+jawab: berita
+
+jenis: kamu sudah makan belum
+jawab: tanya
+
+jenis: ayo segera kumpul di halaman
+jawab: seru
+
+jenis: hujan turun sejak pagi
+jawab: berita
+
+jenis: siapa ketua kelasmu
+jawab: tanya
+
+jenis: hei jangan lempar batu
+jawab: seru
+
+jenis: kereta api tiba jam tujuh
+jawab: berita
+
+jenis: berapa umur kucingmu
+jawab: tanya
+
+jenis: semangat terus belajarnya
+jawab: seru
+
+jenis: adik tidur siang ini
+jawab: berita
+
+jenis: di mana kamu tinggal
+jawab: tanya
+
+jenis: wah lukanya dalam sekali
+jawab: seru
+
+jenis: bunga taman itu mekar
+jawab: berita
+
+jenis: kapan kamu pulang kampung
+jawab: tanya
+
+jenis: cepat keluar dari ruangan
+jawab: seru
+
+jenis: kakak menang lomba puisi
+jawab: berita
+
+jenis: apakah hari ini hari jumat
+jawab: tanya
+
+jenis: hati-hati jalanan licin
+jawab: seru
+

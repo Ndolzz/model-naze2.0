@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "dataset": "idbasic",
+  "task": "ID-BASIC-001",
+  "created": "2026-10-13",
+  "description": "Dataset kemampuan dasar Bahasa Indonesia lima kategori untuk ID-BASIC-001; 100% contoh buatan sendiri (fallback DECISION-025).",
+  "format": {
+    "train": "<prompt>\\njawab: <label>\\n\\n",
+    "benchmark_prompt": "<prompt>\\njawab:",
+    "benchmark_expected": " <label>"
+  },
+  "limits": {
+    "max_example_bytes": 88,
+    "validator_max_example_bytes": 96
+  },
+  "subtasks_train": {
+    "vocabulary": {
+      "sinonim": 30,
+      "antonim": 30,
+      "arti": 30,
+      "kalimat": 44
+    },
+    "grammar": {
+      "imbuhan": 35,
+      "kata_depan": 35,
+      "baku": 35,
+      "status": 29
+    },
+    "sentence_structure": {
+      "unsur_kalimat": 88,
+      "susun_kata": 20
+    },
+    "punctuation": {
+      "koreksi": 40,
+      "jenis_kalimat": 18
+    },
+    "contextual_meaning": {
+      "makna_kontekstual": 40,
+      "rujukan": 8
+    }
+  },
+  "splits": {
+    "train": {
+      "vocabulary": 134,
+      "grammar": 134,
+      "sentence_structure": 108,
+      "punctuation": 58,
+      "contextual_meaning": 48,
+      "total": 482
+    },
+    "benchmark": {
+      "vocabulary": 44,
+      "grammar": 46,
+      "sentence_structure": 15,
+      "punctuation": 15,
+      "contextual_meaning": 15,
+      "total": 135
+    }
+  },
+  "files": [
+    {
+      "path": "vocabulary.txt",
+      "sha256": "05f90ff72dfa166589b7bb64d17df3f1d69841de4f9ea75b04043a323f4a1602",
+      "bytes": 5262,
+      "examples": 134
+    },
+    {
+      "path": "grammar.txt",
+      "sha256": "f943e8bc57e0d0af2b6f0637114ca880689ba3616ead432d9fbc068f47f246e8",
+      "bytes": 5922,
+      "examples": 134
+    },
+    {
+      "path": "sentence_structure.txt",
+      "sha256": "4e6053f150a74147ab6c4ebae09103c6ad717386c8393c65c8b966c703573a5d",
+      "bytes": 6191,
+      "examples": 108
+    },
+    {
+      "path": "punctuation.txt",
+      "sha256": "a8ad8b8085bfc7074e710d37b441174fa499bd050403db241f86cacbe5a5f02a",
+      "bytes": 3759,
+      "examples": 58
+    },
+    {
+      "path": "contextual_meaning.txt",
+      "sha256": "457fd78f8958b3bb7bafe7b77aa67f261d3fb2bc7041a9b482312b9260864d88",
+      "bytes": 2826,
+      "examples": 48
+    },
+    {
+      "path": "benchmark/vocabulary.json",
+      "sha256": "863f61922ce011624465e00e130357600686740b43ce5f85c4c85160f77775b9",
+      "bytes": 5075,
+      "examples": 44
+    },
+    {
+      "path": "benchmark/grammar.json",
+      "sha256": "0048e46ac419c5af1a9b183fab919d316134b5697ad008c6cb0a58fdbdd31505",
+      "bytes": 5720,
+      "examples": 46
+    },
+    {
+      "path": "benchmark/sentence_structure.json",
+      "sha256": "ed18f0e1ceed7b0a66e98912a960c7815ad9c3b017cd25deb13a267ba89bdf3c",
+      "bytes": 2249,
+      "examples": 15
+    },
+    {
+      "path": "benchmark/punctuation.json",
+      "sha256": "68532f8af868613ab07e2ab7392edffbc1e7c423a8248ccc8affd6764c8637ea",
+      "bytes": 2247,
+      "examples": 15
+    },
+    {
+      "path": "benchmark/contextual_meaning.json",
+      "sha256": "2d3c9368575be3b423bd0c7595b01079e1417f88c951b2f409f8b996489b272b",
+      "bytes": 2138,
+      "examples": 15
+    }
+  ],
+  "provenance": {
+    "policy": "100% contoh buatan sendiri (fallback resmi DECISION-025)",
+    "see": "PROVENANCE.md",
+    "external_sources_investigated": 3,
+    "external_sources_used": 0
+  },
+  "anti_leakage": "seluruh prompt benchmark diverifikasi programatik tidak muncul pada prompt training",
+  "license": "contoh dibuat khusus untuk repositori ini; tidak menautkan data pihak ketiga"
+}

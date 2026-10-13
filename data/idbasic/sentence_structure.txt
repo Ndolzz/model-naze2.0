@@ -1,0 +1,324 @@
+subjek: Adik membaca buku di kamar.
+jawab: Adik
+
+predikat: Adik membaca buku di kamar.
+jawab: membaca
+
+objek: Adik membaca buku di kamar.
+jawab: buku
+
+keterangan: Adik membaca buku di kamar.
+jawab: di kamar
+
+subjek: Ibu memasak nasi di dapur.
+jawab: Ibu
+
+predikat: Ibu memasak nasi di dapur.
+jawab: memasak
+
+objek: Ibu memasak nasi di dapur.
+jawab: nasi
+
+keterangan: Ibu memasak nasi di dapur.
+jawab: di dapur
+
+subjek: Ayah mencuci mobil di garasi.
+jawab: Ayah
+
+predikat: Ayah mencuci mobil di garasi.
+jawab: mencuci
+
+objek: Ayah mencuci mobil di garasi.
+jawab: mobil
+
+keterangan: Ayah mencuci mobil di garasi.
+jawab: di garasi
+
+subjek: Kakak menonton film di bioskop.
+jawab: Kakak
+
+predikat: Kakak menonton film di bioskop.
+jawab: menonton
+
+objek: Kakak menonton film di bioskop.
+jawab: film
+
+keterangan: Kakak menonton film di bioskop.
+jawab: di bioskop
+
+subjek: Rina membeli roti di toko.
+jawab: Rina
+
+predikat: Rina membeli roti di toko.
+jawab: membeli
+
+objek: Rina membeli roti di toko.
+jawab: roti
+
+keterangan: Rina membeli roti di toko.
+jawab: di toko
+
+subjek: Budi mengirim surat ke Jakarta.
+jawab: Budi
+
+predikat: Budi mengirim surat ke Jakarta.
+jawab: mengirim
+
+objek: Budi mengirim surat ke Jakarta.
+jawab: surat
+
+keterangan: Budi mengirim surat ke Jakarta.
+jawab: ke Jakarta
+
+subjek: Nenek menyiram bunga tiap pagi.
+jawab: Nenek
+
+predikat: Nenek menyiram bunga tiap pagi.
+jawab: menyiram
+
+objek: Nenek menyiram bunga tiap pagi.
+jawab: bunga
+
+keterangan: Nenek menyiram bunga tiap pagi.
+jawab: tiap pagi
+
+subjek: Petani menanam padi di sawah.
+jawab: Petani
+
+predikat: Petani menanam padi di sawah.
+jawab: menanam
+
+objek: Petani menanam padi di sawah.
+jawab: padi
+
+keterangan: Petani menanam padi di sawah.
+jawab: di sawah
+
+subjek: Nelayan menangkap ikan di laut.
+jawab: Nelayan
+
+predikat: Nelayan menangkap ikan di laut.
+jawab: menangkap
+
+objek: Nelayan menangkap ikan di laut.
+jawab: ikan
+
+keterangan: Nelayan menangkap ikan di laut.
+jawab: di laut
+
+subjek: Dokter memeriksa pasien di ruangan.
+jawab: Dokter
+
+predikat: Dokter memeriksa pasien di ruangan.
+jawab: memeriksa
+
+objek: Dokter memeriksa pasien di ruangan.
+jawab: pasien
+
+keterangan: Dokter memeriksa pasien di ruangan.
+jawab: di ruangan
+
+subjek: Guru menjelaskan pelajaran di kelas.
+jawab: Guru
+
+predikat: Guru menjelaskan pelajaran di kelas.
+jawab: menjelaskan
+
+objek: Guru menjelaskan pelajaran di kelas.
+jawab: pelajaran
+
+keterangan: Guru menjelaskan pelajaran di kelas.
+jawab: di kelas
+
+subjek: Siswa mengerjakan soal dengan teliti.
+jawab: Siswa
+
+predikat: Siswa mengerjakan soal dengan teliti.
+jawab: mengerjakan
+
+objek: Siswa mengerjakan soal dengan teliti.
+jawab: soal
+
+keterangan: Siswa mengerjakan soal dengan teliti.
+jawab: dengan teliti
+
+subjek: Ia menendang bola ke gawang.
+jawab: Ia
+
+predikat: Ia menendang bola ke gawang.
+jawab: menendang
+
+objek: Ia menendang bola ke gawang.
+jawab: bola
+
+keterangan: Ia menendang bola ke gawang.
+jawab: ke gawang
+
+subjek: Kami mengunjungi museum kemarin.
+jawab: Kami
+
+predikat: Kami mengunjungi museum kemarin.
+jawab: mengunjungi
+
+objek: Kami mengunjungi museum kemarin.
+jawab: museum
+
+keterangan: Kami mengunjungi museum kemarin.
+jawab: kemarin
+
+subjek: Mereka membangun rumah tahun lalu.
+jawab: Mereka
+
+predikat: Mereka membangun rumah tahun lalu.
+jawab: membangun
+
+objek: Mereka membangun rumah tahun lalu.
+jawab: rumah
+
+keterangan: Mereka membangun rumah tahun lalu.
+jawab: tahun lalu
+
+subjek: Ia membawa payung saat hujan.
+jawab: Ia
+
+predikat: Ia membawa payung saat hujan.
+jawab: membawa
+
+objek: Ia membawa payung saat hujan.
+jawab: payung
+
+keterangan: Ia membawa payung saat hujan.
+jawab: saat hujan
+
+subjek: Kakak melukis pemandangan di tepi sungai.
+jawab: Kakak
+
+predikat: Kakak melukis pemandangan di tepi sungai.
+jawab: melukis
+
+objek: Kakak melukis pemandangan di tepi sungai.
+jawab: pemandangan
+
+keterangan: Kakak melukis pemandangan di tepi sungai.
+jawab: di tepi sungai
+
+subjek: Ibu menjahit baju di teras.
+jawab: Ibu
+
+predikat: Ibu menjahit baju di teras.
+jawab: menjahit
+
+objek: Ibu menjahit baju di teras.
+jawab: baju
+
+keterangan: Ibu menjahit baju di teras.
+jawab: di teras
+
+subjek: Pak Hasan menjual bakso di warung.
+jawab: Pak Hasan
+
+predikat: Pak Hasan menjual bakso di warung.
+jawab: menjual
+
+objek: Pak Hasan menjual bakso di warung.
+jawab: bakso
+
+keterangan: Pak Hasan menjual bakso di warung.
+jawab: di warung
+
+subjek: Adik memakai sepatu ke sekolah.
+jawab: Adik
+
+predikat: Adik memakai sepatu ke sekolah.
+jawab: memakai
+
+objek: Adik memakai sepatu ke sekolah.
+jawab: sepatu
+
+keterangan: Adik memakai sepatu ke sekolah.
+jawab: ke sekolah
+
+subjek: Dia meletakkan kunci di atas meja.
+jawab: Dia
+
+predikat: Dia meletakkan kunci di atas meja.
+jawab: meletakkan
+
+objek: Dia meletakkan kunci di atas meja.
+jawab: kunci
+
+keterangan: Dia meletakkan kunci di atas meja.
+jawab: di atas meja
+
+subjek: Tukang pos mengantar paket ke rumah.
+jawab: Tukang pos
+
+predikat: Tukang pos mengantar paket ke rumah.
+jawab: mengantar
+
+objek: Tukang pos mengantar paket ke rumah.
+jawab: paket
+
+keterangan: Tukang pos mengantar paket ke rumah.
+jawab: ke rumah
+
+susun: makan adik nasi
+jawab: Adik makan nasi.
+
+susun: pergi kami sekolah
+jawab: Kami pergi sekolah.
+
+susun: membaca budi buku
+jawab: Budi membaca buku.
+
+susun: memasak ibu nasi
+jawab: Ibu memasak nasi.
+
+susun: menonton kakak film
+jawab: Kakak menonton film.
+
+susun: membeli rina roti
+jawab: Rina membeli roti.
+
+susun: mencuci ayah mobil
+jawab: Ayah mencuci mobil.
+
+susun: menyiram nenek bunga
+jawab: Nenek menyiram bunga.
+
+susun: menanam petani padi
+jawab: Petani menanam padi.
+
+susun: menangkap nelayan ikan
+jawab: Nelayan menangkap ikan.
+
+susun: menjelaskan guru materi
+jawab: Guru menjelaskan materi.
+
+susun: menendang ia bola
+jawab: Ia menendang bola.
+
+susun: membawa dia payung
+jawab: Dia membawa payung.
+
+susun: memakai adik sepatu
+jawab: Adik memakai sepatu.
+
+susun: menjahit ibu baju
+jawab: Ibu menjahit baju.
+
+susun: mengantar tukang pos paket
+jawab: Tukang pos mengantar paket.
+
+susun: meminum kakak jus
+jawab: Kakak meminum jus.
+
+susun: menggambar anak rumah
+jawab: Anak menggambar rumah.
+
+susun: menulis ia surat
+jawab: Ia menulis surat.
+
+susun: melukis kakak gunung
+jawab: Kakak melukis gunung.
+

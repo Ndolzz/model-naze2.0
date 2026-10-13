@@ -1,0 +1,144 @@
+makna: uang disimpan di bank
+jawab: lembaga keuangan
+
+makna: tebing di bank sungai curam
+jawab: tepi sungai
+
+makna: daun pintu itu terbuka
+jawab: panel pintu
+
+makna: daun mangga rontok tiup angin
+jawab: helai tumbuhan
+
+makna: kepala meja penuh noda
+jawab: ujung meja
+
+makna: kepala desa datang ke rumah
+jawab: pemimpin desa
+
+makna: kaki gunung tertutup kabut
+jawab: bagian bawah gunung
+
+makna: kaki adik patah saat jatuh
+jawab: anggota tubuh
+
+makna: mata air jernih di gunung
+jawab: sumber air
+
+makna: mata kucing menyala di gelap
+jawab: organ penglihatan
+
+makna: bunga pinjaman bank naik
+jawab: imbal hasil pinjaman
+
+makna: bunga matahari menghadap timur
+jawab: hiasan tumbuhan
+
+makna: surat suara dihitung panitia
+jawab: lembar pilihan
+
+makna: surat dari ayah tiba pagi
+jawab: pesan tertulis
+
+makna: meja hijau sidang digelar
+jawab: pengadilan
+
+makna: meja kayu itu kokoh
+jawab: perabot rumah
+
+makna: rantai sepeda perlu dilumasi
+jawab: penghubung roda gigi
+
+makna: rantai peristiwa itu aneh
+jawab: rangkaian kejadian
+
+makna: jantung kota sangat ramai
+jawab: pusat kota
+
+makna: jantungnya berdetak cepat
+jawab: organ tubuh
+
+makna: sayap pesawat rusak
+jawab: bagian pesawat
+
+makna: sayap burung itu lebar
+jawab: anggota tubuh burung
+
+makna: akar masalah belum jelas
+jawab: pokok persoalan
+
+makna: akar pohon menancap kuat
+jawab: bagian tumbuhan
+
+makna: buah pengetahuan diperolehnya
+jawab: hasil perbuatan
+
+makna: buah mangga itu ranum
+jawab: hasil tumbuhan
+
+makna: mata uang dolar naik
+jawab: alat bayar
+
+makna: lidah terasa pedas setelah makan
+jawab: indra pengecap
+
+makna: ia tangan kanan direktur
+jawab: orang kepercayaan
+
+makna: tangan kanannya patah
+jawab: anggota tubuh
+
+makna: kaki tangannya banyak di kota
+jawab: pengikut penolong
+
+makna: jam tangan ayah rusak
+jawab: alat pengukur waktu
+
+makna: jam istirahat sudah tiba
+jawab: waktu istirahat
+
+makna: kepala surat ditulis tinta
+jawab: bagian atas surat
+
+makna: puncak kariernya tercapai
+jawab: titik tertinggi
+
+makna: puncak gunung bersalju tebal
+jawab: ujung atas gunung
+
+makna: lampu merah menyala di jalan
+jawab: rambu lalu lintas
+
+makna: lampu kamarnya mati
+jawab: alat penerang
+
+makna: wajah air sungai jernih
+jawab: permukaan air
+
+makna: wajahnya cerah pagi ini
+jawab: bagian depan kepala
+
+rujukan: rina memberi novel pada dinda karena dia selesai membaca
+jawab: rina
+
+rujukan: budi meminjam sepeda pada andi karena dia tidak punya
+jawab: budi
+
+rujukan: sinta menolong nadia karena dia terjatuh
+jawab: nadia
+
+rujukan: kakek menceritakan cerita pada cucu karena dia hafal
+jawab: kakek
+
+rujukan: guru memuji siswa karena dia rajin
+jawab: siswa
+
+rujukan: tono mengantar tini ke dokter karena dia demam
+jawab: tini
+
+rujukan: lina mengirimi mega surat karena dia pindah kota
+jawab: mega
+
+rujukan: doni membantu joko mengerjakan tugas karena dia paham
+jawab: doni
+

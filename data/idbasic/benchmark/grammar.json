@@ -1,0 +1,237 @@
+{
+  "version": "1.0.0",
+  "category": "grammar",
+  "metric": "exact_match",
+  "items": [
+    {
+      "id": "gram-b01",
+      "prompt": "imbuhan: dengar + me\njawab:",
+      "expected": " mendengar"
+    },
+    {
+      "id": "gram-b02",
+      "prompt": "imbuhan: lihat + me\njawab:",
+      "expected": " melihat"
+    },
+    {
+      "id": "gram-b03",
+      "prompt": "imbuhan: angkat + meng\njawab:",
+      "expected": " mengangkat"
+    },
+    {
+      "id": "gram-b04",
+      "prompt": "imbuhan: buang + mem\njawab:",
+      "expected": " membuang"
+    },
+    {
+      "id": "gram-b05",
+      "prompt": "imbuhan: panggil + di\njawab:",
+      "expected": " dipanggil"
+    },
+    {
+      "id": "gram-b06",
+      "prompt": "imbuhan: jual + di\njawab:",
+      "expected": " dijual"
+    },
+    {
+      "id": "gram-b07",
+      "prompt": "imbuhan: sabar + ber\njawab:",
+      "expected": " bersabar"
+    },
+    {
+      "id": "gram-b08",
+      "prompt": "imbuhan: gabung + ber\njawab:",
+      "expected": " bergabung"
+    },
+    {
+      "id": "gram-b09",
+      "prompt": "imbuhan: hitung + per-an\njawab:",
+      "expected": " perhitungan"
+    },
+    {
+      "id": "gram-b10",
+      "prompt": "imbuhan: temu + -an\njawab:",
+      "expected": " temuan"
+    },
+    {
+      "id": "gram-b11",
+      "prompt": "imbuhan: besar + me\njawab:",
+      "expected": " membesar"
+    },
+    {
+      "id": "gram-b12",
+      "prompt": "imbuhan: kecil + me\njawab:",
+      "expected": " mengecil"
+    },
+    {
+      "id": "gram-b13",
+      "prompt": "kata depan: belajar rumah\njawab:",
+      "expected": " belajar di rumah"
+    },
+    {
+      "id": "gram-b14",
+      "prompt": "kata depan: bermain taman\njawab:",
+      "expected": " bermain di taman"
+    },
+    {
+      "id": "gram-b15",
+      "prompt": "kata depan: tinggal Medan\njawab:",
+      "expected": " tinggal di Medan"
+    },
+    {
+      "id": "gram-b16",
+      "prompt": "kata depan: berangkat bandara\njawab:",
+      "expected": " berangkat ke bandara"
+    },
+    {
+      "id": "gram-b17",
+      "prompt": "kata depan: datang Bali\njawab:",
+      "expected": " datang dari Bali"
+    },
+    {
+      "id": "gram-b18",
+      "prompt": "kata depan: kembali kota\njawab:",
+      "expected": " kembali ke kota"
+    },
+    {
+      "id": "gram-b19",
+      "prompt": "kata depan: turun perahu\njawab:",
+      "expected": " turun dari perahu"
+    },
+    {
+      "id": "gram-b20",
+      "prompt": "kata depan: piknik keluarga\njawab:",
+      "expected": " piknik dengan keluarga"
+    },
+    {
+      "id": "gram-b21",
+      "prompt": "kata depan: pujian guru\njawab:",
+      "expected": " pujian dari guru"
+    },
+    {
+      "id": "gram-b22",
+      "prompt": "kata depan: lagu ibu\njawab:",
+      "expected": " lagu dari ibu"
+    },
+    {
+      "id": "gram-b23",
+      "prompt": "kata depan: topi kakek\njawab:",
+      "expected": " topi dari kakek"
+    },
+    {
+      "id": "gram-b24",
+      "prompt": "kata depan: berita kota\njawab:",
+      "expected": " berita tentang kota"
+    },
+    {
+      "id": "gram-b25",
+      "prompt": "baku: efektifitas\njawab:",
+      "expected": " efektivitas"
+    },
+    {
+      "id": "gram-b26",
+      "prompt": "baku: obyektif\njawab:",
+      "expected": " objektif"
+    },
+    {
+      "id": "gram-b27",
+      "prompt": "baku: kreatifitas\njawab:",
+      "expected": " kreativitas"
+    },
+    {
+      "id": "gram-b28",
+      "prompt": "baku: rapot\njawab:",
+      "expected": " rapor"
+    },
+    {
+      "id": "gram-b29",
+      "prompt": "baku: atmosfir\njawab:",
+      "expected": " atmosfer"
+    },
+    {
+      "id": "gram-b30",
+      "prompt": "baku: ekstrim\njawab:",
+      "expected": " ekstrem"
+    },
+    {
+      "id": "gram-b31",
+      "prompt": "baku: subyektif\njawab:",
+      "expected": " subjektif"
+    },
+    {
+      "id": "gram-b32",
+      "prompt": "baku: tehnologi\njawab:",
+      "expected": " teknologi"
+    },
+    {
+      "id": "gram-b33",
+      "prompt": "baku: telpon\njawab:",
+      "expected": " telepon"
+    },
+    {
+      "id": "gram-b34",
+      "prompt": "baku: hipotesa\njawab:",
+      "expected": " hipotesis"
+    },
+    {
+      "id": "gram-b35",
+      "prompt": "baku: diagnosa\njawab:",
+      "expected": " diagnosis"
+    },
+    {
+      "id": "gram-b36",
+      "prompt": "baku: streotip\njawab:",
+      "expected": " stereotip"
+    },
+    {
+      "id": "gram-b37",
+      "prompt": "status: Penjual itu menawarkan dagangannya.\njawab:",
+      "expected": " gramatikal"
+    },
+    {
+      "id": "gram-b38",
+      "prompt": "status: Kami menonton film kemarin malam.\njawab:",
+      "expected": " gramatikal"
+    },
+    {
+      "id": "gram-b39",
+      "prompt": "status: Kucing tidur di bawah meja.\njawab:",
+      "expected": " gramatikal"
+    },
+    {
+      "id": "gram-b40",
+      "prompt": "status: Ia berangkat sekolah jam tujuh.\njawab:",
+      "expected": " gramatikal"
+    },
+    {
+      "id": "gram-b41",
+      "prompt": "status: Musim hujan datang bulan ini.\njawab:",
+      "expected": " gramatikal"
+    },
+    {
+      "id": "gram-b42",
+      "prompt": "status: Penjual dagangannya menawarkan itu.\njawab:",
+      "expected": " tidak gramatikal"
+    },
+    {
+      "id": "gram-b43",
+      "prompt": "status: Kami kemarin menonton malam film.\njawab:",
+      "expected": " tidak gramatikal"
+    },
+    {
+      "id": "gram-b44",
+      "prompt": "status: Kucing meja tidur di bawah.\njawab:",
+      "expected": " tidak gramatikal"
+    },
+    {
+      "id": "gram-b45",
+      "prompt": "status: Ia sekolah berangkat jam tujuh.\njawab:",
+      "expected": " tidak gramatikal"
+    },
+    {
+      "id": "gram-b46",
+      "prompt": "status: Musim datang hujan bulan ini.\njawab:",
+      "expected": " tidak gramatikal"
+    }
+  ]
+}
