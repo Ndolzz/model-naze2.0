@@ -8,9 +8,9 @@ on:
         required: true
         type: string
       epochs:
-        description: "Jumlah epoch fine-tuning (default 500)"
+        description: "Jumlah epoch fine-tuning campuran (default 8)"
         required: false
-        default: "500"
+        default: "8"
         type: string
       block_size:
         description: "Ukuran jendela konteks (default 64; pasangan perintah terpanjang ~61 byte)"
@@ -45,7 +45,7 @@ jobs:
       - name: Fine-tuning command NazeIO (M-010)
         run: |
           python scripts/finetune_nazeio.py --checkpoint models/naze_v1 \
-            --epochs "${{ github.event.inputs.epochs || '500' }}" \
+            --epochs "${{ github.event.inputs.epochs || '8' }}" \
             --block-size "${{ github.event.inputs.block_size || '64' }}"
         env:
           PYTHONPATH: src

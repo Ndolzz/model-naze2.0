@@ -1,14 +1,14 @@
-"""Fine-tuning command NazeIO (M-010, melengkapi DECISION-024).
+"""Fine-tuning command NazeIO dengan rehearsal (M-010, DECISION-023).
 
-Korpus hybrid menyertakan perintah asisten dalam format kalimat, tetapi
-benchmark NazeIO (DECISION-023) memakai format pemetaan
-"perintah: {teks}\nintent: {intent}" dari data/korpus/perintah_tingkat_1.txt
-(berkas tersebut memang ditujukan untuk fine-tuning Naze Engine).
-Script ini melanjutkan training dari checkpoint final pada korpus tersebut,
-lalu checkpoint fine-tuned disimpan kembali ke models/naze_v1.
+Benchmark NazeIO memerlukan format pemetaan "perintah: {teks}\nintent: {intent}"
+dari data/korpus/perintah_tingkat_1.txt. Fine-tuning murni pada korpus perintah
+terbukti memicu catastrophic forgetting (ppl umum 2679 pada 100 epoch; 7614 pada
+500 epoch), maka script ini melatih pada korpus CAMPURAN: perintah (diulang)
++ potongan teks umum (rehearsal) dari train.txt yang tersebar merata,
+sehingga akurasi perintah dan kemampuan bahasa umum terjaga dalam satu model.
 
 Jalankan dari root repo:
-    python scripts/finetune_nazeio.py --checkpoint models/naze_v1 --epochs 100
+    python scripts/finetune_nazeio.py --checkpoint models/naze_v1 --epochs 8
 """
 
 from __future__ import annotations
@@ -33,6 +33,7 @@ from naze.train.runlog import RunLog
 
 PERINTAH = ROOT / "data" / "korpus" / "perintah_tingkat_1.txt"
 VAL_SPLIT = ROOT / "data" / "corpus" / "splits" / "val.txt"
+DEFAULT_GENERAL_CORPUS = ROOT / "data" / "corpus" / "splits" / "train.txt"
 VAL_SAMPLE_BYTES = 65_536  # sampel deterministik; evaluasi penuh tetap lewat train_final (no-op)
 
 
@@ -45,24 +46,48 @@ def load_perintah_text(path: Path) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
+def load_general_rehearsal(path: Path, total_bytes: int, n_chunks: int = 8) -> str:
+    # Rehearsal deterministik: n_chunks potongan tersebar merata di seluruh file
+    # agar keragaman distribusi umum tetap terwakili.
+    data = path.read_text(encoding="utf-8")
+    if total_bytes <= 0 or not data:
+        return ""
+    chunk_size = max(1, total_bytes // n_chunks)
+    parts = []
+    for i in range(n_chunks):
+        start = i * len(data) // n_chunks
+        parts.append(data[start:start + chunk_size])
+    return "\n".join(parts)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Fine-tuning command NazeIO (M-010)")
     parser.add_argument("--checkpoint", type=str, default="models/naze_v1")
-    parser.add_argument("--epochs", type=int, default=100)
+    parser.add_argument("--epochs", type=int, default=8)
     parser.add_argument("--block-size", type=int, default=64)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=0.08)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--eval-every", type=int, default=50)
+    parser.add_argument("--eval-every", type=int, default=4)
+    parser.add_argument("--command-repeats", type=int, default=25,
+                        help="pengulangan blok perintah per epoch")
+    parser.add_argument("--general-corpus", type=str, default=str(DEFAULT_GENERAL_CORPUS))
+    parser.add_argument("--general-bytes", type=int, default=524288,
+                        help="jumlah byte rehearsal teks umum per epoch (0 = nonaktif)")
     parser.add_argument("--report", type=str, default="runs/finetune_nazeio_summary.json")
     args = parser.parse_args()
 
     ckpt_dir = ROOT / args.checkpoint
     if not (ckpt_dir / "params.npz").exists():
         raise SystemExit(f"checkpoint tidak ditemukan: {ckpt_dir / 'params.npz'}")
-    text = load_perintah_text(PERINTAH)
+
+    cmd_text = load_perintah_text(PERINTAH)
+    general_text = load_general_rehearsal(Path(args.general_corpus), args.general_bytes)
+    text = (cmd_text + "\n") * args.command_repeats + "\n" + general_text + "\n"
     ids = ByteTokenizer().encode(text)
-    print(f"[finetune] korpus perintah: {len(ids)} token, epochs={args.epochs}")
+    print(f"[finetune] korpus campuran: {len(ids)} token "
+          f"(perintah x{args.command_repeats}, rehearsal umum {len(general_text)} char), "
+          f"epochs={args.epochs}")
 
     cfg = TrainConfig(
         model="transformer",
@@ -71,8 +96,8 @@ def main() -> int:
         batch_size=args.batch_size,
         lr=args.lr,
         epochs=args.epochs,
-        eval_every=args.eval_every,
         seed=args.seed,
+        eval_every=args.eval_every,
         checkpoint_path=str(ckpt_dir),
     )
     model_cfg = TransformerConfig(
@@ -83,14 +108,16 @@ def main() -> int:
     loaded = load_checkpoint_v2(ckpt_dir, model)
     print(f"[finetune] checkpoint dimuat: epoch={loaded['epoch']} step={loaded['step']}")
 
-    holdout_data = TextWindows(ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)  # self-eval: target tahap ini adalah hafalan (loss mendekati 0)
+    cmd_ids = ByteTokenizer().encode(cmd_text)
+    holdout_data = TextWindows(cmd_ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)
     log_path = ROOT / "runs" / "finetune_nazeio.jsonl"
     with RunLog(log_path) as log:
         data = TextWindows(ids, cfg.block_size, cfg.batch_size, seed=cfg.seed)
         summary = TrainingRun(cfg, model, data, holdout=holdout_data).run(log=log)
-    summary["finetune_corpus_tokens"] = len(ids)
+    summary["finetune_stage"] = "nazeio_command_mixed"
+    summary["command_repeats"] = args.command_repeats
+    summary["general_rehearsal_bytes"] = len(general_text)
     summary["loaded_epoch"] = loaded["epoch"]
-    summary["finetune_stage"] = "nazeio_command"
 
     # Evaluasi kemampuan bahasa umum pasca fine-tuning (gate DECISION-023: ppl <= 35).
     val_text = VAL_SPLIT.read_text(encoding="utf-8")[:VAL_SAMPLE_BYTES]
@@ -100,7 +127,8 @@ def main() -> int:
     summary["general_val_sample_loss"] = general.mean_loss
     summary["general_val_sample_perplexity"] = general.perplexity
     summary["general_val_sample_tokens"] = general.n_tokens
-    print(f"[finetune] sampel korpus umum: loss={general.mean_loss:.4f} ppl={general.perplexity:.4f} (gate: ppl <= 35)")
+    print(f"[finetune] sampel korpus umum: loss={general.mean_loss:.4f} "
+          f"ppl={general.perplexity:.4f} (gate: ppl <= 35)")
 
     out = ROOT / args.report
     out.parent.mkdir(parents=True, exist_ok=True)
