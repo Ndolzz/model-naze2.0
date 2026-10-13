@@ -2,11 +2,11 @@
 
 Model AI yang dibangun **dari nol** — tanpa pretrained model, tanpa API LLM eksternal sebagai core. Seluruh komponen (neural engine, tokenizer, dataset pipeline, Transformer, training system, inference engine, export) dibuat sendiri dengan Python + NumPy.
 
-## Status: Naze 1.0 — Training Final (M-010 ACTIVE)
+## Status: Naze 1.0 — RILIS 1.0.0 (M-010 DONE)
 
 M-001..M-009 DONE. Pipeline end-to-end lengkap: byte-level tokenizer → dataset → Transformer (config DECISION-018: D=64, H=4, L=2, d_ff=128, T_max=128) → training system (checkpoint v2 + run log) → inference engine → export float32. Korpus hybrid ±7 MB (DECISION-024) dengan pembagian train/val/holdout 80/10/10 terintegrasi di `data/corpus/splits/`.
 
-M-010 (training final) berjalan. Rilis Naze 1.0 ditentukan oleh release gate DECISION-023: training loss ≤ 2.5, validation perplexity ≤ 35, NazeIO command accuracy ≥ 90%.
+M-010 selesai (2026-10-13). Seluruh release gate DECISION-023 terverifikasi pada satu model final: training loss 0.5186 (gate ≤ 2.5), holdout perplexity 1.747 (gate ≤ 35), NazeIO command accuracy 100% (gate ≥ 90%). Model final: checkpoint 3 epoch korpus hybrid + fine-tuning command dengan rehearsal (`scripts/finetune_nazeio.py`, workflow `finetune-nazeio`).
 
 ## Prinsip
 - **Spec-Driven Development (SDD):** spesifikasi = source of truth (`docs/spec/`).
@@ -18,7 +18,7 @@ M-010 (training final) berjalan. Rilis Naze 1.0 ditentukan oleh release gate DEC
 ```
 docs/                 spesifikasi SDD (spec, architecture, decisions, tasks)
 data/corpus/splits/   korpus hybrid D-024 (train/val/holdout 80/10/10)
-scripts/              train_final.py, benchmark_nazeio.py
+scripts/              train_final.py, benchmark_nazeio.py, finetune_nazeio.py
 src/naze/
 ├── core/             numerical core + gradient check
 ├── nn/               layers, activations, komponen Transformer
@@ -100,8 +100,8 @@ print(tok.decode(prompt + generated))
 - M-001 Project Foundation ✅ | M-002 Neural Engine ✅ | M-003 Autodiff ✅
 - M-004 Tokenizer ✅ | M-005 Dataset ✅ | M-006 First LM + training minimal ✅ (2026-10-06)
 - M-007 Transformer ✅ | M-008 Training System ✅ | M-009 Inference & Export ✅ (2026-10-09)
-- M-010 Training Final — ACTIVE (2026-10-10)
-- Berikutnya: evaluasi gate DECISION-023 → rilis Naze 1.0.
+- M-010 Training Final ✅ (2026-10-13) — seluruh gate DECISION-023 terpenuhi; Naze 1.0 dirilis sebagai v1.0.0
+- Berikutnya: M-011+ Multimodal / Physical AI (DEFERRED, OPEN DECISION-108).
 
 ## Dokumentasi
 - `docs/api.md` — API reference (FINAL, v1.0.0)

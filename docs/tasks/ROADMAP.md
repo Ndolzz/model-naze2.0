@@ -74,11 +74,16 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - **Requirements:** REQ-008, REQ-101, REQ-102, REQ-103, REQ-104.
 - **Deliverables:** src/naze/inference/{batch,engine,benchmark,__init__}.py; tests/test_m009_*.py (unit/numeric/integration/benchmark).
 - **Acceptance Criteria:** [x] T001..T016 selesai berurutan; [x] end-to-end encode->batch->forward->generate->decode berjalan; [x] benchmark tokens_per_second > 0 dan peak_rss_kb < 2 GB; [x] test lama tidak dimodifikasi; [x] coverage >=80% (93.40%).
-## MILESTONE-010 — Naze 1.0 (Stage 9) — ACTIVE (OD-107/OD-112 RESOLVED via DECISION-023/024)
-- **Progress:** T001..T004 DONE (korpus hybrid ~7 MB terintegrasi + splits 80/10/10).
-  T005: workflow CI training final dibuat (`.github/workflows/training.yml`, workflow_dispatch
-  dengan input epochs/resume, artefak checkpoint + runlog). Menunggu: eksekusi training final,
-  evaluasi gate DECISION-023 (train loss <= 2.5, val perplexity <= 35, command acc >= 90%).
+## MILESTONE-010 — Naze 1.0 (Stage 9) — DONE (2026-10-13)
+- **Objective:** Training final + verifikasi release gate DECISION-023.
+- **Deliverables:** Training 3 epoch pada korpus hybrid (train loss 0.5186, val ppl 1.6915);
+  benchmark NazeIO (`scripts/benchmark_nazeio.py` + workflow CI); fine-tuning command dengan
+  rehearsal (`scripts/finetune_nazeio.py`: perintah x25 + rehearsal teks umum, block 64, 8 epoch)
+  setelah fine-tuning murni terbukti memicu catastrophic forgetting (ppl umum 7.614 pada 500 epoch);
+  workflow CI training/benchmark/finetune dengan artifact.
+- **Release gate (DECISION-023), model final:** [x] train loss 0.5186 <= 2.5;
+  [x] holdout perplexity 1.747 <= 35; [x] NazeIO command accuracy 100% (20/20) >= 90%.
+- **Acceptance tambahan:** [x] checkpoint 876 KB <= 1 MB (D-018); CI hijau.
 ## MILESTONE-011+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
 
 ## Roadmap Change Log
@@ -93,3 +98,4 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 | 2026-10-09 | M-008 | DONE | T001..T010 selesai berurutan; coverage 97.75%; CI hijau |
 | 2026-10-09 | M-009 | PLANNED | TD + task breakdown T001..T016 siap, menunggu persetujuan owner |
 | 2026-10-10 | M-010 | ACTIVE; T001..T004 DONE; T005 workflow training dibuat | OD-107/OD-112 resolved (DECISION-023/024); korpus + splits siap |
+| 2026-10-13 | M-010 | DONE | Seluruh gate DECISION-023 terpenuhi pada model final: train loss 0.5186, holdout ppl 1.747, akurasi NazeIO 100% (20/20) |
