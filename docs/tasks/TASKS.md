@@ -41,4 +41,4 @@ TASK-006-05 generate (greedy + temperature) [REQ-010] — DONE
 TASK-006-06 integration test end-to-end [REQ-103] — DONE
 TASK-006-07 update seluruh docs SDD [REQ-105, REQ-304] — DONE
 
-**Catatan:** Stage 6 (Transformer) ke atas belum dikerjakan — menunggu persetujuan owner (M-007).
+**Catatan (pembaruan 2026-10-13):** File ini ringkasan historis M-001..M-006. Status kanonik: M-007..M-010 DONE (lihat docs/tasks/M00X_TASKS.md dan ROADMAP.md). Pekerjaan aktif: **ID-BASIC-001** (kemampuan dasar bahasa Indonesia) — Tahap 0 audit DONE, Tahap 1 spesifikasi DONE (REQ-401, DECISION-025, IDBASIC001_TECHNICAL_DESIGN.md, IDBASIC001_TASKS.md; branch feature/id-basic-001).

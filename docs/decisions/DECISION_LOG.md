@@ -240,3 +240,17 @@ Dibutuhkan sebelum: training skala serius (pasca-M-006). Pipeline sudah siap men
 | OD-114 (CI enforcement) | DECISION-020: pytest wajib hijau utk main (branch protection) | 2026-10-09 | Keputusan owner (batch) |
 | OD-117 / ISSUE-011 (metrik memori) | DECISION-021: checkpoint ≤ 1 MB + RAM training < 2 GB | 2026-10-09 | Keputusan owner (batch) |
 | OD-121 (skema positional) | DECISION-022: learned positional embedding (final) | 2026-10-09 | Keputusan owner (batch) |
+| Strategi dataset ID-BASIC-001 | DECISION-025: sumber eksternal berlisensi + fallback buatan sendiri | 2026-10-13 | Keputusan owner |
+
+## DECISION-025 — Strategi dataset ID-BASIC-001: sumber eksternal berlisensi + fallback buatan sendiri — ACCEPTED (owner, 2026-10-13)
+- **Context:** REQ-401/ID-BASIC-001 membutuhkan contoh berlabel lima kategori (kosakata, tata bahasa, struktur kalimat, tanda baca, makna kontekstual). Pilihan: contoh buatan sendiri penuh atau sumber eksternal berlisensi.
+- **Decision:** Prioritaskan sumber eksternal dengan lisensi terbuka terverifikasi. Kandidat awal (verifikasi per sumber WAJIB sebelum pemakaian): Wordnet Bahasa (MIT via Open Multilingual Wordnet) untuk sinonim/antonim/arti; IndoNLU (MIT) untuk data berlabel sintaksis. Kategori tanpa sumber eksternal berlisensi jelas memakai contoh buatan sendiri (fallback diizinkan ketentuan ID-BASIC-001). Setiap sumber wajib mencatat asal, lisensi + bukti, metode derivasi/pembersihan, jumlah contoh aktual, dan versi di manifest; contoh evaluasi tidak boleh masuk corpus training; deduplikasi dan anti-leakage wajib.
+- **Reason:** Keputusan owner 2026-10-13 ("sumber eksternal berlisensi"); konsisten DECISION-024 (verifikasi lisensi WAJIB).
+- **Alternatives:** buatan sendiri penuh (cepat, aman lisensi — tidak dipilih owner); menunggu sumber sempurna (menunda tanpa batas).
+- **Consequences:** OD-127 (ambang penerimaan per kategori — setelah baseline, sebelum hasil pascatraining dipakai) dan OD-128 (adopsi checkpoint eksperimen ke produksi) dibuka.
+
+## OPEN DECISION-127 — Ambang penerimaan benchmark ID-BASIC-001 per kategori
+Dibutuhkan sebelum: keputusan keberhasilan ID-BASIC-001. Ditetapkan setelah baseline terukur, sebelum hasil pascatraining digunakan. Tidak boleh retrospektif.
+
+## OPEN DECISION-128 — Adopsi checkpoint eksperimen ID-BASIC-001 ke produksi
+Dibutuhkan sebelum: penggantian checkpoint produksi naze_v1. Keputusan owner berdasarkan tabel perbandingan pra/pasca + uji regresi.

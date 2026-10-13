@@ -6,7 +6,7 @@
 > DECISION_LOG (DECISION-015/016/017), REQUIREMENTS v0.4.0, PROJECT_SPEC v0.4.0, dan SPEC_REVIEW v1.2.0 yang dirujuk matriks ini adalah **RECONSTRUCTED GOVERNANCE** (direkonstruksi 2026-10-07 setelah versi asli hilang dan tidak pernah di-commit). Substansi keputusan konsisten dengan matriks ini; wording dokumen tersebut bukan teks asli. Baris matriks identik dengan v1.3.0 (commit `81153d4`).
 > **Koreksi jumlah requirement (owner decision, 2026-10-07):** ringkasan v1.3.0 menyebut "Total requirement: 26" — kesalahan hitung pra-existing (sejak v1.1.0). Verifikasi git history (REQUIREMENTS v0.1.0 & v0.3.0) membuktikan jumlah REQ ID unik = **23** (REQ-001..011, REQ-101..105, REQ-201..203, REQ-301..304), sama dengan jumlah baris matriks. Tidak ada REQ baru yang dibuat untuk mencapai angka lama.
 
-**Version:** 1.4.0 (M-007 implementasi DONE: status milestone/task diperbarui, 2026-10-09; baris matriks = v1.3.0; reconstruction notice = v1.3.1, 2026-10-07)
+**Version:** 1.5.0 (ID-BASIC-001: REQ-401 ditambahkan; status M-010 dikoreksi ke DONE, 2026-10-13. Riwayat: v1.4.0 M-007 status 2026-10-09; baris lain = v1.3.0; reconstruction notice v1.3.1 2026-10-07)
 Chain of traceability (per DECISION-017):
 **Requirement → Decision → Architecture → Milestone → Technical Design → Task → Acceptance Criteria**
 
@@ -30,6 +30,7 @@ Chain of traceability (per DECISION-017):
 | REQ-009 Evaluation | D-016 | Stage 7 (harness; benchmark = Stage 8) | M-008 (DONE) | **M008_TECHNICAL_DESIGN.md** | **M008-T001..T010 (DONE)** | 5-basis evaluasi (D-016); format hasil di M008-T003; benchmark inference = M-009 | MAPPED |
 | REQ-010 First LM | D-012, D-016 | Stage 5 | M-006 (DONE) | M007 TD §8 (integrasi pipeline) | M007-T013/016 | Trainable end-to-end (basis 1-2-3); generate deterministik; generate-from-checkpoint = M-008 | MAPPED |
 | REQ-011 Transformer | D-009 (backward per-layer), D-015 (vocab 256), D-016 (evaluasi) | Stage 6 | M-007 (**DONE 2026-10-09**, T001..T018) | **M007_TECHNICAL_DESIGN.md** | **M007-T001..T018 (selesai)** | TD §13: 17 AC objective — tervalidasi via unit/numeric/integration tests; pytest penuh dieksekusi via CI (T017, `.github/workflows/tests.yml`); batas ukuran = OD-118 | MAPPED — IMPLEMENTED |
+| REQ-401 ID-Basic Bahasa Indonesia | D-025 | Pasca-Stage 9 (eksperimen) | ID-BASIC-001 (ACTIVE) | **IDBASIC001_TECHNICAL_DESIGN.md** | **IDB-T001..T010** | Benchmark tetap 5 kategori terpisah dari training; baseline sebelum training; ambang pasca-baseline (OD-127); regresi NazeIO/holdout; checkpoint produksi tak tertimpa | MAPPED |
 
 ## Non-Functional Requirements
 
@@ -61,9 +62,11 @@ Chain of traceability (per DECISION-017):
 - **M-007 IMPLEMENTED (2026-10-09):** REQ-011 → D-009/015/016 → Stage 6 → M-007 (DONE) → M007_TECHNICAL_DESIGN.md → M007-T001..T018 (selesai) → 17 AC objective tervalidasi via 3 suite test baru + CI pytest penuh.
 - **M-008 DONE (2026-10-09):** REQ-007/009 → D-014/016/018/019/020/021 → Stage 7 → M-008 (DONE) → M008_TECHNICAL_DESIGN.md → M008-T001..T010 (selesai) → coverage 97.75%, CI hijau.
 - **M-009 DONE (2026-10-09):** REQ-008 → Stage 8 → M-009 (DONE) → M009_TECHNICAL_DESIGN.md → M009-T001..T016 (selesai) → forward-only path, batching, benchmark, coverage 93.40%.
+- **ID-BASIC-001 ACTIVE (2026-10-13):** REQ-401 → D-025 → pasca-Stage 9 → ID-BASIC-001 → IDBASIC001_TECHNICAL_DESIGN.md → IDB-T001..T010 → benchmark 5 kategori + baseline + evaluasi pra/pasca identik. OD baru: OD-127 (ambang per kategori), OD-128 (adopsi checkpoint).
+- **M-010 DONE (2026-10-13):** seluruh gate DECISION-023 terpenuhi pada model final (train loss 0.5186 ≤ 2.5; holdout ppl 1.747 ≤ 35; akurasi NazeIO 100% 20/20).
 - OD tersisa pasca-M-009: OD-101 (accelerasi), OD-108 (multimodal), OD-115 (cleaning), OD-119 (release policy), OD-122..126 (M-009 open decisions). OD-107 **RESOLVED** (DECISION-023, ACCEPTED). OD-112 **RESOLVED** (DECISION-024, APPROVED).
 - Maintenance policy dipatuhi: implementasi selesai → TRACEABILITY diperbarui (PROJECT_SPEC §7).
 
-| **REQ-107 Definisi Sukses Naze 1.0** | **D-023, D-024** | **Stage 9** | **M-010 (IMPLEMENTING)** | **M010_TECHNICAL_DESIGN.md** | **M010-T001..T020** | Target: training loss <= 2.5, validation perplexity <= 35, NazeIO accuracy >= 90%. Corpus hybrid ~7 MB (DECISION-024). | MAPPED |
+| **REQ-107 Definisi Sukses Naze 1.0** | **D-023, D-024** | **Stage 9** | **M-010 (DONE 2026-10-13)** | **M010_TECHNICAL_DESIGN.md** | **M010-T001..T020** | Target: training loss <= 2.5, validation perplexity <= 35, NazeIO accuracy >= 90%. Corpus hybrid ~7 MB (DECISION-024). | MAPPED |
 | **REQ-105 Documentation (M-010)** | **D-017** | **Stage 9** | **M-010 (IMPLEMENTING)** | **M010_TECHNICAL_DESIGN.md** | **M010-T011..T014, T018..T020** | API reference, tutorial, changelog, README update | MAPPED |
 

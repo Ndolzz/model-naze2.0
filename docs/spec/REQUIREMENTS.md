@@ -5,7 +5,7 @@
 > **Basis rekonstruksi:** versi GitHub commit `b53259b` (v0.3.0 — verbatim dari git history) + revisi AC sesuai DECISION-015/016 yang terdokumentasi di TRACEABILITY v1.3.0, M007_TECHNICAL_DESIGN, dan SPEC_REVIEW v1.1.0.
 > Bagian tanpa penanda direkonstruksi dari v0.3.0 (akurat); bagian revisi governance ditandai **[RECONSTRUCTED]**. Wording revisi BUKAN teks asli yang hilang.
 
-**Version:** 0.5.0 | **Status:** M-001..M-007 DONE (implementasi Transformer selesai 2026-10-09; suite penuh via CI); M-008+ PLANNED
+**Version:** 0.6.0 | **Status:** M-001..M-007 DONE (implementasi Transformer selesai 2026-10-09; suite penuh via CI); M-008+ PLANNED
 
 **Priority:** MUST / SHOULD / DEFERRED — **Status:** PROPOSED / APPROVED / IN-PROGRESS / DONE
 
@@ -49,6 +49,9 @@ Decoder-only causal Transformer sesuai `docs/architecture/M007_TECHNICAL_DESIGN.
 
 ---
 
+### REQ-401 — Kemampuan Dasar Bahasa Indonesia (ID-BASIC-001) — MUST — **PROPOSED (2026-10-13, persetujuan owner)**
+Model menampilkan kemampuan dasar bahasa Indonesia yang terukur pada lima kategori berlabel: (1) kosakata — arti kata, sinonim, antonim, penggunaan dalam kalimat; (2) tata bahasa — bentuk kata, imbuhan, kata depan, susunan gramatikal; (3) struktur kalimat — identifikasi unsur S-P-O-K, penyusunan ulang kata, variasi pola; (4) tanda baca dan kapitalisasi — koreksi berbasis aturan; (5) makna kontekstual — makna kata sesuai konteks, referensi sederhana, interpretasi yang didukung kalimat. Evaluasi via benchmark tetap per kategori yang terpisah dari data training; baseline diukur sebelum training pada checkpoint aktual; ambang penerimaan ditetapkan setelah baseline terukur dan sebelum hasil pascatraining dipakai untuk keputusan (OD-127). Integrasi via fine-tuning rehearsal (DECISION-025); checkpoint produksi tidak tertimpa; regresi kapabilitas lama (NazeIO, perplexity holdout) wajib dilaporkan.
+
 ## B. Non-Functional Requirements
 
 ### REQ-101 — Reproducibility — MUST — **DONE untuk kode saat ini**: seluruh randomness via seeded_rng; init/generation/batch deterministik per-seed (teruji, termasuk Transformer M-007: logits/attention/generate). Dokumen reproduksi per-run lengkap menyusul di M-008.
@@ -86,3 +89,4 @@ REQ-304 Change Log — APPROVED
 | 2026-10-06 | REQ-001, REQ-002, REQ-101, REQ-103, REQ-104, REQ-105 | Status → IN-PROGRESS; hasil implementasi dicatat | Implementasi M-002 (Stage 1) | 0.2.0 |
 | [HISTORICAL DETAIL UNAVAILABLE] | REQ-004, REQ-006, REQ-009, REQ-010 | AC direvisi: vocab fixed 256 (DECISION-015); evaluasi 5-basis tanpa ambang loss numerik universal (DECISION-016); mapping REQ-009 diperjelas (ISSUE-012). REQ-011 → TECHNICAL DESIGN READY. | Governance M-007: resolusi ISSUE-004 & ISSUE-006/OD-116; DECISION-017 membuka tahap Technical Design | 0.4.0 [RECONSTRUCTED] |
 | 2026-10-09 | REQ-011, REQ-003, REQ-008, REQ-101, REQ-103, REQ-105 | REQ-011 → DONE (M-007 implementasi T001..T018); REQ-003 mencakup grad-check Transformer; REQ-008 partial mencakup transformer_generate; REQ-101/103/105 diperluas hasil M-007; CI pytest ditambahkan (T017) | M007-T018 documentation update | 0.5.0 |
+| 2026-10-13 | REQ-401 | Ditambahkan: kemampuan dasar bahasa Indonesia (ID-BASIC-001) — PROPOSED | Persetujuan owner: dataset eksternal berlisensi + fallback buatan sendiri (DECISION-025) | 0.6.0 |

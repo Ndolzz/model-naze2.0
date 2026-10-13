@@ -1,67 +1,72 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "name": "Naze 1.0 Hybrid Corpus",
-  "description": "Corpus final untuk training Naze 1.0 (M-010) sesuai DECISION-024",
+  "description": "Korpus hybrid training Naze 1.0 (M-010, DECISION-024). v2.0.0: metadata diselaraskan dengan keadaan aktual (audit ID-BASIC-001 Tahap 0, 2026-10-13; koreksi temuan C1-C6).",
   "strategy": "hybrid",
   "total_size_bytes": 7387703,
   "total_size_mb": 7.05,
   "created": "2026-10-09T12:00:00+00:00",
+  "updated": "2026-10-13",
   "seed": 42,
   "composition": {
     "bahasa_indonesia_umum": {
-      "percentage": 70,
+      "target_percentage": 70,
+      "actual_percentage": 71.5,
       "target_size_mb": 5.0,
       "actual_size_bytes": 5282032,
-      "actual_size_mb": 5.04,
-      "sources": ["Wikipedia Indonesia (CC-BY-SA)"],
+      "sources": ["Wikipedia Indonesia (CC-BY-SA 3.0)"],
       "files": ["umumnya/wikipedia_id.txt"],
       "status": "INTEGRATED"
     },
     "perintah_asisten": {
-      "percentage": 20,
+      "target_percentage": 20,
+      "actual_percentage": 28.4,
       "target_size_mb": 1.5,
       "actual_size_bytes": 2101229,
-      "actual_size_mb": 2.00,
       "sources": ["Synthetic - controlled generation"],
       "files": ["perintah/perintah_asisten.txt"],
       "status": "INTEGRATED",
-      "purpose": "NazeIO command benchmark"
+      "purpose": "NazeIO command capability (format kalimat); benchmark NazeIO memakai data/korpus/perintah_tingkat_1.txt (format pemetaan)",
+      "provenance_note": "Berkas awal 4.047 byte (pra-ekspansi) diperluas menjadi 2.101.229 byte dengan perintah sintetis tambahan; ukuran aktual diverifikasi listing repo 2026-10-13."
     },
     "instruksi_editing": {
-      "percentage": 10,
+      "target_percentage": 10,
+      "actual_percentage": 0.06,
       "target_size_mb": 0.5,
       "actual_size_bytes": 4442,
-      "actual_size_mb": 0.004,
       "sources": ["Synthetic - controlled generation"],
       "files": ["editing/instruksi_editing.txt"],
       "status": "INTEGRATED",
       "purpose": "Naze Motion Agent capability"
     }
   },
+  "auxiliary_corpora": {
+    "data/korpus/perintah_tingkat_1.txt": {
+      "size_bytes": 2774,
+      "purpose": "Korpus pemetaan perintah->intent untuk benchmark NazeIO (DECISION-023) dan fine-tuning rehearsal (M-010); bukan bagian korpus hybrid",
+      "part_of_hybrid": false
+    }
+  },
   "dataset_splitting": {
-    "training": {
-      "percentage": 80,
-      "seed": 42,
-      "status": "NOT_YET_SPLIT"
-    },
-    "validation": {
-      "percentage": 10,
-      "seed": 42,
-      "status": "NOT_YET_SPLIT"
-    },
+    "status": "DONE (2026-10-09)",
+    "method": "line-based split with deterministic shuffle (seed=42)",
+    "training": {"percentage": 80, "tokens": 5859468, "file": "splits/train.txt"},
+    "validation": {"percentage": 10, "tokens": 749894, "file": "splits/val.txt"},
     "holdout": {
       "percentage": 10,
-      "seed": 42,
-      "status": "NOT_YET_SPLIT",
+      "tokens": 773864,
+      "file": "splits/holdout.txt",
       "note": "TIDAK BOLEH digunakan untuk training atau hyperparameter tuning"
-    }
+    },
+    "reference": "splits/split_manifest.json (sha256 per split tercatat di sana)",
+    "token_count_note": "Total token split 7.387.706 vs 7.387.703 byte berkas sumber (selisih +3 dari pemisah saat penggabungan/split; token = byte untuk ByteTokenizer)."
   },
   "preprocessing": {
     "tokenizer": "ByteTokenizer",
     "vocab_size": 256,
     "encoding": "UTF-8",
     "normalization": "none (byte-level is lossless)",
-    "deduplication": "NOT_YET_APPLIED",
+    "deduplication": "NOT_APPLIED pada level korpus (duplikasi sintetis perintah disengaja untuk eksposur); anti-leakage antar split terdokumentasi di split_manifest.json",
     "status": "RAW"
   },
   "fingerprints": {
@@ -71,14 +76,15 @@
       "status": "VERIFIED"
     },
     "perintah/perintah_asisten.txt": {
-      "sha256": "5f1759648861f50dbb3261c595003d0d954c733cae44e57cd1ee32d9bdb77ab5",
-      "size_bytes": 4047,
-      "status": "VERIFIED (original)"
+      "sha256_original_4047_bytes": "5f1759648861f50dbb3261c595003d0d954c733cae44e57cd1ee32d9bdb77ab5",
+      "current_size_bytes": 2101229,
+      "current_sha256": null,
+      "status": "CURRENT_HASH_PENDING (dihitung validator IDB-T003)"
     },
     "editing/instruksi_editing.txt": {
       "sha256": "508c21e225554a634bbd6ccccfd03919de8c629b815bf6525e94569c90be9c6c",
       "size_bytes": 4442,
-      "status": "VERIFIED (original)"
+      "status": "VERIFIED"
     }
   },
   "licenses": {
@@ -86,20 +92,15 @@
     "perintah/perintah_asisten.txt": "Proprietary - Naze Project (Synthetic)",
     "editing/instruksi_editing.txt": "Proprietary - Naze Project (Synthetic)"
   },
-  "notes": {
-    "wikipedia_id.txt": "Contains Indonesian Wikipedia content + synthetic text to reach target size",
-    "perintah_asisten.txt": "Contains synthetic commands for NazeIO benchmark + additional generated commands",
-    "instruksi_editing.txt": "Contains synthetic editing instructions for Naze Motion Agent"
-  },
   "warnings": [
-    "Wikipedia content license (CC-BY-SA) must be verified before commercial use",
-    "Synthetic data may not fully represent natural language distribution",
-    "Dataset splitting has not been applied yet (T004)",
-    "Deduplication has not been applied yet (T004)"
+    "Wikipedia content (CC-BY-SA 3.0): atribusi dan share-alike wajib saat redistribusi",
+    "Komposisi aktual menyimpang dari target DECISION-024 (perintah 28.4% vs target 20%; editing 0.06% vs target 10%) - dilaporkan apa adanya",
+    "Cache token ID (*.npy) dihapus dari working tree (ID-BASIC-001, 2026-10-13); blob tetap ada di riwayat git - pembersihan riwayat memerlukan force-push (tidak dilakukan sesuai aturan eksekusi)"
   ],
   "decision_reference": {
     "od_112": "DECISION-024",
-    "status": "APPROVED (2026-10-09, owner approval)",
+    "od_107": "DECISION-023",
+    "status": "APPROVED (2026-10-09, owner approval); model final memenuhi seluruh gate 2026-10-13",
     "milestone": "M-010",
     "stage": "Stage 9"
   }
