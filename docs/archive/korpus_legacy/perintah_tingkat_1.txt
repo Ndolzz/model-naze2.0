@@ -1,0 +1,157 @@
+# Korpus Perintah Tingkat 1 untuk Naze Engine (nazeio)
+# Format: perintah: {teks}\nintent: {intent}
+# Vocab: byte-level 256 (model-naze2.0)
+# Digunakan untuk fine-tuning/latihan Naze Engine agar mengenali perintah lokal tanpa internet.
+
+perintah: buka whatsapp
+intent: buka_aplikasi
+
+perintah: buka wa
+intent: buka_aplikasi
+
+perintah: buka whats app
+intent: buka_aplikasi
+
+perintah: buka aplikasi whatsapp
+intent: buka_aplikasi
+
+perintah: buka instagram
+intent: buka_aplikasi
+
+perintah: buka ig
+intent: buka_aplikasi
+
+perintah: buka facebook
+intent: buka_aplikasi
+
+perintah: buka fb
+intent: buka_aplikasi
+
+perintah: buka youtube
+intent: buka_aplikasi
+
+perintah: buka yt
+intent: buka_aplikasi
+
+perintah: buka google
+intent: buka_aplikasi
+
+perintah: buka chrome
+intent: buka_aplikasi
+
+perintah: buka pengaturan
+intent: buka_pengaturan
+
+perintah: buka setelan
+intent: buka_pengaturan
+
+perintah: buka settings
+intent: buka_pengaturan
+
+perintah: buka panel pengaturan
+intent: buka_pengaturan
+
+perintah: pasang pengingat pukul 7
+intent: pasang_pengingat
+
+perintah: ingatkan aku pukul 15
+intent: pasang_pengingat
+
+perintah: pasang alarm jam 6
+intent: pasang_pengingat
+
+perintah: ingatkan aku 5 menit lagi
+intent: pasang_pengingat
+
+perintah: ingatkan aku 10 menit lagi
+intent: pasang_pengingat
+
+perintah: buka bluetooth
+intent: nyalakan_bluetooth
+
+perintah: nyalakan bluetooth
+intent: nyalakan_bluetooth
+
+perintah: matikan bluetooth
+intent: matikan_bluetooth
+
+perintah: nonaktifkan bluetooth
+intent: matikan_bluetooth
+
+perintah: status bluetooth
+intent: status_bluetooth
+
+perintah: tanya status bluetooth
+intent: status_bluetooth
+
+perintah: tangkap layar
+intent: tangkap_layar
+
+perintah: screenshot
+intent: tangkap_layar
+
+perintah: ambil gambar layar
+intent: tangkap_layar
+
+perintah: buka maps
+intent: buka_maps
+
+perintah: buka google maps
+intent: buka_maps
+
+perintah: cari restoran di maps
+intent: cari_maps
+
+perintah: arah ke rumah
+intent: navigasi_maps
+
+perintah: navigasi ke kantor
+intent: navigasi_maps
+
+perintah: buka kamera
+intent: buka_aplikasi
+
+perintah: buka galeri
+intent: buka_aplikasi
+
+perintah: buka kontak
+intent: buka_aplikasi
+
+perintah: telepon ibu
+intent: telepon_kontak
+
+perintah: hubungi ayah
+intent: telepon_kontak
+
+perintah: panggil 081234567890
+intent: telepon_nomor
+
+perintah: jam berapa sekarang
+intent: jam
+
+perintah: jam berapa
+intent: jam
+
+perintah: hari apa hari ini
+intent: hari
+
+perintah: tanggal berapa hari ini
+intent: tanggal
+
+perintah: berapa baterai hp saya
+intent: baterai
+
+perintah: berapa persen baterai
+intent: baterai
+
+perintah: hitung hari sampai tahun baru
+intent: hitung_hari
+
+perintah: hitung hari sampai lebaran
+intent: hitung_hari
+
+perintah: hapus semua riwayat
+intent: hapus_riwayat
+
+perintah: bersihkan riwayat
+intent: hapus_riwayat

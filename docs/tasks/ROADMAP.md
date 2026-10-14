@@ -84,7 +84,7 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - **Release gate (DECISION-023), model final:** [x] train loss 0.5186 <= 2.5;
   [x] holdout perplexity 1.747 <= 35; [x] NazeIO command accuracy 100% (20/20) >= 90%.
 - **Acceptance tambahan:** [x] checkpoint 876 KB <= 1 MB (D-018); CI hijau.
-## MILESTONE-011 — Naze 1.1: Korpus Dwibahasa & Suara Merek Naze — TECHNICAL DESIGN READY (TD + task breakdown 2026-10-14, menunggu persetujuan owner)
+## MILESTONE-011 — Naze 1.1: Korpus Dwibahasa & Suara Merek Naze — IN IMPLEMENTATION (TD disetujui owner 2026-10-14, tanpa revisi)
 - **Objective:** Model menguasai bahasa Indonesia dan bahasa Inggris dengan gaya bicara merek Naze.
 - **Requirements:** REQ-012 (utama); REQ-005/009/101/102/103/105 pendukung.
 - **Deliverables:** korpus dwibahasa ~8 MB (komposisi DECISION-025: 40/20/15/15/10); docs/spec/BRAND_VOICE.md; splits ulang 80/10/10 deterministik per-seed; benchmark NazeIO dwibahasa; eksperimen dua jalur training (resolusi OD-123); M011_TECHNICAL_DESIGN.md + M011_TASKS.md (dibuat 2026-10-14).
@@ -107,3 +107,4 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 | 2026-10-13 | M-010 | DONE | Seluruh gate DECISION-023 terpenuhi pada model final: train loss 0.5186, holdout ppl 1.747, akurasi NazeIO 100% (20/20) |
 | 2026-10-14 | M-011 | PLANNED — korpus dwibahasa & suara merek Naze (DECISION-025, REQ-012); multimodal bergeser ke M-012+ | Persetujuan owner 2026-10-14 |
 | 2026-10-14 | M-011 | TECHNICAL DESIGN + TASK BREAKDOWN selesai (M011-T001..T019); OD-123 dibuka (strategi training); menunggu persetujuan owner untuk implementasi | Format DECISION-017 (15 section); DECISION-025; REQ-012 |
+| 2026-10-14 | M-011 | IN IMPLEMENTATION — TD v0.1.0 disetujui owner tanpa revisi; M011-T001 (rekonsiliasi manifest splitting v1.0.1) & M011-T002 (arsip verbatim data/korpus/ ke docs/archive/korpus_legacy/, lalu hapus) selesai | Persetujuan owner 2026-10-14 |

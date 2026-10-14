@@ -1,6 +1,6 @@
 # M011_TASKS — Naze 1.1: Korpus Dwibahasa & Suara Merek Naze
 
-**Status:** PLANNED — TECHNICAL DESIGN READY (menunggu persetujuan owner)
+**Status:** IN PROGRESS — TECHNICAL DESIGN APPROVED (owner, 2026-10-14, tanpa revisi)
 **Referensi:** docs/architecture/M011_TECHNICAL_DESIGN.md (DECISION-025)
 **Dependencies:** M-001..M-010 DONE; DECISION-025 ACCEPTED (owner, 2026-10-14); REQ-012 APPROVED
 **Requirements:** REQ-012 (utama); REQ-005/008/009/101..105/201..203/301/302/304
@@ -17,19 +17,21 @@
 ## Kategori 1: Pekerjaan Rumah (prasyarat)
 
 ### M011-T001 — Rekonstruksi status splitting corpus_manifest.json
+**Status:** DONE (2026-10-14)
 **Deskripsi:** Rekonsiliasi inkonsistensi pra-existing: manifest v1 menyatakan dataset splitting NOT_YET_SPLIT sementara splits 80/10/10 sudah terintegrasi di data/corpus/splits/ (temuan pemeriksaan 2026-10-14). Perbarui manifest agar status konsisten dengan realita sebelum diganti oleh T008.
 **AC:**
-- [ ] Status splitting pada manifest sesuai kondisi aktual file splits/.
+- [x] Status splitting pada manifest sesuai kondisi aktual file splits/ (manifest v1.0.1: SPLIT_INTEGRATED, referensi splits/split_manifest.json).
 **Modul:** data/corpus/corpus_manifest.json
 **Req:** REQ-105, REQ-304
 
 ### M011-T002 — Bersihkan direktori warisan data/korpus/
-**Deskripsi:** Direktori data/korpus/ (berisi perintah_tingkat_1.txt, 2,7 KB) adalah sisa pra-penataan data/corpus/. Periksa cakupan kontennya terhadap data/corpus/perintah/, dokumentasikan duplikasi, lalu hapus direktori warisan.
+**Status:** DONE (2026-10-14)
+**Deskripsi:** Direktori data/korpus/ (berisi perintah_tingkat_1.txt, 2,7 KB) adalah sisa pra-penataan data/corpus/. Periksa cakupan kontennya terhadap data/corpus/perintah/, dokumentasikan duplikasi, lalu hapus direktori warisan. **Keputusan owner (2026-10-14): konten diarsipkan verbatim ke docs/archive/korpus_legacy/ terlebih dahulu (dengan README analisis duplikasi), kemudian direktori warisan dihapus.**
 **AC:**
-- [ ] Konten diperiksa dan duplikasi didokumentasikan.
-- [ ] Owner mengonfirmasi penghapusan; direktori dihapus.
+- [x] Konten diperiksa dan duplikasi didokumentasikan (docs/archive/korpus_legacy/README.md).
+- [x] Owner mengonfirmasi (2026-10-14: arsipkan terlebih dahulu); konten terarsip verbatim di docs/archive/korpus_legacy/; direktori warisan dihapus; referensi commands.json source_format diperbarui.
 **Modul:** data/
-**Blocker:** Konfirmasi owner (tidak menghapus data tanpa otorisasi).
+**Blocker:** RESOLVED — keputusan owner 2026-10-14 (arsip verbatim ke docs/archive/korpus_legacy/, lalu hapus).
 **Req:** REQ-105, REQ-304
 
 ---
@@ -210,11 +212,11 @@ T019 <- T014 (opsional)
 
 1. **OD-123 (BARU): strategi training M-011** — jalur A fine-tune + rehearsal vs jalur B training ulang; OPEN; diresolusi via eksperimen pembanding M011-T012 (bukti empiris, bukan asumsi).
 2. **Verifikasi lisensi sumber EN (T003)** — WAJIB sebelum integrasi.
-3. **Konfirmasi owner atas T002** — penghapusan direktori warisan.
+3. **Konfirmasi owner atas T002 — RESOLVED (2026-10-14):** arsip verbatim ke docs/archive/korpus_legacy/, lalu hapus.
 
 ## Task yang Bisa Dikerjakan Setelah Persetujuan Owner atas TD
 
-- [ ] T001, T002: pekerjaan rumah (T002 perlu konfirmasi owner)
+- [x] T001, T002: pekerjaan rumah — selesai 2026-10-14 (T002 via arsip docs/archive/korpus_legacy/)
 - [ ] T003..T007: seluruh komponen korpus
 - [ ] T010, T011: benchmark dwibahasa
 

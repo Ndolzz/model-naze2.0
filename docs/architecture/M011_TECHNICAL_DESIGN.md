@@ -2,7 +2,7 @@
 
 **Milestone:** M-011 — Naze 1.1
 **Stage:** Stage 9 (lanjutan — tidak membuka Stage 10)
-**Status:** DESIGN COMPLETE — menunggu persetujuan owner (implementasi hanya setelah disetujui)
+**Status:** APPROVED — owner, 2026-10-14, tanpa revisi; implementasi M-011 dimulai
 **Version:** 0.1.0
 **Source of truth:** REQ-012 (REQUIREMENTS v0.6.0), DECISION-025, docs/spec/BRAND_VOICE.md
 **Dependencies:** M-001..M-010 DONE (Naze 1.0 v1.0.0); DECISION-025 ACCEPTED (owner, 2026-10-14)
@@ -22,7 +22,7 @@ Mengimplementasikan REQ-012: model Naze menguasai bahasa Indonesia dan bahasa In
 - Eksperimen dua jalur training: (A) fine-tuning atas checkpoint Naze 1.0 dengan rehearsal; (B) training ulang penuh — resolusi OD-123 via eksperimen pembanding (kerangka 5-basis DECISION-016, basis 1).
 - Evaluasi 5-basis + laporan loss/perplexity per komponen korpus.
 - Pembaruan dokumentasi: README, CHANGELOG, manifest, TRACEABILITY, ROADMAP, SPEC_REVIEW.
-- Pekerjaan rumah (temuan pemeriksaan 2026-10-14): rekonsiliasi status splitting pada corpus_manifest.json; pembersihan direktori warisan data/korpus/ (dengan konfirmasi owner).
+- Pekerjaan rumah (temuan pemeriksaan 2026-10-14): rekonsiliasi status splitting pada corpus_manifest.json; pembersihan direktori warisan data/korpus/ (keputusan owner 2026-10-14: arsip verbatim ke docs/archive/korpus_legacy/, lalu hapus).
 
 ## 3. Non-goals
 
@@ -247,4 +247,4 @@ Angka di atas adalah target provisional (bukan hasil pengukuran, bukan jaminan),
 | OD-108 | Multimodal / Physical AI (Stage 10) | OPEN — DEFERRED (M-012+) | Tidak blocking M-011 |
 | OD-119 | Versioning & release policy | OPEN | Penamaan versi Naze 1.1 saat rilis |
 
-**Catatan:** OD-123 dibuka oleh dokumen ini; resolusi melalui bukti empiris (eksperimen pembanding), bukan asumsi. Implementasi M-011 dimulai hanya setelah persetujuan owner atas dokumen ini (PROJECT_SPEC §7 tahap 5).
+**Catatan:** OD-123 dibuka oleh dokumen ini; resolusi melalui bukti empiris (eksperimen pembanding), bukan asumsi. Implementasi M-011 dimulai hanya setelah persetujuan owner atas dokumen ini (PROJECT_SPEC §7 tahap 5). **Persetujuan diberikan owner pada 2026-10-14, tanpa revisi; implementasi dimulai.**

@@ -4,7 +4,7 @@
   "metric": "exact_match",
   "target_accuracy_percent": 90,
   "decision_reference": "DECISION-023",
-  "source_format": "data/korpus/perintah_tingkat_1.txt (perintah/intent)",
+  "source_format": "docs/archive/korpus_legacy/perintah_tingkat_1.txt (arsip M011-T002 2026-10-14; asal: data/korpus/, format perintah/intent)",
   "scoring": "greedy (temperature=0); decode(generate(prompt, len(expected))) == expected",
   "commands": [
     {

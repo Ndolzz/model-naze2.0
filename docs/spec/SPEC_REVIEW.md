@@ -275,3 +275,10 @@ SPEC_REVIEW v1.1.0 §7 MISS-001 (regression/performance smoke suite, DEFERRED) p
 - **Open decision baru: OD-123** — strategi training M-011 (jalur A fine-tune + rehearsal vs jalur B training ulang penuh); diresolusi via eksperimen pembanding M011-T012 sesuai kerangka 5-basis DECISION-016.
 - **Pekerjaan rumah terjadwal** (temuan pemeriksaan 2026-10-14): rekonsiliasi status splitting corpus_manifest.json (M011-T001); pembersihan direktori warisan data/korpus/ dengan konfirmasi owner (M011-T002).
 - **Verdict: READY FOR IMPLEMENTATION — M-011, menunggu persetujuan owner atas Technical Design.**
+
+### 12.5 Persetujuan Technical Design & Mulai Implementasi M-011 (2026-10-14)
+
+- **M011_TECHNICAL_DESIGN.md v0.1.0 APPROVED** oleh owner (2026-10-14, tanpa revisi) — syarat tahap 5 PROJECT_SPEC §7 terpenuhi; implementasi M011-T001..T019 dimulai.
+- **Keputusan owner M011-T002:** konten data/korpus/ (perintah_tingkat_1.txt, 2,7 KB, 50 pasangan perintah/intent) diarsipkan verbatim ke docs/archive/korpus_legacy/ beserta README analisis duplikasi, kemudian direktori warisan dihapus; referensi source_format pada data/benchmark/commands.json diperbarui ke lokasi arsip. Tidak ada data yang hilang.
+- **M011-T001 selesai:** corpus_manifest.json v1.0.1 — status splitting NOT_YET_SPLIT direkonsiliasi menjadi SPLIT_INTEGRATED (splits 80/10/10 seed=42 telah ada sejak M-010, terdokumentasi di splits/split_manifest.json).
+- **Verdict: M-011 IN IMPLEMENTATION.**

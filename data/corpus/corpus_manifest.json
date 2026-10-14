@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Naze 1.0 Hybrid Corpus",
   "description": "Corpus final untuk training Naze 1.0 (M-010) sesuai DECISION-024",
   "strategy": "hybrid",
@@ -10,20 +10,28 @@
   "composition": {
     "bahasa_indonesia_umum": {
       "percentage": 70,
-      "target_size_mb": 5.0,
+      "target_size_mb": 5,
       "actual_size_bytes": 5282032,
       "actual_size_mb": 5.04,
-      "sources": ["Wikipedia Indonesia (CC-BY-SA)"],
-      "files": ["umumnya/wikipedia_id.txt"],
+      "sources": [
+        "Wikipedia Indonesia (CC-BY-SA)"
+      ],
+      "files": [
+        "umumnya/wikipedia_id.txt"
+      ],
       "status": "INTEGRATED"
     },
     "perintah_asisten": {
       "percentage": 20,
       "target_size_mb": 1.5,
       "actual_size_bytes": 2101229,
-      "actual_size_mb": 2.00,
-      "sources": ["Synthetic - controlled generation"],
-      "files": ["perintah/perintah_asisten.txt"],
+      "actual_size_mb": 2,
+      "sources": [
+        "Synthetic - controlled generation"
+      ],
+      "files": [
+        "perintah/perintah_asisten.txt"
+      ],
       "status": "INTEGRATED",
       "purpose": "NazeIO command benchmark"
     },
@@ -32,8 +40,12 @@
       "target_size_mb": 0.5,
       "actual_size_bytes": 4442,
       "actual_size_mb": 0.004,
-      "sources": ["Synthetic - controlled generation"],
-      "files": ["editing/instruksi_editing.txt"],
+      "sources": [
+        "Synthetic - controlled generation"
+      ],
+      "files": [
+        "editing/instruksi_editing.txt"
+      ],
       "status": "INTEGRATED",
       "purpose": "Naze Motion Agent capability"
     }
@@ -42,18 +54,26 @@
     "training": {
       "percentage": 80,
       "seed": 42,
-      "status": "NOT_YET_SPLIT"
+      "status": "SPLIT_INTEGRATED",
+      "reference": "splits/split_manifest.json"
     },
     "validation": {
       "percentage": 10,
       "seed": 42,
-      "status": "NOT_YET_SPLIT"
+      "status": "SPLIT_INTEGRATED",
+      "reference": "splits/split_manifest.json"
     },
     "holdout": {
       "percentage": 10,
       "seed": 42,
-      "status": "NOT_YET_SPLIT",
-      "note": "TIDAK BOLEH digunakan untuk training atau hyperparameter tuning"
+      "status": "SPLIT_INTEGRATED",
+      "note": "TIDAK BOLEH digunakan untuk training atau hyperparameter tuning",
+      "reference": "splits/split_manifest.json"
+    },
+    "reconciliation": {
+      "task": "M011-T001",
+      "date": "2026-10-14",
+      "note": "Status NOT_YET_SPLIT pada v1.0.0 adalah inkonsistensi pra-existing: splits 80/10/10 (seed=42) telah dibuat pada M-010 (2026-10-09) dan terdokumentasi di splits/split_manifest.json (total 86.435 baris; train 69.148 / validation 8.643 / holdout 8.644; SHA-256 per split tercatat)."
     }
   },
   "preprocessing": {
@@ -94,8 +114,8 @@
   "warnings": [
     "Wikipedia content license (CC-BY-SA) must be verified before commercial use",
     "Synthetic data may not fully represent natural language distribution",
-    "Dataset splitting has not been applied yet (T004)",
-    "Deduplication has not been applied yet (T004)"
+    "Deduplication has not been applied yet (T004)",
+    "Rekonsiliasi M011-T001 (2026-10-14): v1.0.0 keliru menyatakan NOT_YET_SPLIT; splits telah ada sejak 2026-10-09 (M-010)."
   ],
   "decision_reference": {
     "od_112": "DECISION-024",
