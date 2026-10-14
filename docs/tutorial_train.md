@@ -72,7 +72,7 @@ Baca `runs/m010_summary.json`. Rilis Naze 1.0 memenuhi tiga gate wajib:
 
 Benchmark NazeIO dapat dijalankan di CI: workflow "benchmark" dengan input `run_id` = ID run training yang artifact-nya memuat checkpoint final. Laporan tersimpan pada artifact `nazeio-benchmark-<run_id>`.
 
-Jika akurasi command rendah karena model belum mempelajari format pemetaan perintah-intent, jalankan workflow `finetune-nazeio`: fine-tuning checkpoint pada `data/korpus/perintah_tingkat_1.txt`, lalu benchmark diukur ulang otomatis dalam run yang sama.
+Jika akurasi command rendah karena model belum mempelajari format pemetaan perintah-intent, jalankan workflow `finetune-nazeio`: fine-tuning checkpoint pada `docs/archive/korpus_legacy/perintah_tingkat_1.txt` (arsip M011-T002; asal `data/korpus/`), lalu benchmark diukur ulang otomatis dalam run yang sama.
 
 Angka holdout hanya dievaluasi sekali di akhir script dan tidak boleh dipakai untuk tuning (DECISION-024).
 

@@ -1,131 +1,297 @@
 {
-  "version": "1.0.0",
-  "name": "NazeIO Command Benchmark",
+  "version": "2.0.0",
+  "name": "NazeIO Command Benchmark (Bilingual)",
   "metric": "exact_match",
   "target_accuracy_percent": 90,
-  "decision_reference": "DECISION-023",
-  "source_format": "docs/archive/korpus_legacy/perintah_tingkat_1.txt (arsip M011-T002 2026-10-14; asal: data/korpus/, format perintah/intent)",
+  "target_accuracy_per_language_percent": 90,
+  "decision_reference": "DECISION-023 (baseline M-010); DECISION-025 (dwibahasa M-011)",
+  "source_format": "docs/archive/korpus_legacy/perintah_tingkat_1.txt (arsip M011-T002 2026-10-14; asal: data/korpus/, format perintah/intent); padanan EN per BRAND_VOICE.md §9 (M011-T010)",
   "scoring": "greedy (temperature=0); decode(generate(prompt, len(expected))) == expected",
+  "languages": [
+    "id",
+    "en"
+  ],
+  "note": "Entri ID dipertahankan dari v1.0.0 agar perbandingan baseline Naze 1.0 tetap mungkin. Entri EN memakai scaffold bahasa Inggris \"command: {teks}\\nintent:\"; label intent tetap taksonomi kanonik Indonesia (satu taksonomi, DECISION-025). Target akurasi >= 90% per bahasa diukur pada model final M-011 (TD M011 §9).",
   "commands": [
     {
       "id": "cmd-001",
       "prompt": "perintah: buka whatsapp\nintent:",
       "expected_output": " buka_aplikasi",
-      "category": "buka_aplikasi"
+      "category": "buka_aplikasi",
+      "language": "id"
     },
     {
       "id": "cmd-002",
       "prompt": "perintah: buka instagram\nintent:",
       "expected_output": " buka_aplikasi",
-      "category": "buka_aplikasi"
+      "category": "buka_aplikasi",
+      "language": "id"
     },
     {
       "id": "cmd-003",
       "prompt": "perintah: buka youtube\nintent:",
       "expected_output": " buka_aplikasi",
-      "category": "buka_aplikasi"
+      "category": "buka_aplikasi",
+      "language": "id"
     },
     {
       "id": "cmd-004",
       "prompt": "perintah: buka kamera\nintent:",
       "expected_output": " buka_aplikasi",
-      "category": "buka_aplikasi"
+      "category": "buka_aplikasi",
+      "language": "id"
     },
     {
       "id": "cmd-005",
       "prompt": "perintah: buka pengaturan\nintent:",
       "expected_output": " buka_pengaturan",
-      "category": "buka_pengaturan"
+      "category": "buka_pengaturan",
+      "language": "id"
     },
     {
       "id": "cmd-006",
       "prompt": "perintah: buka setelan\nintent:",
       "expected_output": " buka_pengaturan",
-      "category": "buka_pengaturan"
+      "category": "buka_pengaturan",
+      "language": "id"
     },
     {
       "id": "cmd-007",
       "prompt": "perintah: buka settings\nintent:",
       "expected_output": " buka_pengaturan",
-      "category": "buka_pengaturan"
+      "category": "buka_pengaturan",
+      "language": "id"
     },
     {
       "id": "cmd-008",
       "prompt": "perintah: pasang alarm jam 6\nintent:",
       "expected_output": " pasang_pengingat",
-      "category": "pasang_pengingat"
+      "category": "pasang_pengingat",
+      "language": "id"
     },
     {
       "id": "cmd-009",
       "prompt": "perintah: ingatkan aku 10 menit lagi\nintent:",
       "expected_output": " pasang_pengingat",
-      "category": "pasang_pengingat"
+      "category": "pasang_pengingat",
+      "language": "id"
     },
     {
       "id": "cmd-010",
       "prompt": "perintah: nyalakan bluetooth\nintent:",
       "expected_output": " nyalakan_bluetooth",
-      "category": "bluetooth"
+      "category": "bluetooth",
+      "language": "id"
     },
     {
       "id": "cmd-011",
       "prompt": "perintah: matikan bluetooth\nintent:",
       "expected_output": " matikan_bluetooth",
-      "category": "bluetooth"
+      "category": "bluetooth",
+      "language": "id"
     },
     {
       "id": "cmd-012",
       "prompt": "perintah: status bluetooth\nintent:",
       "expected_output": " status_bluetooth",
-      "category": "bluetooth"
+      "category": "bluetooth",
+      "language": "id"
     },
     {
       "id": "cmd-013",
       "prompt": "perintah: tangkap layar\nintent:",
       "expected_output": " tangkap_layar",
-      "category": "tangkap_layar"
+      "category": "tangkap_layar",
+      "language": "id"
     },
     {
       "id": "cmd-014",
       "prompt": "perintah: screenshot\nintent:",
       "expected_output": " tangkap_layar",
-      "category": "tangkap_layar"
+      "category": "tangkap_layar",
+      "language": "id"
     },
     {
       "id": "cmd-015",
       "prompt": "perintah: buka maps\nintent:",
       "expected_output": " buka_maps",
-      "category": "maps"
+      "category": "maps",
+      "language": "id"
     },
     {
       "id": "cmd-016",
       "prompt": "perintah: arah ke rumah\nintent:",
       "expected_output": " navigasi_maps",
-      "category": "maps"
+      "category": "maps",
+      "language": "id"
     },
     {
       "id": "cmd-017",
       "prompt": "perintah: telepon ibu\nintent:",
       "expected_output": " telepon_kontak",
-      "category": "telepon"
+      "category": "telepon",
+      "language": "id"
     },
     {
       "id": "cmd-018",
       "prompt": "perintah: jam berapa sekarang\nintent:",
       "expected_output": " jam",
-      "category": "info_waktu"
+      "category": "info_waktu",
+      "language": "id"
     },
     {
       "id": "cmd-019",
       "prompt": "perintah: berapa persen baterai\nintent:",
       "expected_output": " baterai",
-      "category": "info_status"
+      "category": "info_status",
+      "language": "id"
     },
     {
       "id": "cmd-020",
       "prompt": "perintah: hapus semua riwayat\nintent:",
       "expected_output": " hapus_riwayat",
-      "category": "riwayat"
+      "category": "riwayat",
+      "language": "id"
+    },
+    {
+      "id": "cmd-021",
+      "prompt": "command: open whatsapp\nintent:",
+      "expected_output": " buka_aplikasi",
+      "category": "buka_aplikasi",
+      "language": "en"
+    },
+    {
+      "id": "cmd-022",
+      "prompt": "command: open instagram\nintent:",
+      "expected_output": " buka_aplikasi",
+      "category": "buka_aplikasi",
+      "language": "en"
+    },
+    {
+      "id": "cmd-023",
+      "prompt": "command: open youtube\nintent:",
+      "expected_output": " buka_aplikasi",
+      "category": "buka_aplikasi",
+      "language": "en"
+    },
+    {
+      "id": "cmd-024",
+      "prompt": "command: open the camera\nintent:",
+      "expected_output": " buka_aplikasi",
+      "category": "buka_aplikasi",
+      "language": "en"
+    },
+    {
+      "id": "cmd-025",
+      "prompt": "command: open settings\nintent:",
+      "expected_output": " buka_pengaturan",
+      "category": "buka_pengaturan",
+      "language": "en"
+    },
+    {
+      "id": "cmd-026",
+      "prompt": "command: go to settings\nintent:",
+      "expected_output": " buka_pengaturan",
+      "category": "buka_pengaturan",
+      "language": "en"
+    },
+    {
+      "id": "cmd-027",
+      "prompt": "command: open the settings menu\nintent:",
+      "expected_output": " buka_pengaturan",
+      "category": "buka_pengaturan",
+      "language": "en"
+    },
+    {
+      "id": "cmd-028",
+      "prompt": "command: set an alarm for 6 am\nintent:",
+      "expected_output": " pasang_pengingat",
+      "category": "pasang_pengingat",
+      "language": "en"
+    },
+    {
+      "id": "cmd-029",
+      "prompt": "command: remind me in 10 minutes\nintent:",
+      "expected_output": " pasang_pengingat",
+      "category": "pasang_pengingat",
+      "language": "en"
+    },
+    {
+      "id": "cmd-030",
+      "prompt": "command: turn on bluetooth\nintent:",
+      "expected_output": " nyalakan_bluetooth",
+      "category": "bluetooth",
+      "language": "en"
+    },
+    {
+      "id": "cmd-031",
+      "prompt": "command: turn off bluetooth\nintent:",
+      "expected_output": " matikan_bluetooth",
+      "category": "bluetooth",
+      "language": "en"
+    },
+    {
+      "id": "cmd-032",
+      "prompt": "command: bluetooth status\nintent:",
+      "expected_output": " status_bluetooth",
+      "category": "bluetooth",
+      "language": "en"
+    },
+    {
+      "id": "cmd-033",
+      "prompt": "command: take a screenshot\nintent:",
+      "expected_output": " tangkap_layar",
+      "category": "tangkap_layar",
+      "language": "en"
+    },
+    {
+      "id": "cmd-034",
+      "prompt": "command: screenshot\nintent:",
+      "expected_output": " tangkap_layar",
+      "category": "tangkap_layar",
+      "language": "en"
+    },
+    {
+      "id": "cmd-035",
+      "prompt": "command: open maps\nintent:",
+      "expected_output": " buka_maps",
+      "category": "maps",
+      "language": "en"
+    },
+    {
+      "id": "cmd-036",
+      "prompt": "command: directions to my home\nintent:",
+      "expected_output": " navigasi_maps",
+      "category": "maps",
+      "language": "en"
+    },
+    {
+      "id": "cmd-037",
+      "prompt": "command: call mom\nintent:",
+      "expected_output": " telepon_kontak",
+      "category": "telepon",
+      "language": "en"
+    },
+    {
+      "id": "cmd-038",
+      "prompt": "command: what time is it\nintent:",
+      "expected_output": " jam",
+      "category": "info_waktu",
+      "language": "en"
+    },
+    {
+      "id": "cmd-039",
+      "prompt": "command: how much battery is left\nintent:",
+      "expected_output": " baterai",
+      "category": "info_status",
+      "language": "en"
+    },
+    {
+      "id": "cmd-040",
+      "prompt": "command: clear all history\nintent:",
+      "expected_output": " hapus_riwayat",
+      "category": "riwayat",
+      "language": "en"
     }
   ]
 }

@@ -1,7 +1,8 @@
 """Fine-tuning command NazeIO dengan rehearsal (M-010, DECISION-023).
 
 Benchmark NazeIO memerlukan format pemetaan "perintah: {teks}\nintent: {intent}"
-dari data/korpus/perintah_tingkat_1.txt. Fine-tuning murni pada korpus perintah
+dari docs/archive/korpus_legacy/perintah_tingkat_1.txt (arsip M011-T002; asal:
+data/korpus/, konten identik). Fine-tuning murni pada korpus perintah
 terbukti memicu catastrophic forgetting (ppl umum 2679 pada 100 epoch; 7614 pada
 500 epoch), maka script ini melatih pada korpus CAMPURAN: perintah (diulang)
 + potongan teks umum (rehearsal) dari train.txt yang tersebar merata,
@@ -31,7 +32,7 @@ from naze.train.evaluate import evaluate
 from naze.train.loop import TrainingRun
 from naze.train.runlog import RunLog
 
-PERINTAH = ROOT / "data" / "korpus" / "perintah_tingkat_1.txt"
+PERINTAH = ROOT / "docs" / "archive" / "korpus_legacy" / "perintah_tingkat_1.txt"  # M011-T002: arsip (asal: data/korpus/)
 VAL_SPLIT = ROOT / "data" / "corpus" / "splits" / "val.txt"
 DEFAULT_GENERAL_CORPUS = ROOT / "data" / "corpus" / "splits" / "train.txt"
 VAL_SAMPLE_BYTES = 65_536  # sampel deterministik; evaluasi penuh tetap lewat train_final (no-op)

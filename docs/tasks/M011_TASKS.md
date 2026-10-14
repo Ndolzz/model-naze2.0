@@ -26,7 +26,7 @@
 
 ### M011-T002 — Bersihkan direktori warisan data/korpus/
 **Status:** DONE (2026-10-14)
-**Deskripsi:** Direktori data/korpus/ (berisi perintah_tingkat_1.txt, 2,7 KB) adalah sisa pra-penataan data/corpus/. Periksa cakupan kontennya terhadap data/corpus/perintah/, dokumentasikan duplikasi, lalu hapus direktori warisan. **Keputusan owner (2026-10-14): konten diarsipkan verbatim ke docs/archive/korpus_legacy/ terlebih dahulu (dengan README analisis duplikasi), kemudian direktori warisan dihapus.**
+**Deskripsi:** Direktori data/korpus/ (berisi perintah_tingkat_1.txt, 2,7 KB) adalah sisa pra-penataan data/corpus/. Periksa cakupan kontennya terhadap data/corpus/perintah/, dokumentasikan duplikasi, lalu hapus direktori warisan. **Keputusan owner (2026-10-14): konten diarsipkan verbatim ke docs/archive/korpus_legacy/ terlebih dahulu (dengan README analisis duplikasi), kemudian direktori warisan dihapus.** Referensi usang pasca-arsip (scripts/finetune_nazeio.py, docs/tutorial_train.md) dirujuk ulang ke lokasi arsip (perbaikan regresi 2026-10-14).
 **AC:**
 - [x] Konten diperiksa dan duplikasi didokumentasikan (docs/archive/korpus_legacy/README.md).
 - [x] Owner mengonfirmasi (2026-10-14: arsipkan terlebih dahulu); konten terarsip verbatim di docs/archive/korpus_legacy/; direktori warisan dihapus; referensi commands.json source_format diperbarui.
@@ -99,16 +99,18 @@
 ## Kategori 3: Benchmark Dwibahasa
 
 ### M011-T010 — Ekspansi benchmark commands.json dwibahasa
+**Status:** DONE (2026-10-14)
 **Deskripsi:** Perluas data/benchmark/commands.json dengan field language ("id"/"en") dan padanan perintah EN; pertahankan entri ID lama agar perbandingan baseline Naze 1.0 tetap mungkin.
 **AC:**
-- [ ] Benchmark valid JSON; setiap entri memiliki input, expected, language.
+- [x] Benchmark valid JSON (v2.0.0, 40 entri); setiap entri memiliki prompt, expected_output, language (20 ID dipertahankan + 20 padanan EN).
 **Modul:** data/benchmark/commands.json
 **Req:** REQ-012, REQ-008
 
 ### M011-T011 — Skrip benchmark akurasi per bahasa
+**Status:** DONE (2026-10-14)
 **Deskripsi:** Perluas scripts/benchmark_nazeio.py agar melaporkan akurasi terpisah per bahasa (ID, EN) dan total.
 **AC:**
-- [ ] Laporan benchmark memuat akurasi per bahasa; metode identik dengan M-010 (exact match pada expected).
+- [x] Laporan benchmark memuat akurasi total dan per bahasa (id/en, field per_language); metode exact-match identik dengan M-010.
 **Modul:** scripts/benchmark_nazeio.py
 **Dependensi:** T010
 **Req:** REQ-008, REQ-103
@@ -218,7 +220,7 @@ T019 <- T014 (opsional)
 
 - [x] T001, T002: pekerjaan rumah — selesai 2026-10-14 (T002 via arsip docs/archive/korpus_legacy/)
 - [ ] T003..T007: seluruh komponen korpus
-- [ ] T010, T011: benchmark dwibahasa
+- [x] T010, T011: benchmark dwibahasa — selesai 2026-10-14
 
 ## Definisi DONE untuk M-011
 

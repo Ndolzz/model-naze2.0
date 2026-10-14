@@ -282,3 +282,6 @@ SPEC_REVIEW v1.1.0 §7 MISS-001 (regression/performance smoke suite, DEFERRED) p
 - **Keputusan owner M011-T002:** konten data/korpus/ (perintah_tingkat_1.txt, 2,7 KB, 50 pasangan perintah/intent) diarsipkan verbatim ke docs/archive/korpus_legacy/ beserta README analisis duplikasi, kemudian direktori warisan dihapus; referensi source_format pada data/benchmark/commands.json diperbarui ke lokasi arsip. Tidak ada data yang hilang.
 - **M011-T001 selesai:** corpus_manifest.json v1.0.1 — status splitting NOT_YET_SPLIT direkonsiliasi menjadi SPLIT_INTEGRATED (splits 80/10/10 seed=42 telah ada sejak M-010, terdokumentasi di splits/split_manifest.json).
 - **Verdict: M-011 IN IMPLEMENTATION.**
+- **M011-T010 selesai (2026-10-14):** commands.json v2.0.0 — 20 entri ID dipertahankan (perbandingan baseline Naze 1.0 tetap terukur) + 20 padanan EN dengan field language; target akurasi >= 90% per bahasa (DECISION-025).
+- **M011-T011 selesai (2026-10-14):** scripts/benchmark_nazeio.py melaporkan akurasi total dan per bahasa (id/en); metode exact-match identik dengan M-010.
+- **Perbaikan regresi M011-T002 (2026-10-14):** referensi usang pasca-penghapusan data/korpus/ dirujuk ulang ke arsip: scripts/finetune_nazeio.py (konstanta PERINTAH + docstring), docs/tutorial_train.md (§5).
