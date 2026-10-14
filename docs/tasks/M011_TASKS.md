@@ -54,11 +54,12 @@
 **Req:** REQ-012, REQ-005, REQ-101
 
 ### M011-T005 — Percakapan asisten bergaya Naze dwibahasa (~1,2 MB)
+**Status:** DONE (2026-10-14) — controlled generation deterministik + validasi programatik; template respons dibangun langsung dari BRAND_VOICE.md §9
 **Deskripsi:** Tulis percakapan sintetis dwibahasa (format User:/Naze:, satu pertukaran per blok, <= 128 token) sesuai BRAND_VOICE.md. Cakupan: perintah harian, tanya-jawab singkat, dorongan halus; seimbang antara ID dan EN.
 **AC:**
-- [ ] Seluruh pasangan lolos validasi format (User:/Naze:, <= 128 token).
-- [ ] Peninjauan manual: respons sesuai BRAND_VOICE.md.
-- [ ] Ukuran ~1,2 MB (±10%); fingerprint tercatat.
+- [x] Seluruh pasangan lolos validasi format (User:/Naze:, <= 128 token) — 11.660 blok terverifikasi programatik; blok terpanjang 126 byte; dedup programatik.
+- [x] Peninjauan manual: respons sesuai BRAND_VOICE.md — template respons dibangun langsung dari BRAND_VOICE.md §9; sampel diperiksa.
+- [x] Ukuran ~1,2 MB (±10%); fingerprint tercatat — aktual 1.080.291 byte; fingerprint SHA-256 dicatat pada manifest v2 (M011-T008).
 **Modul:** data/corpus/asisten/percakapan_naze.txt
 **Req:** REQ-012
 
@@ -70,9 +71,10 @@
 **Req:** REQ-012
 
 ### M011-T007 — Ekspansi instruksi editing (~0,8 MB)
+**Status:** DONE (2026-10-14)
 **Deskripsi:** Perluas instruksi_editing.txt menuju target ~0,8 MB (saat ini 4,4 KB) untuk mendukung Naze Motion Agent sesuai porsi D-025.
 **AC:**
-- [ ] Ukuran ~0,8 MB (±10%); cakupan instruksi editing konsisten dengan kontrak NMA.
+- [x] Ukuran ~0,8 MB (±10%); cakupan instruksi editing konsisten dengan kontrak NMA — aktual 720.167 byte (9.673 baris); 125 baris asli dipertahankan di urutan awal.
 **Modul:** data/corpus/editing/instruksi_editing.txt
 **Req:** REQ-012
 
@@ -219,7 +221,8 @@ T019 <- T014 (opsional)
 ## Task yang Bisa Dikerjakan Setelah Persetujuan Owner atas TD
 
 - [x] T001, T002: pekerjaan rumah — selesai 2026-10-14 (T002 via arsip docs/archive/korpus_legacy/)
-- [ ] T003..T007: seluruh komponen korpus
+- [x] T005, T007: komponen korpus — selesai 2026-10-14 (percakapan_naze.txt 1.080.291 byte; instruksi_editing.txt 720.167 byte)
+- [ ] T003, T004, T006: komponen korpus tersisa
 - [x] T010, T011: benchmark dwibahasa — selesai 2026-10-14
 
 ## Definisi DONE untuk M-011
