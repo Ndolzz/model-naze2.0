@@ -84,7 +84,13 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - **Release gate (DECISION-023), model final:** [x] train loss 0.5186 <= 2.5;
   [x] holdout perplexity 1.747 <= 35; [x] NazeIO command accuracy 100% (20/20) >= 90%.
 - **Acceptance tambahan:** [x] checkpoint 876 KB <= 1 MB (D-018); CI hijau.
-## MILESTONE-011+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
+## MILESTONE-011 — Naze 1.1: Korpus Dwibahasa & Suara Merek Naze — PLANNED (DECISION-025, owner 2026-10-14)
+- **Objective:** Model menguasai bahasa Indonesia dan bahasa Inggris dengan gaya bicara merek Naze.
+- **Requirements:** REQ-012 (utama); REQ-005/009/101/102/103/105 pendukung.
+- **Deliverables:** korpus dwibahasa ~8 MB (komposisi DECISION-025: 40/20/15/15/10); docs/spec/BRAND_VOICE.md (dibuat); splits ulang 80/10/10 deterministik per-seed; benchmark NazeIO dwibahasa; training fine-tune + rehearsal atau training ulang (ditetapkan di TD); M011_TECHNICAL_DESIGN.md + M011_TASKS.md.
+- **Acceptance Criteria:** ditetapkan di M011_TECHNICAL_DESIGN.md (format 15 section DECISION-017); evaluasi 5-basis (DECISION-016); tanpa degradasi release gate DECISION-023; verifikasi lisensi sumber EN (CC-BY-SA).
+
+## MILESTONE-012+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
 
 ## Roadmap Change Log
 
@@ -99,3 +105,4 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 | 2026-10-09 | M-009 | PLANNED | TD + task breakdown T001..T016 siap, menunggu persetujuan owner |
 | 2026-10-10 | M-010 | ACTIVE; T001..T004 DONE; T005 workflow training dibuat | OD-107/OD-112 resolved (DECISION-023/024); korpus + splits siap |
 | 2026-10-13 | M-010 | DONE | Seluruh gate DECISION-023 terpenuhi pada model final: train loss 0.5186, holdout ppl 1.747, akurasi NazeIO 100% (20/20) |
+| 2026-10-14 | M-011 | PLANNED — korpus dwibahasa & suara merek Naze (DECISION-025, REQ-012); multimodal bergeser ke M-012+ | Persetujuan owner 2026-10-14 |

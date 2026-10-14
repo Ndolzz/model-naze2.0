@@ -6,8 +6,8 @@
 > Wording Section 10 BUKAN teks asli yang hilang.
 
 **Reviewer:** Senior AI Architect / SDD Reviewer
-**Date:** 2026-10-06 (v1.1.0) · 2026-10-07 (v1.2.0 — rekonstruksi) · 2026-10-09 (v1.3.0)
-**Review version:** 1.3.0 (M-007 IMPLEMENTED: T001..T018 selesai; update §11; dasar v1.2.0 = governance update)
+**Date:** 2026-10-06 (v1.1.0) · 2026-10-07 (v1.2.0 — rekonstruksi) · 2026-10-09 (v1.3.0) · 2026-10-14 (v1.4.0)
+**Review version:** 1.4.0 (DECISION-025 + REQ-012: korpus dwibahasa & suara merek Naze; update §12; dasar v1.3.0 = M-007 IMPLEMENTED)
 **Scope:** PROJECT_SPEC, REQUIREMENTS, ARCHITECTURE, DECISION_LOG, ROADMAP, TASKS, TRACEABILITY (v1.0.0 → v1.4.0)
 
 ---
@@ -246,3 +246,24 @@ Seluruh kondisi wajib v1.1.0 §9 terpenuhi (DECISION-015/016/017). Technical Des
 **✅ M-007 SELESAI (IMPLEMENTED) — pytest penuh hijau di CI (commit
 `7a53871`, 2026-10-09). Milestone berikutnya: M-008 — Training System
 lengkap (PLANNED, menunggu persetujuan owner).**
+
+---
+
+## 12. Governance Update (v1.4.0, 2026-10-14)
+
+> Update tata kelola sesuai maintenance policy PROJECT_SPEC §7 (REQUIREMENTS berubah → SPEC_REVIEW diperbarui).
+
+### 12.1 Keputusan baru
+
+- **DECISION-025 — ACCEPTED (owner, 2026-10-14):** [REVISI DECISION-024] korpus dwibahasa (Indonesia + Inggris) dengan suara merek Naze, total target ~8 MB, komposisi 40% ID umum / 20% EN umum / 15% percakapan asisten bergaya Naze / 15% perintah dwibahasa / 10% instruksi editing. Konsekuensi: DECISION-024 SUPERSEDED sebagian (komposisi); splits dibuat ulang deterministik per-seed; benchmark NazeIO diperluas dwibahasa; strategi training (fine-tune + rehearsal vs training ulang) ditetapkan di Technical Design M-011.
+- **REQ-012 — Kemampuan Bahasa Dwibahasa & Suara Merek — MUST — APPROVED** (REQUIREMENTS v0.6.0; jumlah REQ ID unik 23 → 24).
+- **Dokumen baru:** docs/spec/BRAND_VOICE.md — rujukan resmi gaya bicara Naze; wajib diikuti seluruh data sintetis asisten korpus DECISION-025.
+- **ROADMAP:** MILESTONE-011 = Naze 1.1 (korpus dwibahasa & suara merek) — PLANNED; multimodal bergeser ke M-012+ (OD-108 tetap DEFERRED, tidak berubah status).
+
+### 12.2 Catatan penomoran
+
+SPEC_REVIEW v1.1.0 §7 MISS-001 (regression/performance smoke suite, DEFERRED) pernah mengusulkan ID REQ-012. ID REQ-012 kini dipakai untuk kemampuan dwibahasa & suara merek (DECISION-025). Usulan MISS-001 akan diberi ID baru bila kelak dijadikan requirement — tidak ada tabrakan aktif karena usulan tersebut tidak pernah menjadi requirement.
+
+### 12.3 Verdict (v1.4.0)
+
+**✅ READY FOR TECHNICAL DESIGN — M-011 (Naze 1.1: Korpus Dwibahasa & Suara Merek Naze).** Technical Design wajib mengikuti format 15 section DECISION-017; target evaluasi per eksperimen ditetapkan di TD sesuai DECISION-016; verifikasi REQ-201/202/203 tetap berlaku (korpus EN bersumber teks berlisensi terbuka — bukan pretrained model/API).

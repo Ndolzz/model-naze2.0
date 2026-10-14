@@ -124,7 +124,7 @@ Presisi gradien + reproducibility. float32 dapat ditinjau untuk inference.
 - **Alternatives:** sinusoidal (ditolak: revisi tanpa kebutuhan terukur; learned berkinerja baik pada sekuens pendek).
 - **Consequences:** OD-121 RESOLVED; komponen PositionalRepr tidak berubah; revisi masa depan tetap mungkin lewat change policy.
 
-## DECISION-024 — [RESOLUSI OPEN DECISION-112] Korpus final training: strategi hybrid ~7 MB — ACCEPTED (owner, 2026-10-09)
+## DECISION-024 — [RESOLUSI OPEN DECISION-112] Korpus final training: strategi hybrid ~7 MB — ACCEPTED (owner, 2026-10-09) [SUPERSEDED sebagian oleh DECISION-025: komposisi korpus]
 - **Context:** OD-112 blocking training skala serius sejak SPEC_REVIEW v1.0.0. Pipeline sudah siap menerima korpus apa pun (DECISION-011), tetapi korpus final untuk Naze 1.0 belum ditetapkan owner. DECISION-018 (batas checkpoint ≤ 1 MB) dan DECISION-023 (target sukses) menunggu keputusan ini.
 - **Decision:** Tetapkan **strategi corpus hybrid** untuk training Naze 1.0:
   - **70% Bahasa Indonesia Umum:** ~5 MB, dari sumber dengan lisensi terbuka (Wikipedia, berita dengan lisensi CC/BY/mitra).
@@ -138,6 +138,22 @@ Presisi gradien + reproducibility. float32 dapat ditinjau untuk inference.
 - **Risiko:** Verifikasi lisensi WAJIB. Data sintetis tidak mencerminkan distribusi nyata. Ukuran estimasi.
 - **Alternatives:** Wikipedia+News Only (~10 MB), Synthetic Only (~5-7 MB), Minimal (~2 MB).
 - **Consequences:** OD-112 RESOLVED. Training M-010 dapat dimulai setelah corpus final disiapkan.
+
+## DECISION-025 — [REVISI DECISION-024] Korpus dwibahasa (Indonesia + Inggris) dengan suara merek Naze — ACCEPTED (owner, 2026-10-14)
+- **Context:** Owner mengarahkan Naze menguasai bahasa Indonesia dan bahasa Inggris dengan gaya bicara merek Naze (2026-10-14). Korpus DECISION-024 (7,05 MB) berisi 0% bahasa Inggris; respons asisten belum mengikuti standar suara merek. Constraint: DECISION-018 (checkpoint <= 1 MB), DECISION-016 (evaluasi 5-basis), DECISION-023 (release gate), dan temuan M-010 (fine-tuning murni memicu catastrophic forgetting — rehearsal wajib).
+- **Decision:** Korpus hybrid dwibahasa untuk Naze 1.1, total target ~8 MB, komposisi disetujui owner (2026-10-14):
+  - **40% Bahasa Indonesia umum** (~3,2 MB): Wikipedia Indonesia (CC-BY-SA) — subhimpunan file existing.
+  - **20% Bahasa Inggris umum** (~1,6 MB): Simple English Wikipedia (CC-BY-SA) atau sumber terbuka setara.
+  - **15% Percakapan asisten bergaya Naze dwibahasa** (~1,2 MB): sintetis terkontrol, wajib sesuai docs/spec/BRAND_VOICE.md.
+  - **15% Perintah asisten dwibahasa** (~1,2 MB): sintetis — ekspansi perintah_asisten.txt + padanan EN.
+  - **10% Instruksi editing** (~0,8 MB): sintetis — ekspansi instruksi_editing.txt menuju target.
+  - Standar suara merek: docs/spec/BRAND_VOICE.md (baru) — satu-satunya rujukan gaya bicara Naze.
+  - Splits 80/10/10 dibuat ulang, deterministik per-seed (REQ-101); holdout TIDAK BOLEH untuk training.
+  - Benchmark NazeIO diperluas menjadi dwibahasa.
+  - Training: fine-tuning atas checkpoint Naze 1.0 dengan rehearsal, atau training ulang penuh — ditetapkan di M011_TECHNICAL_DESIGN.md.
+- **Reason:** Komposisi mempertahankan dominasi bahasa Indonesia (akurasi perintah NazeIO tidak terdegradasi), memperkenalkan bahasa Inggris secara terukur, dan menanamkan suara merek melalui data training — satu-satunya jalur bagi model yang dilatih dari nol tanpa pretrained core (REQ-201/202).
+- **Alternatives:** 50/50 ID/EN (ditolak: risiko degradasi kemampuan bahasa Indonesia); model terpisah per bahasa (ditolak: melanggar REQ-302); bahasa Inggris 100% sintetis (ditolak: distribusi tidak alami).
+- **Consequences:** DECISION-024 SUPERSEDED sebagian (komposisi korpus); REQ-012 baru APPROVED (REQUIREMENTS v0.6.0); ROADMAP M-011 = Naze 1.1 dwibahasa (multimodal bergeser ke M-012+, OD-108 tetap DEFERRED); splits dibuat ulang; TRACEABILITY v1.5.0, SPEC_REVIEW v1.4.0, ROADMAP, PROJECT_SPEC diperbarui sesuai maintenance policy PROJECT_SPEC §7; Technical Design M-011 wajib mengikuti format 15 section DECISION-017.
 
 
 ---

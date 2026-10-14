@@ -5,11 +5,11 @@
 > **Basis rekonstruksi:** versi GitHub commit `b53259b` (v0.3.0 — verbatim dari git history) + revisi AC sesuai DECISION-015/016 yang terdokumentasi di TRACEABILITY v1.3.0, M007_TECHNICAL_DESIGN, dan SPEC_REVIEW v1.1.0.
 > Bagian tanpa penanda direkonstruksi dari v0.3.0 (akurat); bagian revisi governance ditandai **[RECONSTRUCTED]**. Wording revisi BUKAN teks asli yang hilang.
 
-**Version:** 0.5.0 | **Status:** M-001..M-007 DONE (implementasi Transformer selesai 2026-10-09; suite penuh via CI); M-008+ PLANNED
+**Version:** 0.6.0 | **Status:** M-001..M-010 DONE (Naze 1.0 v1.0.0, 2026-10-13 — release gate DECISION-023 terpenuhi); M-011 PLANNED (REQ-012, DECISION-025)
 
 **Priority:** MUST / SHOULD / DEFERRED — **Status:** PROPOSED / APPROVED / IN-PROGRESS / DONE
 
-**Requirement count:** 23 REQ ID unik (REQ-001..011, REQ-101..105, REQ-201..203, REQ-301..304). Klaim "26 requirement" pada dokumen review/traceability lama adalah kesalahan hitung pra-existing; dikoreksi menjadi 23 per keputusan owner 2026-10-07 — tanpa membuat REQ baru.
+**Requirement count:** 24 REQ ID unik (REQ-001..012, REQ-101..105, REQ-201..203, REQ-301..304). Klaim "26 requirement" pada dokumen review/traceability lama adalah kesalahan hitung pra-existing; dikoreksi menjadi 23 per keputusan owner 2026-10-07. REQ-012 (kemampuan dwibahasa & suara merek) ditambahkan per DECISION-025 (owner, 2026-10-14) — jumlah menjadi 24.
 
 ---
 
@@ -46,6 +46,9 @@ MLP Bengio-style; trainable end-to-end (dievaluasi per basis 1–3 kerangka DECI
 
 ### REQ-011 — Transformer — MUST — **DONE (M-007, 2026-10-09)** [RECONSTRUCTED — status diperbarui]
 Decoder-only causal Transformer sesuai `docs/architecture/M007_TECHNICAL_DESIGN.md` (format DECISION-017); unit test per komponen; dimensi configurable & scalable turun (vocab 256 fixed — DECISION-015); evaluasi sesuai DECISION-016. Implementasi T001..T018 selesai; suite unit/numeric/integration + pytest penuh via CI (`.github/workflows/tests.yml`).
+
+### REQ-012 — Kemampuan Bahasa Dwibahasa & Suara Merek — MUST — **APPROVED (DECISION-025, owner 2026-10-14)** — M-011 PLANNED
+Model mengenali dan menghasilkan bahasa Indonesia serta bahasa Inggris pada lingkup korpus DECISION-025: (1) perintah asisten dwibahasa dikenali — diukur melalui benchmark NazeIO dwibahasa; (2) respons asisten pada data sintetis mengikuti docs/spec/BRAND_VOICE.md; (3) evaluasi via kerangka 5-basis (DECISION-016) — target per eksperimen ditetapkan di M011_TECHNICAL_DESIGN.md; (4) tanpa degradasi release gate DECISION-023 pada kemampuan bahasa Indonesia.
 
 ---
 
@@ -86,3 +89,4 @@ REQ-304 Change Log — APPROVED
 | 2026-10-06 | REQ-001, REQ-002, REQ-101, REQ-103, REQ-104, REQ-105 | Status → IN-PROGRESS; hasil implementasi dicatat | Implementasi M-002 (Stage 1) | 0.2.0 |
 | [HISTORICAL DETAIL UNAVAILABLE] | REQ-004, REQ-006, REQ-009, REQ-010 | AC direvisi: vocab fixed 256 (DECISION-015); evaluasi 5-basis tanpa ambang loss numerik universal (DECISION-016); mapping REQ-009 diperjelas (ISSUE-012). REQ-011 → TECHNICAL DESIGN READY. | Governance M-007: resolusi ISSUE-004 & ISSUE-006/OD-116; DECISION-017 membuka tahap Technical Design | 0.4.0 [RECONSTRUCTED] |
 | 2026-10-09 | REQ-011, REQ-003, REQ-008, REQ-101, REQ-103, REQ-105 | REQ-011 → DONE (M-007 implementasi T001..T018); REQ-003 mencakup grad-check Transformer; REQ-008 partial mencakup transformer_generate; REQ-101/103/105 diperluas hasil M-007; CI pytest ditambahkan (T017) | M007-T018 documentation update | 0.5.0 |
+| 2026-10-14 | REQ-012 (baru) | APPROVED — kemampuan dwibahasa ID+EN dan suara merek Naze; M-011 PLANNED | DECISION-025 (owner, 2026-10-14) | 0.6.0 |

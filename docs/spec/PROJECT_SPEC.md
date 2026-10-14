@@ -5,7 +5,7 @@
 > **Basis rekonstruksi:** versi GitHub commit `b53259b` (v0.3.0 — verbatim dari git history) + pembaruan governance (workflow 9 tahap eksplisit + maintenance policy) sesuai DECISION-017 dan TRACEABILITY v1.3.0 / M007_TASKS (T018).
 > Bagian revisi ditandai **[RECONSTRUCTED]**. Wording revisi BUKAN teks asli yang hilang.
 
-**Version:** 0.4.0 | **Status:** Milestones 1-6 complete; M-007 technical design + task breakdown complete — READY FOR IMPLEMENTATION (menunggu persetujuan owner)
+**Version:** 0.5.0 | **Status:** M-001..M-010 DONE (Naze 1.0 v1.0.0, 2026-10-13); M-011 PLANNED — READY FOR TECHNICAL DESIGN (DECISION-025, REQ-012)
 
 ## 1. Project Overview
 Model AI dari nol: tanpa pretrained model, tanpa API LLM eksternal sebagai core. Seluruh komponen (engine, autodiff, tokenizer, dataset, training, inference) dibuat sendiri dengan Python + NumPy. SDD: spesifikasi = source of truth.
@@ -26,9 +26,11 @@ Core intelligence milik sendiri, transparan end-to-end: fondasi neural -> model 
 - M-007 DONE: Transformer (Stage 6) terimplementasi penuh.
 - M-008 DONE: Training System lengkap (Stage 7) terimplementasi penuh.
 - M-009 DONE: Inference Engine (Stage 8) terimplementasi penuh.
+- M-010 DONE: Naze 1.0 v1.0.0 (2026-10-13) — seluruh release gate DECISION-023 terpenuhi (train loss 0.5186, holdout ppl 1.747, akurasi NazeIO 100%).
+- M-011 PLANNED: Naze 1.1 — korpus dwibahasa & suara merek Naze (DECISION-025, REQ-012; docs/spec/BRAND_VOICE.md).
 
 ## 5. Out of Scope Saat Ini [RECONSTRUCTED — Transformer keluar dari out-of-scope]
-Naze 1.0 (M-010), multimodal (M-011+). Larangan permanen: pretrained core, API LLM core.
+Naze 1.1 dwibahasa (M-011), multimodal (M-012+). Larangan permanen: pretrained core, API LLM core.
 
 ## 6. Development Philosophy
 Spec first; no invention (OPEN DECISION); modular bertahap; resource efficiency; no overengineering; traceability.
