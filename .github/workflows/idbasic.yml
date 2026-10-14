@@ -1,0 +1,169 @@
+name: idbasic
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "ID run artifact sumber checkpoint (mis. 38376902867)"
+        required: true
+        type: string
+      artifact_name:
+        description: "Nama artifact sumber (opsional; default nazeio-finetune-<run_id>)"
+        required: false
+        default: ""
+        type: string
+      with_finetune:
+        description: "Jalankan rehearsal fine-tuning setelah baseline (default false)"
+        required: false
+        default: "false"
+        type: string
+      epochs:
+        description: "Jumlah epoch rehearsal (default 8)"
+        required: false
+        default: "8"
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependensi
+        run: python -m pip install --upgrade pip && python -m pip install numpy pytest
+      - name: Validasi dataset ID-BASIC-001 (IDB-T004)
+        run: python scripts/validate_idbasic.py
+      - name: Tes unit validator, evaluator, dan smoke fine-tuning (IDB-T006/T008)
+        run: >-
+          python -m pytest tests/test_idbasic_validator.py
+          tests/test_idbasic_evaluator.py tests/test_idbasic_finetune_smoke.py -v
+        env:
+          PYTHONPATH: src
+
+  baseline:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependensi
+        run: python -m pip install --upgrade pip && python -m pip install numpy
+      - name: Pulihkan checkpoint dari artifact run sumber
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.inputs.artifact_name != '' && github.event.inputs.artifact_name || format('nazeio-finetune-{0}', github.event.inputs.run_id) }}
+          run-id: ${{ github.event.inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verifikasi integritas checkpoint (checksum SHA-256)
+        run: |
+          test -f models/naze_v1/params.npz || { echo "params.npz tidak ditemukan"; exit 1; }
+          test -f models/naze_v1/params.npz.sha256 || { echo "params.npz.sha256 tidak ditemukan"; exit 1; }
+          expected=$(tr -d ' \n' < models/naze_v1/params.npz.sha256)
+          actual=$(sha256sum models/naze_v1/params.npz | cut -d' ' -f1)
+          if [ "$expected" != "$actual" ]; then
+            echo "checksum params.npz tidak cocok; checkpoint tidak terverifikasi"
+            exit 1
+          fi
+          echo "checksum OK: $actual"
+      - name: Tulis metadata baseline
+        run: |
+          mkdir -p runs
+          python - <<'PYEOF'
+          import datetime
+          import json
+          import os
+          meta = {
+              "source_run_id": os.environ["SOURCE_RUN_ID"],
+              "source_artifact": os.environ["SOURCE_ARTIFACT"],
+              "source_commit_of_this_run": os.environ["GITHUB_SHA"],
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+              "evaluated_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          }
+          with open("runs/idbasic_baseline_meta.json", "w", encoding="utf-8") as handle:
+              handle.write(json.dumps(meta, sort_keys=True, indent=2) + "\n")
+          PYEOF
+        env:
+          SOURCE_RUN_ID: ${{ github.event.inputs.run_id }}
+          SOURCE_ARTIFACT: ${{ github.event.inputs.artifact_name != '' && github.event.inputs.artifact_name || format('nazeio-finetune-{0}', github.event.inputs.run_id) }}
+      - name: Evaluasi baseline ID-BASIC-001 (IDB-T007, sebelum fine-tuning)
+        run: >-
+          python scripts/benchmark_idbasic.py --checkpoint models/naze_v1
+          --report runs/idbasic_baseline.json --label baseline
+        env:
+          PYTHONPATH: src
+      - name: Upload laporan baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: idbasic-baseline-${{ github.event.inputs.run_id }}
+          path: runs/
+          retention-days: 30
+          if-no-files-found: error
+
+  finetune:
+    needs: baseline
+    if: github.event.inputs.with_finetune == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependensi
+        run: python -m pip install --upgrade pip && python -m pip install numpy
+      - name: Pulihkan checkpoint dari artifact run sumber
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.inputs.artifact_name != '' && github.event.inputs.artifact_name || format('nazeio-finetune-{0}', github.event.inputs.run_id) }}
+          run-id: ${{ github.event.inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: .
+      - name: Verifikasi integritas checkpoint (checksum SHA-256)
+        run: |
+          test -f models/naze_v1/params.npz || { echo "params.npz tidak ditemukan"; exit 1; }
+          test -f models/naze_v1/params.npz.sha256 || { echo "params.npz.sha256 tidak ditemukan"; exit 1; }
+          expected=$(tr -d ' \n' < models/naze_v1/params.npz.sha256)
+          actual=$(sha256sum models/naze_v1/params.npz | cut -d' ' -f1)
+          if [ "$expected" != "$actual" ]; then
+            echo "checksum params.npz tidak cocok; checkpoint tidak terverifikasi"
+            exit 1
+          fi
+          echo "checksum OK: $actual"
+      - name: Rehearsal fine-tuning ID-BASIC-001 (eksperimen terisolasi, IDB-T008)
+        run: >-
+          python scripts/finetune_idbasic.py --checkpoint models/naze_v1
+          --out-checkpoint models/naze_idbasic_exp
+          --epochs "${{ github.event.inputs.epochs || '8' }}"
+          --block-size 96
+        env:
+          PYTHONPATH: src
+      - name: Evaluasi pascatraining (benchmark identik dengan baseline)
+        run: >-
+          python scripts/benchmark_idbasic.py --checkpoint models/naze_idbasic_exp
+          --report runs/idbasic_post_training.json --label post_training
+        env:
+          PYTHONPATH: src
+      - name: Cek regresi NazeIO pada checkpoint eksperimen
+        run: >-
+          python scripts/benchmark_nazeio.py --checkpoint models/naze_idbasic_exp
+          --report runs/benchmark_nazeio_exp_report.json
+        env:
+          PYTHONPATH: src
+      - name: Upload checkpoint eksperimen + laporan
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: idbasic-finetune-${{ github.event.inputs.run_id }}
+          path: |
+            models/naze_idbasic_exp/
+            runs/
+          retention-days: 30
+          if-no-files-found: error

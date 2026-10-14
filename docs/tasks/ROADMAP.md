@@ -89,7 +89,7 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 - **Requirements:** REQ-401 (PROPOSED); DECISION-025 (dataset eksternal berlisensi + fallback).
 - **Deliverables (rencana):** dataset berlabel 5 kategori + manifest + validator; benchmark tetap; baseline; fine-tuning rehearsal ke checkpoint eksperimen; evaluasi pra/pasca identik.
 - **Branch:** feature/id-basic-001 | **TD:** docs/architecture/IDBASIC001_TECHNICAL_DESIGN.md | **Tasks:** docs/tasks/IDBASIC001_TASKS.md
-- **Status:** Tahap 0 audit DONE (temuan C1-C8, perbaikan menyusul di branch); Tahap 1 spesifikasi DONE.
+- **Status:** Tahap 0 audit DONE (temuan C1-C8); Tahap 1 spesifikasi DONE; Tahap 2 dataset+manifest+provenance+validator+benchmark DONE (T003-T005, commit f7b0a08; integritas diverifikasi ulang programatik 2026-10-14); Tahap 3 evaluator+workflow CI+rehearsal fine-tuning diimplementasikan (T006-T008) — seluruh eksekusi (validasi, tes, baseline, rehearsal) menunggu pemtriggeran workflow_dispatch idbasic.yml oleh owner (lihat Catatan Tahap 3 di IDBASIC001_TASKS.md).
 
 ## MILESTONE-011+ — Multimodal / Physical AI (Stage 10) — DEFERRED (OPEN DECISION-108)
 
@@ -107,3 +107,4 @@ Numerical core, layers, activations, forward pass teruji hand-computed. Commit 8
 | 2026-10-10 | M-010 | ACTIVE; T001..T004 DONE; T005 workflow training dibuat | OD-107/OD-112 resolved (DECISION-023/024); korpus + splits siap |
 | 2026-10-13 | M-010 | DONE | Seluruh gate DECISION-023 terpenuhi pada model final: train loss 0.5186, holdout ppl 1.747, akurasi NazeIO 100% (20/20) |
 | 2026-10-13 | ID-BASIC-001 | ACTIVE — Tahap 0 audit + Tahap 1 spesifikasi selesai (branch feature/id-basic-001) | Persetujuan owner: REQ-401; dataset eksternal berlisensi (DECISION-025); perbaikan metadata korpus C1-C8 |
+| 2026-10-14 | ID-BASIC-001 | Tahap 3 T006-T008 diimplementasikan: evaluator benchmark_idbasic.py (exact-match ketat), workflow idbasic.yml (validate → baseline → finetune terisolasi, verifikasi checksum), finetune_idbasic.py rehearsal (block 96) + smoke test; eksekusi NOT RUN lokal — menunggu pemtriggeran CI oleh owner; baseline lokal BLOCKED (artifact 38376902867 tidak dapat diunduh dari lingkungan kerja); usulan ambang OD-127 menunggu persetujuan owner | SDD T006-T008; gerbang urutan baseline-sebelum-rehearsal dijaga workflow (needs: baseline) |
