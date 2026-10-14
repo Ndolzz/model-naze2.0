@@ -267,3 +267,11 @@ SPEC_REVIEW v1.1.0 §7 MISS-001 (regression/performance smoke suite, DEFERRED) p
 ### 12.3 Verdict (v1.4.0)
 
 **✅ READY FOR TECHNICAL DESIGN — M-011 (Naze 1.1: Korpus Dwibahasa & Suara Merek Naze).** Technical Design wajib mengikuti format 15 section DECISION-017; target evaluasi per eksperimen ditetapkan di TD sesuai DECISION-016; verifikasi REQ-201/202/203 tetap berlaku (korpus EN bersumber teks berlisensi terbuka — bukan pretrained model/API).
+
+### 12.4 Update M-011 Technical Design (2026-10-14)
+
+- **M011_TECHNICAL_DESIGN.md dibuat** sesuai format 15 section DECISION-017 (versi 0.1.0, DESIGN COMPLETE — menunggu persetujuan owner).
+- **M011_TASKS.md dibuat:** M011-T001..T019 (lima kategori: pekerjaan rumah, korpus dwibahasa, benchmark, training & evaluasi, rilis & dokumentasi).
+- **Open decision baru: OD-123** — strategi training M-011 (jalur A fine-tune + rehearsal vs jalur B training ulang penuh); diresolusi via eksperimen pembanding M011-T012 sesuai kerangka 5-basis DECISION-016.
+- **Pekerjaan rumah terjadwal** (temuan pemeriksaan 2026-10-14): rekonsiliasi status splitting corpus_manifest.json (M011-T001); pembersihan direktori warisan data/korpus/ dengan konfirmasi owner (M011-T002).
+- **Verdict: READY FOR IMPLEMENTATION — M-011, menunggu persetujuan owner atas Technical Design.**
